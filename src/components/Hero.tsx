@@ -43,16 +43,18 @@ const Hero = () => {
     };
   }, []);
 
-  // Desktop opacity: disappears much faster (by 40% of scroll)
-  const desktopOpacity = Math.max(0, 1 - progress * 2.5);
-  const desktopTranslateY = -progress * 100;
+  // Desktop opacity: stays until 75% scroll and then quickly fades
+  const desktopOpacity = progress > 0.75 ? Math.max(0, 1 - (progress - 0.75) * 4) : 1; 
+  const desktopTranslateY = progress > 0.75 ? -(progress - 0.75) * 100 : 0;
 
-  // Mobile sequential logic:
+  // Mobile sequential logic: updated to squeeze into the last 10% as well if needed, 
+  // but usually sequential logic uses the whole range. 
+  // User said "texts scroll only at 90% scroll", interpreted as staying static until late.
   const getMobileStyles = (peak: number, distance: number) => {
+    // Shifting peak visibility to the end of the scroll
     const diff = Math.abs(progress - peak);
-    // Add a slight buffer to the peak visibility
     const opacity = Math.max(0, 1 - (diff / distance));
-    const translateY = (progress - peak) * 30; 
+    const translateY = (progress - peak) * 20;
     return { 
       opacity, 
       transform: `translateY(${translateY}px)`,
@@ -60,15 +62,15 @@ const Hero = () => {
     };
   };
 
-  const logoStyles = isMobile ? getMobileStyles(0, 0.3) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
-  const contentStyles = isMobile ? getMobileStyles(0.45, 0.3) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
-  const cardStyles = isMobile ? getMobileStyles(0.9, 0.35) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
+  const logoStyles = isMobile ? getMobileStyles(0, 0.25) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
+  const contentStyles = isMobile ? getMobileStyles(0.4, 0.3) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
+  const cardStyles = isMobile ? getMobileStyles(0.85, 0.35) : { opacity: desktopOpacity, transform: `translateY(${desktopTranslateY}px)` };
 
   return (
-    // Slightly shorter container for faster overall scroll experience
-    <section ref={containerRef} className="relative w-full h-[250vh]">
+    // Height back to 130vh as requested
+    <section ref={containerRef} className="relative w-full h-[130vh]">
       <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
-
+        
         {/* Background Video */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
@@ -87,16 +89,16 @@ const Hero = () => {
           {/* Mobile Logo Stage (Centered) */}
           {isMobile && (
             <div 
-              className="absolute inset-0 flex items-center justify-center p-12 transition-all duration-100 ease-out"
+              className="absolute inset-0 flex items-center justify-center p-12 transition-all duration-75 ease-linear"
               style={logoStyles}
             >
-              <img src={logo} alt="Vogel Logo" className="w-full max-w-[300px] h-auto object-contain" />
+              <img src={logo} alt="Vogel Logo" className="w-full max-w-[280px] h-auto object-contain" />
             </div>
           )}
 
           {/* Left Content / Main Text Stage */}
           <div 
-            className={`flex flex-col max-w-[620px] transition-all duration-100 ease-out pointer-events-auto ${isMobile ? 'absolute inset-0 items-center justify-center text-center px-6' : 'self-center pt-10'}`}
+            className={`flex flex-col max-w-[620px] transition-all duration-75 ease-linear pointer-events-auto ${isMobile ? 'absolute inset-0 items-center justify-center text-center px-6' : 'self-center pt-10'}`}
             style={contentStyles}
           >
             <h1 className="text-white leading-[1.1] tracking-tight mb-4">

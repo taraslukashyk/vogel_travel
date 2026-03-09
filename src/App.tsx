@@ -4,6 +4,7 @@ import About from './components/About'
 import Advantages from './components/Advantages'
 import Partners from './components/Partners'
 import FinalQuote from './components/FinalQuote'
+import Footer from './components/Footer'
 import bgImage from './assets/about-bg.png'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <FinalQuote />
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

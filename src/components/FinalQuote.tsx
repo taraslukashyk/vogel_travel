@@ -5,8 +5,9 @@ const FinalQuote = () => {
   const authorText = "– Альбер Камю";
   
   const [displayedQuote, setDisplayedQuote] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [showAuthor, setShowAuthor] = useState(false);
+  const [displayedAuthor, setDisplayedAuthor] = useState('');
+  const [isTypingQuote, setIsTypingQuote] = useState(false);
+  const [isTypingAuthor, setIsTypingAuthor] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -15,7 +16,7 @@ const FinalQuote = () => {
       (entries) => {
         const [entry] = entries;
         if (entry.isIntersecting && !hasAnimated) {
-          setIsTyping(true);
+          setIsTypingQuote(true);
           setHasAnimated(true);
         }
       },
@@ -31,8 +32,9 @@ const FinalQuote = () => {
     };
   }, [hasAnimated]);
 
+  // Type quote
   useEffect(() => {
-    if (!isTyping) return;
+    if (!isTypingQuote) return;
 
     let i = 0;
     const typingInterval = setInterval(() => {
@@ -41,30 +43,52 @@ const FinalQuote = () => {
         i++;
       } else {
         clearInterval(typingInterval);
-        setIsTyping(false);
-        // Add a small delay before showing author
-        setTimeout(() => setShowAuthor(true), 500);
+        setIsTypingQuote(false);
+        setTimeout(() => setIsTypingAuthor(true), 600);
       }
-    }, 50); // Speed of typing
+    }, 45); 
 
     return () => clearInterval(typingInterval);
-  }, [isTyping]);
+  }, [isTypingQuote]);
+
+  // Type author
+  useEffect(() => {
+    if (!isTypingAuthor) return;
+
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < authorText.length) {
+        setDisplayedAuthor(authorText.substring(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typingInterval);
+        setIsTypingAuthor(false);
+      }
+    }, 50);
+
+    return () => clearInterval(typingInterval);
+  }, [isTypingAuthor]);
 
   return (
-    <section ref={sectionRef} className="w-full py-32 bg-transparent text-white relative flex flex-col items-center justify-center border-t border-white/5">
-      <div className="max-w-4xl px-6 text-center flex flex-col items-center min-h-[150px]">
+    <section ref={sectionRef} className="w-full py-40 bg-transparent text-white relative flex flex-col items-center justify-center border-t border-white/5">
+      <div className="max-w-6xl w-full px-8 text-left flex flex-col items-start min-h-[200px]">
         {/* Quote Container */}
-        <div className="relative inline-block mb-6">
-          <p className="font-script text-2xl md:text-3xl lg:text-4xl text-white/90 leading-relaxed italic pr-1">
+        <div className="relative mb-8">
+          <p className="font-script text-3xl md:text-5xl lg:text-5xl text-white/90 leading-[1.3] italic">
             {displayedQuote}
-            <span className={`inline-block w-[2px] h-[1em] bg-white/70 ml-1 translate-y-1 align-middle transition-opacity duration-100 ${isTyping || !showAuthor ? 'animate-pulse' : 'opacity-0'}`}></span>
+            {isTypingQuote && (
+              <span className="inline-block w-4 h-[2px] bg-white/70 ml-2 mb-2 animate-pulse align-baseline" />
+            )}
           </p>
         </div>
         
-        {/* Author */}
-        <div className={`transition-opacity duration-1000 transform mt-4 ${showAuthor ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-           <p className="font-montserrat uppercase tracking-widest text-white/50 text-sm md:text-base font-semibold">
-              {authorText}
+        {/* Author Container */}
+        <div className="min-h-[30px]">
+           <p className="font-montserrat uppercase tracking-[0.3em] text-white/40 text-sm md:text-lg font-bold">
+              {displayedAuthor}
+              {isTypingAuthor && (
+                <span className="inline-block w-3 h-[2px] bg-white/40 ml-1 mb-1 animate-pulse align-baseline" />
+              )}
            </p>
         </div>
       </div>

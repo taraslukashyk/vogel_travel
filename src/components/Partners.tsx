@@ -33,10 +33,11 @@ const Partners = () => {
       >
         <div
           ref={containerRef}
-          className={`flex gap-16 md:gap-24 items-center px-8 shrink-0 w-max ${
-            isPaused ? 'animate-none' : 'animate-infinite-scroll'
-          }`}
-          style={{ animationDuration: '40s' }}
+          className="flex gap-16 md:gap-24 items-center px-8 shrink-0 w-max animate-infinite-scroll transition-all duration-300"
+          style={{ 
+            animationDuration: '40s',
+            animationPlayState: isPaused ? 'paused' : 'running'
+          }}
         >
           {duplicatedPartners.map((partner, index) => (
             <a
