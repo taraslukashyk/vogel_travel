@@ -13,7 +13,7 @@ const Hero = () => {
     };
     handleResize();
     window.addEventListener('resize', handleResize);
-    
+
     const handleScroll = () => {
       if (!containerRef.current) return;
 
@@ -44,7 +44,7 @@ const Hero = () => {
   }, []);
 
   // Desktop opacity: stays until 75% scroll and then quickly fades
-  const desktopOpacity = progress > 0.75 ? Math.max(0, 1 - (progress - 0.75) * 4) : 1; 
+  const desktopOpacity = progress > 0.75 ? Math.max(0, 1 - (progress - 0.75) * 4) : 1;
   const desktopTranslateY = progress > 0.75 ? -(progress - 0.75) * 100 : 0;
 
   // Mobile sequential logic: updated to squeeze into the last 10% as well if needed, 
@@ -55,8 +55,8 @@ const Hero = () => {
     const diff = Math.abs(progress - peak);
     const opacity = Math.max(0, 1 - (diff / distance));
     const translateY = (progress - peak) * 20;
-    return { 
-      opacity, 
+    return {
+      opacity,
       transform: `translateY(${translateY}px)`,
       display: opacity <= 0 ? 'none' : 'flex'
     };
@@ -70,7 +70,7 @@ const Hero = () => {
     // Height back to 130vh as requested
     <section ref={containerRef} className="relative w-full h-[130vh]">
       <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
-        
+
         {/* Background Video */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
@@ -85,10 +85,10 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent pointer-events-none" />
 
         <div className="relative z-10 w-full h-full px-6 md:px-8 lg:px-12 mx-auto max-w-[1440px] flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-end pb-16 lg:pb-16 pt-32 pointer-events-none">
-          
+
           {/* Mobile Logo Stage (Centered) */}
           {isMobile && (
-            <div 
+            <div
               className="absolute inset-0 flex items-center justify-center p-12 transition-all duration-75 ease-linear"
               style={logoStyles}
             >
@@ -97,7 +97,7 @@ const Hero = () => {
           )}
 
           {/* Left Content / Main Text Stage */}
-          <div 
+          <div
             className={`flex flex-col max-w-[620px] transition-all duration-75 ease-linear pointer-events-auto ${isMobile ? 'absolute inset-0 items-center justify-center text-center px-6' : 'self-center pt-10'}`}
             style={contentStyles}
           >
@@ -120,13 +120,13 @@ const Hero = () => {
             </p>
 
             <button className="bg-white text-black font-montserrat uppercase tracking-widest font-bold py-4 px-10 w-max hover:bg-gray-100 active:scale-95 transition-all rounded-sm shadow-lg">
-              Дослідити Зараз
+              Дослідити Напрямки
             </button>
           </div>
 
           {/* Right Section: Logo (Desktop only) + Blog Card (Sequential on Mobile) */}
           <div className={`transition-all duration-100 ease-out ${isMobile ? 'absolute inset-0 flex items-center justify-center pointer-events-auto' : 'hidden lg:flex flex-col items-center gap-12 self-end'}`}>
-            
+
             {/* Logo Ornament (Desktop only, now fades with card) */}
             {!isMobile && (
               <div className="w-[432px] h-[432px] pointer-events-none mb-12" style={cardStyles}>
@@ -135,7 +135,7 @@ const Hero = () => {
             )}
 
             {/* Blog Card Stage */}
-            <div 
+            <div
               className="w-[90%] max-w-[420px] h-[150px] bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden rounded-sm flex transition-all duration-100 ease-out"
               style={cardStyles}
             >
