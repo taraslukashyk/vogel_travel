@@ -2,7 +2,7 @@ import logo from '../assets/logo.png';
 
 const Hero = () => {
   return (
-    <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-32 pb-20">
+    <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -17,11 +17,11 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20 pointer-events-none" />
 
       {/* Main Content Container */}
-      <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 mx-auto max-w-[1440px] flex flex-col lg:flex-row justify-start lg:justify-between items-center gap-10 lg:gap-16 pt-[40px] lg:pt-0">
+      <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 mx-auto max-w-[1440px] flex flex-col lg:flex-row justify-start lg:justify-between items-center gap-6 md:gap-10 lg:gap-16 pt-[10px] lg:pt-0">
 
         {/* Mobile: Logo always at the top/center of the hero text area */}
         <div className="lg:hidden flex justify-center w-full mb-2">
-          <img src={logo} alt="Vogel Logo" className="w-[140px] sm:w-[180px] h-auto object-contain opacity-90 drop-shadow-2xl" />
+          <img src={logo} alt="Vogel Logo" className="w-[120px] sm:w-[160px] h-auto object-contain opacity-90 drop-shadow-2xl" />
         </div>
 
         {/* Text Content */}
@@ -38,7 +38,7 @@ const Hero = () => {
             </span>
           </h1>
 
-          <p className="font-inter text-white/90 text-[15px] md:text-lg mb-10 max-w-[540px] leading-relaxed font-light">
+          <p className="font-inter text-white/90 text-[15px] md:text-lg mb-6 md:mb-10 max-w-[540px] leading-relaxed font-light">
             Vogel Family Travel — туристичний оператор, що створює індивідуальні подорожі для
             клієнтів із високими вимогами до сервісу, приватності та деталей. Ми працюємо з
             нестандартними запитами і повністю беремо на себе організацію подорожі — від ідеї до повернення.
