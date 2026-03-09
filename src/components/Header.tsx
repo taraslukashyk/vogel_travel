@@ -4,7 +4,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full px-6 py-6 md:px-10 lg:px-12 pointer-events-auto">
+    <header className="fixed top-9 left-0 right-0 z-50 w-full px-6 py-6 md:px-10 lg:px-12 pointer-events-auto">
       <div className="flex items-start justify-between text-white font-montserrat tracking-wide font-medium text-sm md:text-base">
         
         {/* Left Section: Logo & Links */}
