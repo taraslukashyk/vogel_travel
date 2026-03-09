@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'],
         montserrat: ['"Montserrat"', 'sans-serif'],
+        script: ['"Marck Script"', 'cursive'],
       }
     },
   },
