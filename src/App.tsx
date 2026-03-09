@@ -6,7 +6,7 @@ import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/vogel_travel">
       <div className="min-h-screen bg-background relative selection:bg-primary/30 flex flex-col">
         <Header />
         <main className="flex-grow">
