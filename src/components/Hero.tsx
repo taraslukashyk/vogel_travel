@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import cardImg from '../assets/hero-bg.png';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,10 +102,10 @@ const Hero = () => {
             </div>
 
             {/* Right Bottom Section: Logo + Blog Card */}
-            <div className="hidden lg:flex flex-col items-center gap-8 self-end">
-              {/* Large Central Logo */}
-              <div className="w-48 h-48 opacity-20 pointer-events-none">
-                <img src={logo} alt="Vogel Logo Ornament" className="w-full h-full object-contain filter invert opacity-50 transition-opacity duration-700 hover:opacity-80" />
+            <div className="hidden lg:flex flex-col items-center gap-12 self-end">
+              {/* Large Central Logo (Opaque and Bigger) */}
+              <div className="w-72 h-72 pointer-events-none">
+                <img src={logo} alt="Vogel Logo Ornament" className="w-full h-full object-contain transition-opacity duration-700 hover:opacity-90" />
               </div>
 
               {/* Blog Card */}
