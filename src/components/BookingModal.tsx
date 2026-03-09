@@ -1,4 +1,4 @@
-import { X, Calendar, Users } from 'lucide-react';
+import { Calendar, Users } from 'lucide-react';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -6,36 +6,25 @@ interface BookingModalProps {
 }
 
 const BookingModal = ({ isOpen, onClose }: BookingModalProps) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+    <div className={`fixed inset-0 z-[40] flex items-start justify-center pt-[88px] pointer-events-none transition-all duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 delay-100'}`}>
       {/* 
-        Partial overlay: Dark tint with a slight blur
+        Partial overlay: Dark tint with a slight blur.
+        We conditionally apply pointer-events so it doesn't block the site when closed.
       */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-md pointer-events-auto transition-opacity" 
+        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} 
         onClick={onClose} 
       />
       
-      {/* Modal Container: Full Width, centered vertically */}
-      <div className="relative w-full pointer-events-auto animate-in fade-in duration-300">
+      {/* Modal Container: Full Width, dropping and expanding from the button */}
+      <div className={`relative w-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] origin-top ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-y-0 scale-x-[0.9] -translate-y-4 pointer-events-none'}`}>
         
-        {/* Close Button (X) inside the modal area, top right */}
-        <div className="absolute top-4 right-4 md:right-8 z-20">
-          <button 
-            onClick={onClose}
-            className="text-white/50 hover:text-white transition-all p-2"
-          >
-            <X className="w-8 h-8" strokeWidth={1} />
-          </button>
-        </div>
-
         {/* Modal Window Panel: Barely transparent (glassmorphism) full width bar */}
         <div className="bg-white/5 backdrop-blur-2xl border-y border-white/10 py-12 shadow-2xl relative w-full">
           <div className="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
             
-            <h2 className="text-xl md:text-3xl font-montserrat font-bold text-white mb-8 tracking-[0.05em] drop-shadow-sm">
+            <h2 className="text-xl md:text-3xl font-montserrat font-bold text-white mb-8 tracking-[0.05em] drop-shadow-sm text-center md:text-left">
               Знайдіть ідеальний тур
             </h2>
 
