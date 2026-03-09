@@ -49,11 +49,6 @@ const Header = () => {
         <div className="flex items-center gap-6 lg:gap-8">
           
           <div className="hidden lg:flex flex-col items-end gap-1">
-            {/* Tagline (Shifted Up and Right, smaller calligraphic font) */}
-            <p className="font-script text-[15px] opacity-70 normal-case tracking-wider italic whitespace-nowrap -mt-4 mr-[-28px] mb-2 transform">
-              Кожна подорож — це історія, яку ви розповідатимете роками
-            </p>
-
             {/* Social Icons Group */}
             <div className="flex items-center gap-4 text-white/60">
               {/* Instagram */}

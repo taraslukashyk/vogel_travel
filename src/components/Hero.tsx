@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import cardImg from '../assets/hero-bg.png';
 import logo from '../assets/logo.png';
 
 const Hero = () => {
@@ -74,7 +73,7 @@ const Hero = () => {
         {/* Background Video */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="hero-video.mp4"
+          src="hero-video.webm"
           autoPlay
           muted
           loop
@@ -120,44 +119,19 @@ const Hero = () => {
             </p>
 
             <button className="bg-white text-black font-montserrat uppercase tracking-widest font-bold py-4 px-10 w-max hover:bg-gray-100 active:scale-95 transition-all rounded-sm shadow-lg">
-              Дослідити Напрямки
+              Замовити Тур
             </button>
           </div>
 
           {/* Right Section: Logo (Desktop only) + Blog Card (Sequential on Mobile) */}
           <div className={`transition-all duration-100 ease-out ${isMobile ? 'absolute inset-0 flex items-center justify-center pointer-events-auto' : 'hidden lg:flex flex-col items-center gap-12 self-end'}`}>
 
-            {/* Logo Ornament (Desktop only, now fades with card) */}
+            {/* Logo Ornament (Desktop only) */}
             {!isMobile && (
-              <div className="w-[432px] h-[432px] pointer-events-none mb-12" style={cardStyles}>
+              <div className="w-[432px] h-[432px] pointer-events-none" style={cardStyles}>
                 <img src={logo} alt="Vogel Logo Ornament" className="w-full h-full object-contain" />
               </div>
             )}
-
-            {/* Blog Card Stage */}
-            <div
-              className="w-[90%] max-w-[420px] h-[150px] bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden rounded-sm flex transition-all duration-100 ease-out"
-              style={cardStyles}
-            >
-              <div
-                className="w-1/2 h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${cardImg})` }}
-              />
-              <div className="w-1/2 p-5 flex flex-col justify-between font-montserrat text-black">
-                <div>
-                  <h3 className="text-sm leading-snug uppercase font-semibold line-clamp-2 mb-2">
-                    10 розкішних місць для відпустки
-                  </h3>
-                  <a href="#" className="text-[11px] uppercase font-bold underline decoration-2 underline-offset-2 hover:text-gray-600 transition-colors">
-                    Читати зараз
-                  </a>
-                </div>
-                <div className="text-[10px] text-gray-500 uppercase leading-snug font-medium">
-                  Reiseguides <br />
-                  Жовтень 27, 2024
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>

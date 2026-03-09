@@ -24,7 +24,7 @@ const Footer = () => {
               Ми створюємо маршрути, що надихають і залишають незабутні спогади.
             </p>
             <button className="w-full py-4 bg-white/5 border border-white/10 text-white uppercase tracking-[0.2em] font-bold text-sm hover:bg-white hover:text-black transition-all duration-500 rounded-sm">
-              Дослідити Напрямки
+              Замовити Тур
             </button>
           </div>
 
@@ -124,7 +124,7 @@ const Footer = () => {
           <div className="flex items-center gap-4">
             <img src={logo} alt="Vogel Logo" className="w-8 h-8 opacity-50 grayscale" />
             <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/20">
-              © 2026 Vogel Family Travel. Всі права захищено. • 
+              © 2026 Vogel Family Travel. Всі права захищено. •
               Created by <a href="https://www.linkedin.com/in/taras-lukashyk/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline underline-offset-4 decoration-white/10 decoration-1">Taras Lukashyk</a>
             </span>
           </div>
