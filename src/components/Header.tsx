@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Plane, Hotel, Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -14,25 +15,25 @@ const Header = () => {
         {/* Left: Logo & Nav */}
         <div className="flex items-center gap-10 lg:gap-16">
           {/* Logo Group */}
-          <div className="flex items-center gap-4 cursor-pointer group">
+          <Link to="/" className="flex items-center gap-4 cursor-pointer group">
             <img src={logo} alt="Vogel Logo" className="w-14 h-14 object-contain" />
             <div className="flex flex-col uppercase leading-[0.75] text-xl md:text-2xl font-black">
               <span className="group-hover:text-white/80 transition-colors tracking-tighter">VOGEL</span>
               <span className="group-hover:text-white/80 transition-colors tracking-tighter">TRAVEL</span>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Links (Increased font size) */}
           <div className="hidden xl:flex gap-10">
             <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
-              <a href="#" className="hover:text-white/70 transition-colors">ПРО НАС</a>
-              <a href="#" className="hover:text-white/70 transition-colors">БЛОГ</a>
-              <a href="#" className="hover:text-white/70 transition-colors">КОНТАКТИ</a>
+              <Link to="/about" className="hover:text-white/70 transition-colors">ПРО НАС</Link>
+              <Link to="#" className="hover:text-white/70 transition-colors">БЛОГ</Link>
+              <Link to="#" className="hover:text-white/70 transition-colors">КОНТАКТИ</Link>
             </nav>
             <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
-              <a href="#" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</a>
-              <a href="#" className="hover:text-white/70 transition-colors">СЕРВІСИ</a>
-              <a href="#" className="hover:text-white/70 transition-colors">ПАРТНЕРСТВО</a>
+              <Link to="#" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</Link>
+              <Link to="#" className="hover:text-white/70 transition-colors">СЕРВІСИ</Link>
+              <Link to="#" className="hover:text-white/70 transition-colors">ПАРТНЕРСТВО</Link>
             </nav>
           </div>
         </div>
@@ -109,14 +110,14 @@ const Header = () => {
         <div className="md:hidden border-t border-white/10 bg-black/40 backdrop-blur-lg p-8 flex flex-col gap-10 text-white font-montserrat tracking-widest uppercase font-semibold animate-in fade-in slide-in-from-top-4">
           <div className="grid grid-cols-2 gap-8">
             <div className="flex flex-col gap-4 text-base">
-              <a href="#">ПРО НАС</a>
-              <a href="#" className="opacity-70">БЛОГ</a>
-              <a href="#" className="opacity-70">КОНТАКТИ</a>
+              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
+              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
+              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
             <div className="flex flex-col gap-4 text-base">
-              <a href="#" className="opacity-70">ПРОПОЗИЦІЇ</a>
-              <a href="#" className="opacity-70">СЕРВІСИ</a>
-              <a href="#" className="opacity-70">ПАРТНЕРСТВО</a>
+              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
+              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
+              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
             </div>
           </div>
           <div className="h-px bg-white/10 w-full"></div>

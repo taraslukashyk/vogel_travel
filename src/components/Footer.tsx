@@ -1,4 +1,5 @@
 import { Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Footer = () => {
@@ -81,9 +82,9 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Навігація</h4>
             <div className="flex flex-col gap-3">
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРО НАС</a>
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">БЛОГ</a>
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</a>
+              <Link to="/about" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРО НАС</Link>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">БЛОГ</Link>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</Link>
             </div>
           </div>
 
@@ -91,9 +92,9 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Подорожі</h4>
             <div className="flex flex-col gap-3">
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРОПОЗИЦІЇ</a>
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">СЕРВІСИ</a>
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРСТВО</a>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРОПОЗИЦІЇ</Link>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">СЕРВІСИ</Link>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРСТВО</Link>
             </div>
           </div>
 
@@ -101,8 +102,8 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Мови</h4>
             <div className="flex flex-col gap-3">
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">УКРАЇНСЬКА</a>
-              <a href="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ENGLISH</a>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">УКРАЇНСЬКА</Link>
+              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ENGLISH</Link>
             </div>
           </div>
 

@@ -1,33 +1,23 @@
-import Header from './components/Header'
-import Hero from './components/Hero'
-import About from './components/About'
-import Advantages from './components/Advantages'
-import Partners from './components/Partners'
-import FinalQuote from './components/FinalQuote'
-import Footer from './components/Footer'
-import bgImage from './assets/about-bg.png'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
-    <div className="min-h-screen bg-background relative selection:bg-primary/30">
-      <Header />
-      <Hero />
-      <About />
-      
-      {/* Grouping Phase 1 added sections with a premium parallax background */}
-      <div 
-        className="relative w-full overflow-hidden bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgImage})` }}
-      >
-        <div className="absolute inset-0 bg-black/85 backdrop-blur-[10px] pointer-events-none" />
-        <div className="relative z-10 w-full flex flex-col">
-          <Advantages />
-          <Partners />
-          <FinalQuote />
-        </div>
+    <Router>
+      <div className="min-h-screen bg-background relative selection:bg-primary/30 flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+          </Routes>
+        </main>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </Router>
   )
 }
 
