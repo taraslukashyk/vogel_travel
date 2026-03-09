@@ -1,4 +1,4 @@
-import { Instagram, Send, MessageCircle } from 'lucide-react';
+import { Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 const Footer = () => {
@@ -110,7 +110,8 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Соцмережі</h4>
             <div className="flex items-center gap-6">
-              <a href="#" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Instagram className="w-5 h-5" /></a>
+              <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Instagram className="w-5 h-5" /></a>
+              <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Facebook className="w-5 h-5" /></a>
               <a href="#" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
               <a href="#" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
             </div>
@@ -121,11 +122,10 @@ const Footer = () => {
         <div className="mt-24 flex flex-col md:flex-row items-center justify-between gap-8 pt-8 border-t border-white/5">
           <div className="flex items-center gap-4">
             <img src={logo} alt="Vogel Logo" className="w-8 h-8 opacity-50 grayscale" />
-            <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/20">© 2024 VOGEL FAMILY TRAVEL</span>
-          </div>
-          <div className="flex gap-10 text-[10px] uppercase tracking-[0.2em] font-bold text-white/20">
-            <a href="#" className="hover:text-white/40 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white/40 transition-colors">Terms of Service</a>
+            <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/20">
+              © 2026 Vogel Family Travel. Всі права захищено. • 
+              Created by <a href="https://www.linkedin.com/in/taras-lukashyk/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline underline-offset-4 decoration-white/10 decoration-1">Taras Lukashyk</a>
+            </span>
           </div>
         </div>
 
