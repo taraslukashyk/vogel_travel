@@ -47,7 +47,7 @@ const AboutPage = () => {
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
-          src="/about-video.mp4"
+          src="about-video.mp4"
           autoPlay
           muted
           loop
