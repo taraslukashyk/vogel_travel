@@ -17,6 +17,15 @@ export default {
         sans: ['"Inter"', 'sans-serif'],
         montserrat: ['"Montserrat"', 'sans-serif'],
         script: ['"Marck Script"', 'cursive'],
+      },
+      animation: {
+        'infinite-scroll': 'infinite-scroll 25s linear infinite',
+      },
+      keyframes: {
+        'infinite-scroll': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        }
       }
     },
   },
