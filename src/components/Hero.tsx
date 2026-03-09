@@ -104,7 +104,7 @@ const Hero = () => {
             {/* Right Bottom Section: Logo + Blog Card */}
             <div className="hidden lg:flex flex-col items-center gap-12 self-end">
               {/* Large Central Logo (Opaque and Bigger) */}
-              <div className="w-72 h-72 pointer-events-none">
+              <div className="w-[432px] h-[432px] pointer-events-none">
                 <img src={logo} alt="Vogel Logo Ornament" className="w-full h-full object-contain transition-opacity duration-700 hover:opacity-90" />
               </div>
 
