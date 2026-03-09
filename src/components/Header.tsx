@@ -37,7 +37,7 @@ const Header = () => {
         </div>
 
         {/* Center Icons (Lifted Higher) */}
-        <div className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-2 px-6 bg-white/5 backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-4">
+        <div className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-[10px] px-6 bg-white/5 backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px]">
           <svg className="w-6 h-6 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3.182 12.015h7.62l-3.328-9h3.765l5.05 9h4.3c1.325 0 2.41 1.085 2.41 2.41s-1.085 2.41-2.41 2.41h-4.3l-5.05 9h-3.765l3.328-9h-7.62l-1.92 2.64H1.5L2.64 12 1.5 9.36h1.762l1.92 2.655z" />
           </svg>
@@ -52,7 +52,7 @@ const Header = () => {
           
           <div className="hidden lg:flex flex-col items-center gap-1">
             {/* Tagline (Centered over socials) */}
-            <p className="font-script text-sm text-white/50 normal-case tracking-normal italic whitespace-nowrap">
+            <p className="font-script text-lg text-white/50 normal-case tracking-normal italic whitespace-nowrap">
               Кожна подорож — це історія, яку ви розповідатимете роками
             </p>
 
