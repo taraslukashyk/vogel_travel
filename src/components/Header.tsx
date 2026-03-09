@@ -24,21 +24,21 @@ const Header = () => {
           {/* Navigation Links (Increased font size) */}
           <div className="hidden xl:flex gap-10">
             <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
-              <a href="#" className="hover:text-white/70 transition-colors">ГОЛОВНА</a>
+              <a href="#" className="hover:text-white/70 transition-colors">ПРО НАС</a>
               <a href="#" className="hover:text-white/70 transition-colors">БЛОГ</a>
               <a href="#" className="hover:text-white/70 transition-colors">КОНТАКТИ</a>
             </nav>
             <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
-              <a href="#" className="hover:text-white/70 transition-colors">НАПРЯМКИ</a>
-              <a href="#" className="hover:text-white/70 transition-colors">ГОТЕЛІ</a>
+              <a href="#" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</a>
+              <a href="#" className="hover:text-white/70 transition-colors">СЕРВІСИ</a>
               <a href="#" className="hover:text-white/70 transition-colors">ПАРТНЕРСТВО</a>
             </nav>
           </div>
         </div>
 
         {/* Center Icons (Lifted Higher) */}
-        <div className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-[10px] px-6 bg-white/5 backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px]">
-          <svg className="w-6 h-6 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px]">
+          <svg className="w-6 h-6 text-white/80" fill="none" viewBox="-1 -1 26 26" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3.182 12.015h7.62l-3.328-9h3.765l5.05 9h4.3c1.325 0 2.41 1.085 2.41 2.41s-1.085 2.41-2.41 2.41h-4.3l-5.05 9h-3.765l3.328-9h-7.62l-1.92 2.64H1.5L2.64 12 1.5 9.36h1.762l1.92 2.655z" />
           </svg>
           <div className="w-[1px] h-6 bg-white/10"></div>
@@ -50,9 +50,9 @@ const Header = () => {
         {/* Right: Socials, Search, Language */}
         <div className="flex items-center gap-6 lg:gap-8">
           
-          <div className="hidden lg:flex flex-col items-center gap-1">
-            {/* Tagline (Centered over socials) */}
-            <p className="font-script text-lg text-white/50 normal-case tracking-normal italic whitespace-nowrap">
+          <div className="hidden lg:flex flex-col items-end gap-1">
+            {/* Tagline (Shifted Up and Right, smaller calligraphic font) */}
+            <p className="font-script text-[15px] opacity-70 normal-case tracking-wider italic whitespace-nowrap -mt-4 mr-[-28px] mb-2 transform">
               Кожна подорож — це історія, яку ви розповідатимете роками
             </p>
 
@@ -114,13 +114,13 @@ const Header = () => {
         <div className="md:hidden border-t border-white/10 bg-black/90 backdrop-blur-xl p-8 flex flex-col gap-10 text-white font-montserrat tracking-widest uppercase font-semibold animate-in fade-in slide-in-from-top-4">
           <div className="grid grid-cols-2 gap-8">
             <div className="flex flex-col gap-4 text-base">
-              <a href="#">ГОЛОВНА</a>
+              <a href="#">ПРО НАС</a>
               <a href="#" className="opacity-70">БЛОГ</a>
               <a href="#" className="opacity-70">КОНТАКТИ</a>
             </div>
             <div className="flex flex-col gap-4 text-base">
-              <a href="#" className="opacity-70">НАПРЯМКИ</a>
-              <a href="#" className="opacity-70">ГОТЕЛІ</a>
+              <a href="#" className="opacity-70">ПРОПОЗИЦІЇ</a>
+              <a href="#" className="opacity-70">СЕРВІСИ</a>
               <a href="#" className="opacity-70">ПАРТНЕРСТВО</a>
             </div>
           </div>
