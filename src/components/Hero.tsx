@@ -12,45 +12,45 @@ const Hero = () => {
       />
       
       {/* Light gradient overlay just to ensure white text readability if needed, but keeping it minimal per reference */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
       
-      {/* Left Content */}
-      <div className="relative z-10 w-full px-6 md:px-10 lg:px-24 mx-auto max-w-7xl flex justify-between items-end pb-20 pt-32 h-full">
+      {/* Container with increased max-width to push content to edges */}
+      <div className="relative z-10 w-full px-6 md:px-8 lg:px-12 mx-auto max-w-[1440px] flex justify-between items-end pb-16 pt-32 h-full">
         
-        {/* Main Text & CTA */}
-        <div className="flex flex-col max-w-xl self-center pt-20">
-          <h1 className="font-oswald text-6xl md:text-8xl lg:text-[100px] font-bold text-white/95 leading-[0.9] tracking-tight mb-8">
-            Крок у Світ <br /> Відкриттів
+        {/* Left Content: Text & CTA */}
+        <div className="flex flex-col max-w-[600px] self-center pt-10">
+          <h1 className="font-montserrat text-5xl md:text-7xl lg:text-[80px] font-bold text-white leading-[1.05] tracking-tight mb-8">
+            Відкрийте світ: <br /> ваша подорож <br /> починається
           </h1>
           
-          <p className="font-oswald text-white/90 text-sm md:text-base mb-8 max-w-md leading-snug tracking-wide uppercase">
-            Унікальні туристичні напрямки чекають, щоб розпалити цікавість та надихнути на нові пригоди. 
-            У Vogel Travel ми відкриваємо приховані перлини світу, включаючи чарівні міста та нестандартні маршрути, 
-            готові до дослідження. Знайдіть своє натхнення та зробіть кожну подорож незабутньою.
+          <p className="font-inter text-white/95 text-base md:text-lg mb-10 max-w-[550px] leading-relaxed font-light">
+            Vogel Family Travel — туристичний оператор, що створює індивідуальні подорожі для
+            клієнтів із високими вимогами до сервісу, приватності та деталей. Ми працюємо з
+            нестандартними запитами і повністю беремо на себе організацію подорожі — від ідеї до повернення.
           </p>
           
-          <button className="bg-white text-black font-oswald uppercase tracking-wider font-bold py-3.5 px-8 w-max hover:bg-gray-200 transition-colors">
+          <button className="bg-white text-black font-montserrat uppercase tracking-wider font-bold py-4 px-10 w-max hover:bg-gray-200 transition-colors rounded-sm shadow-lg">
             Дослідити Зараз
           </button>
         </div>
 
         {/* Right Bottom Card (Blog preview) */}
-        <div className="hidden lg:flex w-[400px] h-[140px] bg-white/90 backdrop-blur-md self-end shadow-2xl overflow-hidden rounded-sm">
+        <div className="hidden lg:flex w-[420px] h-[150px] bg-white/95 backdrop-blur-md self-end shadow-2xl overflow-hidden rounded-sm">
           {/* Card Image */}
           <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: `url(${cardImg})` }}></div>
           
           {/* Card Content */}
-          <div className="w-1/2 p-4 flex flex-col justify-between font-oswald text-black">
+          <div className="w-1/2 p-5 flex flex-col justify-between font-montserrat text-black">
             <div>
-              <h3 className="text-lg leading-tight tracking-tight uppercase font-medium line-clamp-2 mb-1">
+              <h3 className="text-base leading-snug tracking-tight uppercase font-semibold line-clamp-2 mb-2">
                 10 розкішних місць для відпустки
               </h3>
-              <a href="#" className="text-xs uppercase font-bold underline decoration-2 underline-offset-2 hover:text-gray-600">
+              <a href="#" className="text-xs uppercase font-bold underline decoration-2 underline-offset-2 hover:text-gray-600 transition-colors">
                 Читати зараз
               </a>
             </div>
             
-            <div className="text-[10px] text-gray-500 uppercase leading-tight">
+            <div className="text-[10px] text-gray-500 uppercase leading-snug font-medium">
               Reiseguides <br/>
               Жовтень 27, 2024
             </div>

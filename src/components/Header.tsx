@@ -5,7 +5,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full px-6 py-6 md:px-10 lg:px-12 pointer-events-auto">
-      <div className="flex items-start justify-between text-white font-oswald tracking-wide font-medium text-sm md:text-base">
+      <div className="flex items-start justify-between text-white font-montserrat tracking-wide font-medium text-sm md:text-base">
         
         {/* Left Section: Logo & Links */}
         <div className="flex gap-12 lg:gap-24">
@@ -88,7 +88,7 @@ const Header = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden mt-4 bg-black/80 backdrop-blur-md rounded-lg p-6 flex flex-col gap-6 text-white font-oswald tracking-wide font-medium uppercase animate-in fade-in slide-in-from-top-4">
+        <div className="md:hidden mt-4 bg-black/80 backdrop-blur-md rounded-lg p-6 flex flex-col gap-6 text-white font-montserrat tracking-wide font-medium uppercase animate-in fade-in slide-in-from-top-4">
           <div className="flex flex-col gap-3">
              <a href="#">ГОЛОВНА</a>
              <a href="#">БЛОГ</a>

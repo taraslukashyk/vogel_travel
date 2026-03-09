@@ -14,8 +14,8 @@ export default {
         foreground: "#831843",
       },
       fontFamily: {
-        sans: ['"Noto Sans Thai"', 'sans-serif'],
-        oswald: ['"Oswald"', 'sans-serif'],
+        sans: ['"Inter"', 'sans-serif'],
+        montserrat: ['"Montserrat"', 'sans-serif'],
       }
     },
   },
