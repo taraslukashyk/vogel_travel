@@ -23,12 +23,13 @@ const Hero = () => {
       const scrolled = -top;
       const progress = Math.min(1, scrolled / scrollableDistance);
 
-      // Start moving UI elements after 40% of the scroll is done
-      const startMoving = 0.4;
+      // Elements start moving UP only after 5% scroll progress
+      const startMoving = 0.05;
       if (progress > startMoving) {
         const moveProgress = (progress - startMoving) / (1 - startMoving);
-        setTranslateY(moveProgress * 500);
-        setOpacity(Math.max(0, 1 - moveProgress * 1.5));
+        // Negative Y → elements slide UP when scrolling down
+        setTranslateY(-moveProgress * window.innerHeight * 1.1);
+        setOpacity(Math.max(0, 1 - moveProgress * 2));
       } else {
         setTranslateY(0);
         setOpacity(1);
@@ -36,6 +37,7 @@ const Hero = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
