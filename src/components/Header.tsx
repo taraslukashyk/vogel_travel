@@ -26,7 +26,7 @@ const Header = () => {
         </div>
 
         {/* Center: Nav and Central Button (Absolutely centered container) */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
           <div className="pointer-events-auto flex items-center gap-10 xl:gap-[80px]">
             {/* Left Navigation Links */}
             <nav className="hidden xl:flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold text-right pt-1">
@@ -38,7 +38,7 @@ const Header = () => {
             {/* Central Trigger Button */}
             <button 
               onClick={() => setIsBookingModalOpen(!isBookingModalOpen)}
-              className="flex items-center justify-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer group min-w-[120px]"
+              className="flex items-center justify-center gap-3 md:gap-4 border border-white/10 rounded-sm py-3 px-4 md:py-4 md:px-6 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer group min-w-[100px] md:min-w-[120px]"
             >
               {isBookingModalOpen ? (
                 <X className="w-6 h-6 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />

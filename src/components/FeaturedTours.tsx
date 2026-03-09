@@ -66,24 +66,24 @@ const FeaturedTours = () => {
               <div
                 key={tour.id}
                 onClick={() => setActiveIndex(index)}
-                className={`relative overflow-hidden cursor-pointer transition-all duration-[1000ms] ease-in-out flex-shrink-0 group ${isActive
+                className={`relative overflow-hidden cursor-pointer transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 group rounded-sm ${isActive
                   ? 'flex-[5] lg:flex-[8] min-h-[300px] lg:min-h-0'
-                  : 'flex-[1] min-h-[80px] lg:min-h-0 lg:max-w-[140px] opacity-70 hover:opacity-100'
+                  : 'flex-1 min-h-[80px] lg:min-h-0 opacity-70 hover:opacity-100'
                   }`}
               >
                 {/* Background Image */}
                 <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[1200ms] ease-out"
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
                   style={{ backgroundImage: `url(${tour.img})`, transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
                 />
 
                 {/* Overlay gradient (darker at bottom for active slide) */}
                 <div
-                  className={`absolute inset-0 transition-opacity duration-[800ms] ${isActive ? 'bg-gradient-to-t from-black/90 via-black/20 to-black/10 opacity-100' : 'bg-black/40 group-hover:bg-black/20 opacity-100'}`}
+                  className={`absolute inset-0 transition-opacity duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? 'bg-gradient-to-t from-black/90 via-black/20 to-black/10' : 'bg-black/40 group-hover:bg-black/20'}`}
                 />
 
                 {/* Content */}
-                <div className={`absolute bottom-0 left-0 w-full p-8 md:p-10 transition-all duration-[600ms] transform ${isActive ? 'translate-y-0 opacity-100 delay-200' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
+                <div className={`absolute bottom-0 left-0 w-full p-8 md:p-10 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] transform ${isActive ? 'translate-y-0 opacity-100 delay-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
                   <h3 className="text-white font-serif italic text-4xl md:text-5xl mb-4 text-shadow-lg leading-tight">
                     {tour.location}
                   </h3>
