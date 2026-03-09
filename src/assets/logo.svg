@@ -1,0 +1,19 @@
+<svg width="500" height="550" viewBox="0 0 500 550" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="white"/>
+  
+  <g transform="translate(250, 200)">
+    <defs>
+      <path id="bird" d="M -22,-18 C -15,-12 -8,-12 0,-25 C 8,-12 15,-12 22,-18 C 18,0 12,15 0,10 C -12,15 -18,0 -22,-18 Z" fill="#00b2a9" />
+    </defs>
+    
+    <use href="#bird" transform="rotate(0) translate(0, -70)" />
+    <use href="#bird" transform="rotate(51.4) translate(0, -70)" />
+    <use href="#bird" transform="rotate(102.8) translate(0, -70)" />
+    <use href="#bird" transform="rotate(154.2) translate(0, -70)" />
+    <use href="#bird" transform="rotate(205.6) translate(0, -70)" />
+    <use href="#bird" transform="rotate(257) translate(0, -70)" />
+    <use href="#bird" transform="rotate(308.4) translate(0, -70)" />
+  </g>
+
+  <text x="250" y="450" font-family="Serif, 'Times New Roman'" font-size="100" font-weight="500" text-anchor="middle" letter-spacing="8" fill="black">VOGEL</text>
+</svg>

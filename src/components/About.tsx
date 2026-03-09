@@ -1,4 +1,5 @@
 import aboutBg from '../assets/about-bg.png';
+import viktoria from '../assets/viktoria.jpg';
 
 const About = () => {
   return (
@@ -18,12 +19,10 @@ const About = () => {
       {/* Content */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
 
-        {/* Left: Photo placeholder */}
+        {/* Left: Victoria Photo */}
         <div className="w-full lg:w-[380px] xl:w-[440px] flex-shrink-0">
-          <div className="w-full aspect-[3/4] bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm overflow-hidden flex items-center justify-center">
-            <span className="text-white/50 font-montserrat text-sm uppercase tracking-wider text-center px-4">
-              Фото засновниці
-            </span>
+          <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-sm overflow-hidden shadow-2xl">
+            <img src={viktoria} alt="Вікторія Шелюжко" className="w-full h-auto block" />
           </div>
         </div>
 

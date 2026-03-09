@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import cardImg from '../assets/hero-bg.png';
+import logo from '../assets/logo.svg';
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +29,7 @@ const Hero = () => {
       if (progress > startMoving) {
         const moveProgress = (progress - startMoving) / (1 - startMoving);
         // Negative Y → elements slide UP when scrolling down
-        setTranslateY(-moveProgress * window.innerHeight * 1.1);
+        setTranslateY(-moveProgress * windowHeight * 1.1);
         setOpacity(Math.max(0, 1 - moveProgress * 2));
       } else {
         setTranslateY(0);
@@ -100,30 +101,38 @@ const Hero = () => {
               </button>
             </div>
 
-            {/* Right Bottom Blog Card */}
-            <div className="hidden lg:flex w-[420px] h-[150px] bg-white/95 backdrop-blur-sm self-end shadow-2xl overflow-hidden rounded-sm">
-              {/* Card Image */}
-              <div
-                className="w-1/2 h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${cardImg})` }}
-              />
+            {/* Right Bottom Section: Logo + Blog Card */}
+            <div className="hidden lg:flex flex-col items-center gap-8 self-end">
+              {/* Large Central Logo */}
+              <div className="w-48 h-48 opacity-20 pointer-events-none">
+                <img src={logo} alt="Vogel Logo Ornament" className="w-full h-full object-contain filter invert opacity-50 transition-opacity duration-700 hover:opacity-80" />
+              </div>
 
-              {/* Card Text */}
-              <div className="w-1/2 p-5 flex flex-col justify-between font-montserrat text-black">
-                <div>
-                  <h3 className="text-sm leading-snug uppercase font-semibold line-clamp-2 mb-2">
-                    10 розкішних місць для відпустки
-                  </h3>
-                  <a
-                    href="#"
-                    className="text-[11px] uppercase font-bold underline decoration-2 underline-offset-2 hover:text-gray-600 transition-colors"
-                  >
-                    Читати зараз
-                  </a>
-                </div>
-                <div className="text-[10px] text-gray-500 uppercase leading-snug font-medium">
-                  Reiseguides <br />
-                  Жовтень 27, 2024
+              {/* Blog Card */}
+              <div className="w-[420px] h-[150px] bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden rounded-sm flex">
+                {/* Card Image */}
+                <div
+                  className="w-1/2 h-full bg-cover bg-center"
+                  style={{ backgroundImage: `url(${cardImg})` }}
+                />
+
+                {/* Card Text */}
+                <div className="w-1/2 p-5 flex flex-col justify-between font-montserrat text-black">
+                  <div>
+                    <h3 className="text-sm leading-snug uppercase font-semibold line-clamp-2 mb-2">
+                      10 розкішних місць для відпустки
+                    </h3>
+                    <a
+                      href="#"
+                      className="text-[11px] uppercase font-bold underline decoration-2 underline-offset-2 hover:text-gray-600 transition-colors"
+                    >
+                      Читати зараз
+                    </a>
+                  </div>
+                  <div className="text-[10px] text-gray-500 uppercase leading-snug font-medium">
+                    Reiseguides <br />
+                    Жовтень 27, 2024
+                  </div>
                 </div>
               </div>
             </div>
