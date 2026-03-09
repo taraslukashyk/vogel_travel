@@ -2,6 +2,7 @@ import Hero from '../components/Hero'
 import About from '../components/About'
 import Advantages from '../components/Advantages'
 import Partners from '../components/Partners'
+import FeaturedTours from '../components/FeaturedTours'
 import FinalQuote from '../components/FinalQuote'
 import bgImage from '../assets/about-bg.png'
 
@@ -20,6 +21,7 @@ const Home = () => {
         <div className="relative z-10 w-full flex flex-col">
           <Advantages />
           <Partners />
+          <FeaturedTours />
           <FinalQuote />
         </div>
       </div>

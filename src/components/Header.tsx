@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plane, Hotel, Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
 import logo from '../assets/logo.png';
+import BookingModal from './BookingModal';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full pointer-events-auto bg-black/40 backdrop-blur-lg border-b border-white/10">
@@ -39,11 +41,14 @@ const Header = () => {
         </div>
 
         {/* Center Icons (Lifted Higher) */}
-        <div className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px]">
-          <Plane className="w-5 h-5 text-white/80" strokeWidth={1.5} />
+        <button 
+          onClick={() => setIsBookingModalOpen(true)}
+          className="hidden md:flex items-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px] cursor-pointer group"
+        >
+          <Plane className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
           <div className="w-[1px] h-6 bg-white/10"></div>
-          <Hotel className="w-5 h-5 text-white/80" strokeWidth={1.5} />
-        </div>
+          <Hotel className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
+        </button>
 
         {/* Right: Socials, Search, Language */}
         <div className="flex items-center gap-6 lg:gap-8">
@@ -140,6 +145,12 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Booking Modal */}
+      <BookingModal 
+        isOpen={isBookingModalOpen} 
+        onClose={() => setIsBookingModalOpen(false)} 
+      />
     </header>
   );
 };
