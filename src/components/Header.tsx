@@ -13,27 +13,46 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 w-full pointer-events-auto bg-black/40 backdrop-blur-lg border-b border-white/10">
 
       {/* Main Navigation Row (More compact height) */}
-      <div className="w-full py-4 mx-auto max-w-[1440px] px-6 md:px-8 lg:px-12 flex items-center justify-between text-white font-montserrat tracking-wide font-medium relative">
+      <div className="w-full h-[100px] mx-auto max-w-[1440px] px-6 md:px-8 lg:px-12 flex items-center justify-between text-white font-montserrat tracking-wide font-medium relative">
 
-        {/* Left: Logo & Nav */}
-        <div className="flex items-center gap-10 lg:gap-16">
-          {/* Logo Group */}
+        {/* Left: Logo & Title */}
+        <div className="flex items-center z-10 relative">
           <Link to="/" className="flex items-center gap-4 cursor-pointer group">
-            <img src={logo} alt="Vogel Logo" className="w-14 h-14 object-contain" />
-            <div className="flex flex-col uppercase leading-[0.75] text-xl md:text-2xl font-black">
-              <span className="group-hover:text-white/80 transition-colors tracking-tighter">VOGEL</span>
-              <span className="group-hover:text-white/80 transition-colors tracking-tighter">TRAVEL</span>
-            </div>
+             {/* Logo updated to 67px (1.2x bigger than original 56px) */}
+            <img src={logo} alt="Vogel Logo" className="w-[67px] h-[67px] object-contain transition-transform group-hover:scale-105" />
+            
+            {/* Calligraphy Title in 1 line - REMOVED per user request */}
           </Link>
+        </div>
 
-          {/* Navigation Links (Increased font size) */}
-          <div className="hidden xl:flex gap-10">
-            <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
+        {/* Center: Nav and Central Button (Absolutely centered container) */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <div className="pointer-events-auto flex items-center gap-10 xl:gap-[80px]">
+            {/* Left Navigation Links */}
+            <nav className="hidden xl:flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold text-right pt-1">
               <Link to="/about" className="hover:text-white/70 transition-colors">ПРО НАС</Link>
               <Link to="#" className="hover:text-white/70 transition-colors">БЛОГ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors">КОНТАКТИ</Link>
             </nav>
-            <nav className="flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold">
+
+            {/* Central Trigger Button */}
+            <button 
+              onClick={() => setIsBookingModalOpen(!isBookingModalOpen)}
+              className="flex items-center justify-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer group min-w-[120px]"
+            >
+              {isBookingModalOpen ? (
+                <X className="w-6 h-6 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
+              ) : (
+                <>
+                  <Plane className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                  <div className="w-[1px] h-6 bg-white/10"></div>
+                  <Hotel className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                </>
+              )}
+            </button>
+
+            {/* Right Navigation Links */}
+            <nav className="hidden xl:flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold text-left pt-1">
               <Link to="#" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors">СЕРВІСИ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors">ПАРТНЕРСТВО</Link>
@@ -41,41 +60,21 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Center Icons (Lifted Higher) */}
-        <button 
-          onClick={() => setIsBookingModalOpen(!isBookingModalOpen)}
-          className="hidden md:flex items-center justify-center gap-4 border border-white/10 rounded-sm py-4 px-6 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg absolute left-1/2 -translate-x-1/2 top-[19px] cursor-pointer group min-w-[120px]"
-        >
-          {isBookingModalOpen ? (
-            <X className="w-6 h-6 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
-          ) : (
-            <>
-              <Plane className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
-              <div className="w-[1px] h-6 bg-white/10"></div>
-              <Hotel className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" strokeWidth={1.5} />
-            </>
-          )}
-        </button>
-
         {/* Right: Socials, Search, Language */}
-        <div className="flex items-center gap-6 lg:gap-8">
+        <div className="flex items-center gap-6 lg:gap-8 z-10 relative">
           
           <div className="hidden lg:flex flex-col items-end gap-1">
             {/* Social Icons Group */}
             <div className="flex items-center gap-4 text-white/60">
-              {/* Instagram */}
               <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 <Instagram className="w-4 h-4" strokeWidth={1.5} />
               </a>
-              {/* Facebook */}
               <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 <Facebook className="w-4 h-4" strokeWidth={1.5} />
               </a>
-              {/* WhatsApp (MessageCircle) */}
               <a href="#" target="_blank" className="hover:text-white transition-colors">
                 <MessageCircle className="w-4 h-4" strokeWidth={1.5} />
               </a>
-              {/* Telegram (Send) */}
               <a href="#" target="_blank" className="hover:text-white transition-colors">
                 <Send className="w-4 h-4" strokeWidth={1.5} />
               </a>

@@ -66,8 +66,8 @@ const FeaturedTours = () => {
               <div
                 key={tour.id}
                 onClick={() => setActiveIndex(index)}
-                className={`relative overflow-hidden cursor-pointer transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 group ${isActive
-                  ? 'flex-[5] lg:flex-[6] min-h-[300px] lg:min-h-0'
+                className={`relative overflow-hidden cursor-pointer transition-all duration-[1000ms] ease-in-out flex-shrink-0 group ${isActive
+                  ? 'flex-[5] lg:flex-[8] min-h-[300px] lg:min-h-0'
                   : 'flex-[1] min-h-[80px] lg:min-h-0 lg:max-w-[140px] opacity-70 hover:opacity-100'
                   }`}
               >

@@ -14,18 +14,29 @@ const Footer = () => {
         {/* Top Section: Main Content Boxes */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 mb-10">
 
-          {/* Left Block: Destinations */}
-          <div className="flex flex-col">
+          {/* Left Block: Contacts */}
+          <div className="flex flex-col h-full">
             <h2 className="text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">
-              Напрямки
+              Контакти
             </h2>
-            <p className="font-inter text-white/50 text-base md:text-lg leading-relaxed mb-10 max-w-md">
-              Відкрийте для себе найдивовижніші куточки світу — від прихованих островів до найпопулярніших мегаполісів.
-              Ми створюємо маршрути, що надихають і залишають незабутні спогади.
-            </p>
-            <button className="w-full py-4 bg-white/5 border border-white/10 text-white uppercase tracking-[0.2em] font-bold text-sm hover:bg-white hover:text-black transition-all duration-500 rounded-sm">
-              Замовити Тур
-            </button>
+            
+            <div className="flex flex-col gap-3 font-inter text-white/90 text-sm md:text-base leading-relaxed mb-8 xl:mb-0">
+              <a href="tel:+380504692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 050 469 2882</a>
+              <a href="tel:+380444692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 044 469 2882</a>
+              <a href="mailto:booking@vogel.travel" className="hover:text-white transition-colors text-white/70 w-fit">booking@vogel.travel</a>
+              
+              <div className="mt-4">
+                <a 
+                  href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-white/50 hover:text-white transition-colors max-w-sm block leading-relaxed"
+                >
+                  Ми з радістю будемо раді бачити вас в офісі в бізнес-центрі "Гулівер" за адресою: <span className="underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">Спортивна площа, 1А</span>
+                </a>
+                <span className="text-white/80 font-semibold block mt-1">За попереднім записом!</span>
+              </div>
+            </div>
           </div>
 
           {/* Right Block: Newsletter & WhatsApp */}
