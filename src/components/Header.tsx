@@ -57,18 +57,18 @@ const Header = () => {
         </div>
 
         {/* ── Main Navigation Row ── */}
-        <div className="w-full bg-black/40 backdrop-blur-lg border-b border-white/10 h-[90px] xl:h-[100px]">
+        <div className="w-full bg-black/40 backdrop-blur-lg border-b border-white/10 h-[76px] xl:h-[85px]">
           <div className="max-w-[1440px] h-full mx-auto px-6 md:px-8 lg:px-12 flex items-center justify-between text-white font-montserrat tracking-wide font-medium">
 
             {/* Left: Logo */}
             <div className="flex items-center shrink-0">
               <Link to="/" className="flex items-center cursor-pointer group">
-                <img src={logo} alt="Vogel Logo" className="w-[100px] xl:w-[120px] h-[100px] xl:h-[120px] object-contain transition-transform group-hover:scale-105" />
+                <img src={logo} alt="Vogel Logo" className="w-[85px] xl:w-[95px] h-[85px] xl:h-[95px] object-contain transition-transform group-hover:scale-105" />
               </Link>
             </div>
 
             {/* Center: Horizontal Navigation (Desktop Only) */}
-            <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-8">
+            <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-24">
               <Link to="/about" className="hover:text-white/70 transition-colors py-2">ПРО НАС</Link>
               <Link to="/offers" className="hover:text-white/70 transition-colors py-2">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="hover:text-white/70 transition-colors py-2">СЕРВІСИ</Link>
@@ -81,10 +81,15 @@ const Header = () => {
 
             {/* Right: Search & Action Button */}
             <div className="flex items-center gap-6 shrink-0">
-              {/* Search Icon */}
-              <button className="hidden sm:flex text-white/60 hover:text-white transition-colors p-2">
-                <Search className="w-5 h-5" strokeWidth={2} />
-              </button>
+              {/* Open Search Bar */}
+              <div className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-white/30 transition-colors">
+                <Search className="w-4 h-4 text-white/40" strokeWidth={2} />
+                <input 
+                  type="text" 
+                  placeholder="ПОШУК..." 
+                  className="bg-transparent border-none outline-none text-[11px] font-bold tracking-widest text-white placeholder:text-white/20 ml-2 w-24 lg:w-32 uppercase"
+                />
+              </div>
 
               {/* Action Button: "Тарифи" */}
               <button
