@@ -1,27 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Building2, Compass, PhoneCall, Users, Gem } from 'lucide-react';
+import { services as servicesData } from '../data/services';
 
-/* ─── Service data (ready for future dynamic loading from admin DB) ─── */
-const services = [
+const icons = {
+  '01': <Building2 className="w-8 h-8" strokeWidth={1} />,
+  '02': <Compass className="w-8 h-8" strokeWidth={1} />,
+  '03': <PhoneCall className="w-8 h-8" strokeWidth={1} />,
+  '04': <Users className="w-8 h-8" strokeWidth={1} />,
+  '05': <Gem className="w-8 h-8" strokeWidth={1} />,
+};
+
+// Re-map items which were slightly simplified in the search data but need detail here
+const servicesDetails = [
   {
     id: 1,
-    num: '01',
-    icon: <Building2 className="w-8 h-8" strokeWidth={1} />,
-    title: 'Преміальний відпочинок і оренда приватних об\'єктів',
-    description:
-      'Ексклюзивні вілли, шато та шале по всьому світу. Ідеальні для сімей, романтичних поїздок чи камерних корпоративних заходів. Ми забезпечуємо максимальний комфорт і приватність, яких неможливо досягти стандартними бронюваннями.',
-    image:
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1000',
     items: null,
   },
   {
     id: 2,
-    num: '02',
-    icon: <Compass className="w-8 h-8" strokeWidth={1} />,
-    title: 'Індивідуальні маршрути та тематичні подорожі',
-    description: null,
-    image:
-      'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?auto=format&fit=crop&q=80&w=1000',
     items: [
       { label: 'Пляжний відпочинок', text: 'ретельно підібрані курорти з балансом комфорту, сервісу і релаксу.' },
       { label: 'Сімейні подорожі', text: 'продумані маршрути з безпечними локаціями і логістикою, цікаві дітям і дорослим.' },
@@ -32,12 +29,6 @@ const services = [
   },
   {
     id: 3,
-    num: '03',
-    icon: <PhoneCall className="w-8 h-8" strokeWidth={1} />,
-    title: 'Професійний супровід і аудит подорожей',
-    description: null,
-    image:
-      'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1000',
     items: [
       { label: 'Travel Audit', text: 'перевірка і оптимізація вашого маршруту, таймінгів та бюджету для максимальної ефективності і комфорту.' },
       { label: '24/7 підтримка', text: 'конкретний менеджер знає всі деталі вашої поїздки і має повноваження вирішувати будь-які питання оперативно.' },
@@ -45,27 +36,19 @@ const services = [
   },
   {
     id: 4,
-    num: '04',
-    icon: <Users className="w-8 h-8" strokeWidth={1} />,
-    title: 'MICE та корпоративні рішення',
-    description:
-      'Організація бізнес-подій: конференції, мотиваційні тури, виставки і зустрічі. Ми контролюємо всі етапи від ідеї до реалізації, відповідно до високих міжнародних стандартів.',
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000',
     items: null,
   },
   {
     id: 5,
-    num: '05',
-    icon: <Gem className="w-8 h-8" strokeWidth={1} />,
-    title: 'Ексклюзивні привілеї і доступи',
-    description:
-      'Апгрейди номерів, пізній виїзд, спеціальні бонуси та закриті досвіди, які неможливо забронювати онлайн. Кожна подорож отримує додаткову цінність завдяки нашим партнерським відносинам.',
-    image:
-      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
     items: null,
   },
 ];
+
+const services = servicesData.map(s => ({
+  ...s,
+  icon: icons[s.num as keyof typeof icons],
+  items: servicesDetails.find(d => d.id === s.id)?.items || null
+}));
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -96,7 +79,8 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
   return (
     <div
       ref={ref}
-      className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
+      id={`service-${service.id}`}
+      className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 80}ms` }}
     >
       <article
@@ -154,7 +138,22 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
 /* ─── Page Component ─── */
 const ServicesPage = () => {
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowScrollIndicator(false), 2000);
     return () => clearTimeout(timer);

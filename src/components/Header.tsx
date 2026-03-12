@@ -3,10 +3,30 @@ import { Link } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
 import BookingModal from './BookingModal';
+import SearchPortal from './SearchPortal';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 1) {
+      setIsSearchOpen(true);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    if (val.trim().length > 1) {
+      setIsSearchOpen(true);
+    } else {
+      setIsSearchOpen(false);
+    }
+  };
 
   return (
     <>
@@ -83,14 +103,16 @@ const Header = () => {
             <div className="flex items-center gap-6 shrink-0">
               {/* Open Search Bar */}
               <form 
-                onSubmit={(e) => { e.preventDefault(); /* Handle search logic here later */ }}
-                className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-white/30 transition-colors"
+                onSubmit={handleSearchSubmit}
+                className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-[#5cc8bd]/50 transition-colors"
               >
-                <button type="submit" className="text-white/40 hover:text-white transition-colors">
+                <button type="submit" className="text-white/40 hover:text-[#5cc8bd] transition-colors">
                   <Search className="w-4 h-4" strokeWidth={2} />
                 </button>
                 <input 
                   type="text" 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
                   placeholder="Пошук..." 
                   className="bg-transparent border-none outline-none text-[11px] font-bold tracking-widest text-white placeholder:text-white/20 ml-2 w-24 lg:w-32"
                 />
@@ -185,6 +207,12 @@ const Header = () => {
       <BookingModal 
         isOpen={isBookingModalOpen} 
         onClose={() => setIsBookingModalOpen(false)} 
+      />
+      {/* Search Results Portal */}
+      <SearchPortal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        query={searchQuery}
       />
     </>
   );

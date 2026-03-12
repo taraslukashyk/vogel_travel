@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
 import { offers } from '../data/offers';
 
@@ -30,7 +31,8 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
   return (
     <div
       ref={ref}
-      className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
+      id={`offer-${offer.id}`}
+      className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
       <article className="group bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
@@ -109,7 +111,22 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
 /* ─── Page Component ─── */
 const OffersPage = () => {
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowScrollIndicator(false), 2000);
     return () => clearTimeout(timer);
