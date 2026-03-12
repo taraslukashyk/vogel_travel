@@ -175,9 +175,9 @@ const ServicesPage = () => {
         <img
           src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1920"
           alt="Services hero"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          className="absolute inset-0 w-full h-full object-cover opacity-100"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent" />
 
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
@@ -189,8 +189,8 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* ── Intro / description card ── */}
-      <section className="relative z-10 bg-black/30 backdrop-blur-xl border-y border-white/5 py-14">
+      {/* ── Intro / description card (Non-transparent) ── */}
+      <section className="relative z-10 bg-zinc-950 border-y border-white/5 py-14">
         <div
           ref={introRef}
           className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
