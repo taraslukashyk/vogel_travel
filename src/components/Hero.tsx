@@ -46,7 +46,7 @@ const Hero = () => {
         </div>
 
         {/* Desktop: Huge Logo Ornament on the right side */}
-        <div className="hidden lg:flex flex-col items-end justify-center h-full pointer-events-none pr-12 xl:pr-24">
+        <div className="hidden lg:flex flex-col items-end justify-center h-full pointer-events-none">
           <img src={logo} alt="Vogel Logo Ornament" className="w-[648px] xl:w-[828px] object-contain opacity-80 drop-shadow-2xl" />
         </div>
 

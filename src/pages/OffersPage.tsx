@@ -44,9 +44,11 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
           {/* Discount badge — glassmorphism */}
-          <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
-            {offer.discount}
-          </div>
+          {offer.discount && (
+            <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
+              {offer.discount}
+            </div>
+          )}
 
           {/* Location tag at bottom of image */}
           <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
@@ -84,12 +86,14 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
             </div>
 
             {/* Discount row */}
-            <div className="flex items-center justify-between py-3">
-              <span className="font-inter text-[14px] text-white/50 font-light">Знижка</span>
-              <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
-                {offer.discount}
-              </span>
-            </div>
+            {offer.discount && (
+              <div className="flex items-center justify-between py-3">
+                <span className="font-inter text-[14px] text-white/50 font-light">Знижка</span>
+                <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
+                  {offer.discount}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* CTA button */}

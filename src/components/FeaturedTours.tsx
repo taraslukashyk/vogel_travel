@@ -15,21 +15,20 @@ const FeaturedTours = () => {
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-16 gap-8">
           <div>
-            <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">Ваша подорож</h2>
+            <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">Мистецтво подорожувати</h2>
             <h1 className="text-white font-serif text-4xl sm:text-5xl md:text-6xl uppercase tracking-[0.15em]">
-              Актуальні пропозиції
-            </h1>
+              БЕЗ КОМПРОМІСІВ           </h1>
           </div>
 
           <div className="max-w-[500px] flex flex-col items-start lg:items-start lg:ml-auto">
             <p className="text-white/90 font-inter text-sm md:text-[15px] leading-relaxed mb-6 font-normal">
-              Дозвольте нам запропонувати вам подорож на край світу. Відкрийте для себе неповторні курорти в найрідкісніших місцях світу — де захопливі враження та незаймана природна краса створюють міцні зв'язки.
+              Довірте нам створення вашого ідеального маршруту. Від оренди приватних вілл до закритих екскурсій — ми беремо на себе кожну деталь, залишаючи вам лише чисті емоції та бездоганний сервіс.
             </p>
             <Link
               to="/offers"
               className="border border-white/40 text-white font-montserrat uppercase tracking-[0.15em] text-xs md:text-sm font-bold py-4 px-8 hover:bg-white hover:text-black transition-all duration-500 rounded-[2px] shadow-sm"
             >
-              Ознайомитися з пропозиціями
+              БІЛЬШЕ ПРОПОЗИЦІЇ
             </Link>
           </div>
         </div>

@@ -37,7 +37,7 @@ export const offers = [
     bookBy: '15/04',
     stayFrom: '01/05',
     stayTo: '30/07',
-    discount: '-50%',
+    discount: '',
   },
   {
     id: 5,
@@ -47,7 +47,7 @@ export const offers = [
     bookBy: '25/04',
     stayFrom: '15/06',
     stayTo: '20/09',
-    discount: '-40%',
+    discount: '',
   },
   {
     id: 6,
@@ -57,6 +57,6 @@ export const offers = [
     bookBy: '30/04',
     stayFrom: '01/12',
     stayTo: '15/03',
-    discount: '-30%',
+    discount: '',
   },
 ];
