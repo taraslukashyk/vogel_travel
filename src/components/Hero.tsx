@@ -38,12 +38,6 @@ const Hero = () => {
             </span>
           </h1>
 
-          <p className="font-inter text-white/90 text-[15px] md:text-lg mb-6 md:mb-10 max-w-[540px] leading-relaxed font-light">
-            Vogel Family Travel — туристичний оператор, що створює індивідуальні подорожі для
-            клієнтів із високими вимогами до сервісу, приватності та деталей. Ми працюємо з
-            нестандартними запитами і повністю беремо на себе організацію подорожі — від ідеї до повернення.
-          </p>
-
           <button className="bg-white text-black font-montserrat uppercase tracking-[0.2em] font-bold py-4 px-10 hover:bg-white/90 active:scale-95 transition-all duration-300 rounded-[2px] shadow-lg w-full sm:w-auto text-sm">
             Замовити Тур
           </button>
