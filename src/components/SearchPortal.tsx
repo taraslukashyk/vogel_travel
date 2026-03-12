@@ -71,7 +71,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link to="/offers" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Пропозиції</Link>
                   <Link to="/services" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Сервіси</Link>
-                  <Link to="#" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Блог</Link>
+                  <Link to="/blog" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Блог</Link>
                 </div>
               </div>
             ) : (
@@ -133,7 +133,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {filteredResults.blog.map(post => (
-                        <Link key={post.id} to={`#blog-${post.id}`} onClick={onClose} className="group flex flex-col gap-4">
+                        <Link key={post.id} to={`/blog/${post.id}`} onClick={onClose} className="group flex flex-col gap-4">
                           <div className="aspect-video w-full rounded-sm overflow-hidden bg-white/5">
                             <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={post.title} />
                           </div>
