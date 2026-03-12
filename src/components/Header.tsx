@@ -53,8 +53,8 @@ const Header = () => {
 
             {/* Right Navigation Links */}
             <nav className="hidden xl:flex flex-col space-y-0.5 uppercase leading-none text-[15px] font-bold text-left pt-1">
-              <Link to="#" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</Link>
-              <Link to="#" className="hover:text-white/70 transition-colors">СЕРВІСИ</Link>
+              <Link to="/offers" className="hover:text-white/70 transition-colors">ПРОПОЗИЦІЇ</Link>
+              <Link to="/services" className="hover:text-white/70 transition-colors">СЕРВІСИ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors">ПАРТНЕРСТВО</Link>
             </nav>
           </div>
@@ -121,8 +121,8 @@ const Header = () => {
               <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
             <div className="flex flex-col gap-4 text-base">
-              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
-              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
+              <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
+              <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
               <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
             </div>
           </div>
