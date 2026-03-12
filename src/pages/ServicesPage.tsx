@@ -166,8 +166,8 @@ const ServicesPage = () => {
           src="about-video.mp4"
           autoPlay muted loop playsInline
         />
-        {/* Gradient overlay like on About page */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        {/* Light gradient overlay to brighten the video edges */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
       </div>
 
       {/* ── Hero Banner ── */}
@@ -177,7 +177,7 @@ const ServicesPage = () => {
           alt="Services hero"
           className="absolute inset-0 w-full h-full object-cover opacity-100"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
