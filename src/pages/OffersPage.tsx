@@ -107,7 +107,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
           {/* Discount badge — glassmorphism */}
-          <div className="absolute top-4 right-4 bg-primary/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
+          <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
             {offer.discount}
           </div>
 
@@ -121,7 +121,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
         {/* Card body */}
         <div className="flex-1 p-7 flex flex-col gap-5">
           {/* Hotel name */}
-          <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-primary transition-colors duration-300 tracking-tight">
+          <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
             {offer.hotel}
           </h2>
 
@@ -129,7 +129,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
           <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
             {/* Book by */}
             <div className="flex items-center gap-3 text-white/60 py-3">
-              <CalendarClock className="w-4 h-4 text-primary/70 shrink-0" strokeWidth={1.5} />
+              <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
               <span className="font-inter text-[14px] font-light">
                 Бронюй до <strong className="text-white/90 font-medium">{offer.bookBy}</strong>
               </span>
@@ -137,7 +137,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
 
             {/* Stay period */}
             <div className="flex items-center gap-3 text-white/60 py-3">
-              <CalendarDays className="w-4 h-4 text-primary/70 shrink-0" strokeWidth={1.5} />
+              <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
               <span className="font-inter text-[14px] font-light">
                 Живи з{' '}
                 <strong className="text-white/90 font-medium">
@@ -149,7 +149,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
             {/* Discount row */}
             <div className="flex items-center justify-between py-3">
               <span className="font-inter text-[14px] text-white/50 font-light">Знижка</span>
-              <span className="font-montserrat font-bold text-primary text-lg tracking-wider">
+              <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
                 {offer.discount}
               </span>
             </div>
@@ -171,17 +171,17 @@ const OffersPage = () => {
   const introRef = useScrollReveal();
 
   return (
-    <main className="w-full bg-zinc-800 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
+    <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
 
-      {/* Background video (frosted effect) */}
+      {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
           src="about-video.mp4"
           autoPlay muted loop playsInline
         />
-        {/* Frosted glass overlay to make it lighter and matte */}
-        <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+        {/* Gradient overlay like on About page */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
 
       {/* ── Hero Banner ── */}

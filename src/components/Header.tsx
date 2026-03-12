@@ -82,14 +82,19 @@ const Header = () => {
             {/* Right: Search & Action Button */}
             <div className="flex items-center gap-6 shrink-0">
               {/* Open Search Bar */}
-              <div className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-white/30 transition-colors">
-                <Search className="w-4 h-4 text-white/40" strokeWidth={2} />
+              <form 
+                onSubmit={(e) => { e.preventDefault(); /* Handle search logic here later */ }}
+                className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-white/30 transition-colors"
+              >
+                <button type="submit" className="text-white/40 hover:text-white transition-colors">
+                  <Search className="w-4 h-4" strokeWidth={2} />
+                </button>
                 <input 
                   type="text" 
-                  placeholder="ПОШУК..." 
-                  className="bg-transparent border-none outline-none text-[11px] font-bold tracking-widest text-white placeholder:text-white/20 ml-2 w-24 lg:w-32 uppercase"
+                  placeholder="Пошук..." 
+                  className="bg-transparent border-none outline-none text-[11px] font-bold tracking-widest text-white placeholder:text-white/20 ml-2 w-24 lg:w-32"
                 />
-              </div>
+              </form>
 
               {/* Action Button: "Тарифи" */}
               <button

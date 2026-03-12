@@ -120,12 +120,10 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
 
         {/* Text */}
         <div className="flex-1 p-8 md:p-10 lg:p-14 flex flex-col justify-center">
-          {/* Icon block */}
-          <div className="mb-6 p-4 bg-white/5 border border-white/10 inline-block rounded-sm transition-transform duration-500 group-hover:scale-110 text-white/80">
-            {service.icon}
-          </div>
-
-          <h2 className="font-montserrat font-bold text-2xl lg:text-[26px] text-white leading-tight tracking-tight mb-5 group-hover:text-primary transition-colors duration-300">
+          <h2 className="font-montserrat font-bold text-2xl lg:text-[26px] text-white leading-tight tracking-tight mb-5 group-hover:text-[#5cc8bd] transition-colors duration-300 flex items-center gap-4">
+            <span className="shrink-0 text-white/80 group-hover:text-[#5cc8bd] transition-colors duration-300">
+              {service.icon}
+            </span>
             {service.title}
           </h2>
 
@@ -139,7 +137,7 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
             <ul className="space-y-4 mt-1">
               {service.items.map((item, i) => (
                 <li key={i} className="flex items-start gap-4">
-                  <span className="mt-[7px] w-4 h-px bg-primary/60 shrink-0" />
+                  <span className="mt-[7px] w-4 h-px bg-[#5cc8bd]/60 shrink-0" />
                   <p className="font-inter text-[15px] text-white/60 leading-relaxed">
                     <strong className="text-white/90 font-medium">{item.label}:</strong> {item.text}
                   </p>
@@ -159,17 +157,17 @@ const ServicesPage = () => {
   const introRef = useScrollReveal();
 
   return (
-    <main className="w-full bg-zinc-800 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
+    <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
 
-      {/* Background video (frosted effect) */}
+      {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
           src="about-video.mp4"
           autoPlay muted loop playsInline
         />
-        {/* Frosted glass overlay to make it lighter and matte */}
-        <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+        {/* Gradient overlay like on About page */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
 
       {/* ── Hero Banner ── */}
