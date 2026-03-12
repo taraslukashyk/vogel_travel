@@ -87,9 +87,9 @@ const BlogCarousel = () => {
         onTouchEnd={(e) => handleDragEnd(e.changedTouches[0].clientX)}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
-        <div 
+        <div
           className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
-          style={{ 
+          style={{
             transform: `translateX(calc(50% - (var(--card-width) / 2) - (${current} * (var(--card-width) + var(--gap)))))`,
             '--card-width': 'min(85vw, 840px)',
             '--gap': '32px'
@@ -153,8 +153,8 @@ const BlogCarousel = () => {
             onClick={() => setCurrent(i)}
             aria-label={`Стаття ${i + 1}`}
             className={`transition-all duration-500 rounded-full h-1.5 ${i === current
-                ? 'w-10 bg-[#5cc8bd]'
-                : 'w-1.5 bg-white/10 hover:bg-white/30'
+              ? 'w-10 bg-[#5cc8bd]'
+              : 'w-1.5 bg-white/10 hover:bg-white/30'
               }`}
           />
         ))}
