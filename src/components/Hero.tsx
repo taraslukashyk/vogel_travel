@@ -1,8 +1,10 @@
 import logo from '../assets/logo.svg';
+import BirdCursorEffect from './BirdCursorEffect';
 
 const Hero = () => {
   return (
     <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
+      <BirdCursorEffect />
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
