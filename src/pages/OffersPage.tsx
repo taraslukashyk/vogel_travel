@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
 
 /* ─── Mock offer data (ready for future dynamic loading from admin DB) ─── */
@@ -167,7 +167,12 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
 
 /* ─── Page Component ─── */
 const OffersPage = () => {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => setShowScrollIndicator(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
   const introRef = useScrollReveal();
 
   return (
@@ -200,6 +205,12 @@ const OffersPage = () => {
               Пропозиції
             </span>
           </h1>
+
+          {/* Scroll Indicator with smooth fade out */}
+          <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
+            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">Гортай</span>
+            <div className="scroll-indicator"></div>
+          </div>
         </div>
       </section>
 

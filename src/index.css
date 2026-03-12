@@ -9,3 +9,31 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
+@layer utilities {
+  .scroll-indicator {
+    width: 20px;
+    height: 32px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .scroll-indicator::before {
+    content: '';
+    width: 3px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 6px;
+    border-radius: 2px;
+    animation: scroll-dot 2s infinite ease-in-out;
+  }
+}
+
+@keyframes scroll-dot {
+  0% { transform: translate(-50%, 0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(-50%, 12px); opacity: 0; }
+}
