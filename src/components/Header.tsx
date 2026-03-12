@@ -93,7 +93,7 @@ const Header = () => {
               <Link to="/offers" className="hover:text-white/70 transition-colors py-2">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="hover:text-white/70 transition-colors py-2">СЕРВІСИ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors py-2">ПАРТНЕРСТВО</Link>
-              <Link to="#" className="hover:text-white/70 transition-colors py-2">БЛОГ</Link>
+              <Link to="/blog" className="hover:text-white/70 transition-colors py-2">БЛОГ</Link>
               <Link to="#" className="hover:text-white/70 transition-colors py-2">КОНТАКТИ</Link>
             </nav>
 
@@ -163,7 +163,7 @@ const Header = () => {
               <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
               <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
               <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
-              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
+              <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
               <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
             
