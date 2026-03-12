@@ -133,7 +133,7 @@ const Footer = () => {
         {/* Copy & Logo */}
         <div className="mt-24 flex flex-col md:flex-row items-center justify-between gap-8 pt-8 border-t border-white/5">
           <div className="flex items-center gap-4">
-            <img src={logo} alt="Vogel Logo" className="w-8 h-8 opacity-50 grayscale" />
+            <img src={logo} alt="Vogel Logo" className="w-[60px] h-[60px] opacity-50 grayscale" />
             <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/20">
               © 2026 Vogel Family Travel. Всі права захищено. •
               Created by <a href="https://www.linkedin.com/in/taras-lukashyk/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline underline-offset-4 decoration-white/10 decoration-1">Taras Lukashyk</a>

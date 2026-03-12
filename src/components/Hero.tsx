@@ -21,7 +21,7 @@ const Hero = () => {
 
         {/* Mobile: Logo always at the top/center of the hero text area */}
         <div className="lg:hidden flex justify-center w-full mb-2">
-          <img src={logo} alt="Vogel Logo" className="w-[120px] sm:w-[160px] h-auto object-contain opacity-90 drop-shadow-2xl" />
+          <img src={logo} alt="Vogel Logo" className="w-[216px] sm:w-[288px] h-auto object-contain opacity-90 drop-shadow-2xl" />
         </div>
 
         {/* Text Content */}
@@ -51,7 +51,7 @@ const Hero = () => {
 
         {/* Desktop: Huge Logo Ornament on the right side */}
         <div className="hidden lg:flex flex-col items-end justify-center h-full pointer-events-none pr-12 xl:pr-24">
-          <img src={logo} alt="Vogel Logo Ornament" className="w-[360px] xl:w-[460px] object-contain opacity-80 drop-shadow-2xl" />
+          <img src={logo} alt="Vogel Logo Ornament" className="w-[648px] xl:w-[828px] object-contain opacity-80 drop-shadow-2xl" />
         </div>
 
       </div>

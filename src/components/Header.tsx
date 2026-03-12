@@ -18,8 +18,7 @@ const Header = () => {
         {/* Left: Logo & Title */}
         <div className="flex items-center z-10 relative">
           <Link to="/" className="flex items-center gap-4 cursor-pointer group">
-             {/* Logo updated to 67px (1.2x bigger than original 56px) */}
-            <img src={logo} alt="Vogel Logo" className="w-[67px] h-[67px] object-contain transition-transform group-hover:scale-105" />
+            <img src={logo} alt="Vogel Logo" className="w-[120px] h-[120px] object-contain transition-transform group-hover:scale-105" />
             
             {/* Calligraphy Title in 1 line - REMOVED per user request */}
           </Link>
