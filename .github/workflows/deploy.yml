@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Автоматичний запуск при пуші в гілку main
+  push:
+    branches:
+      - main
+  # Дозволяє запускати пайплайн вручну з вкладки Actions
+  workflow_dispatch:
+
+# Надаємо права на запис для створення та пушу в гілку gh-pages
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci # Чисте встановлення залежностей
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # Папка, яка деплоїться (результат білда Vite)

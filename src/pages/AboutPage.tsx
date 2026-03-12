@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { ListChecks, Key, Clock, Target, UserCheck, ShieldCheck } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 
 const AboutPage = () => {
   useEffect(() => {

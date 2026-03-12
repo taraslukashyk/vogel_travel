@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plane, Hotel, Instagram, Send, MessageCircle, Facebook, X } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 import BookingModal from './BookingModal';
 
 const Header = () => {
