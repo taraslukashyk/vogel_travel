@@ -102,7 +102,7 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
       <article
         className={`group flex flex-col ${
           isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
-        } bg-white/5 border border-white/10 rounded-sm overflow-hidden hover:bg-white/10 hover:-translate-y-1 transition-all duration-500`}
+        } bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-1 transition-all duration-500`}
       >
         {/* Image */}
         <div className="md:w-[45%] h-64 md:h-auto min-h-[300px] overflow-hidden relative">
@@ -159,16 +159,17 @@ const ServicesPage = () => {
   const introRef = useScrollReveal();
 
   return (
-    <main className="w-full bg-zinc-950/95 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
+    <main className="w-full bg-zinc-800 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
 
-      {/* Background video (same as AboutPage) */}
+      {/* Background video (frosted effect) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
-          className="w-full h-full object-cover opacity-15"
+          className="w-full h-full object-cover opacity-20"
           src="about-video.mp4"
           autoPlay muted loop playsInline
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        {/* Frosted glass overlay to make it lighter and matte */}
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
       </div>
 
       {/* ── Hero Banner ── */}
@@ -191,7 +192,7 @@ const ServicesPage = () => {
       </section>
 
       {/* ── Intro / description card ── */}
-      <section className="relative z-10 bg-white/5 backdrop-blur-xl border-y border-white/10 py-14">
+      <section className="relative z-10 bg-black/30 backdrop-blur-xl border-y border-white/5 py-14">
         <div
           ref={introRef}
           className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"

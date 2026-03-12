@@ -96,7 +96,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
-      <article className="group bg-white/5 border border-white/10 rounded-sm overflow-hidden hover:bg-white/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
+      <article className="group bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
         {/* Image */}
         <div className="relative h-56 overflow-hidden">
           <img
@@ -171,16 +171,17 @@ const OffersPage = () => {
   const introRef = useScrollReveal();
 
   return (
-    <main className="w-full bg-zinc-950/95 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
+    <main className="w-full bg-zinc-800 text-white selection:bg-primary/30 min-h-screen overflow-hidden relative">
 
-      {/* Background video */}
+      {/* Background video (frosted effect) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
-          className="w-full h-full object-cover opacity-15"
+          className="w-full h-full object-cover opacity-20"
           src="about-video.mp4"
           autoPlay muted loop playsInline
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        {/* Frosted glass overlay to make it lighter and matte */}
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
       </div>
 
       {/* ── Hero Banner ── */}
@@ -203,7 +204,7 @@ const OffersPage = () => {
       </section>
 
       {/* ── Intro / description card ── */}
-      <section className="relative z-10 bg-white/5 backdrop-blur-xl border-y border-white/10 py-14">
+      <section className="relative z-10 bg-black/30 backdrop-blur-xl border-y border-white/5 py-14">
         <div
           ref={introRef}
           className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
