@@ -4,6 +4,7 @@ import Advantages from '../components/Advantages'
 import Partners from '../components/Partners'
 import FeaturedTours from '../components/FeaturedTours'
 import FinalQuote from '../components/FinalQuote'
+import BlogCarousel from '../components/BlogCarousel'
 import bgImage from '../assets/about-bg.png'
 
 const Home = () => {
@@ -34,6 +35,7 @@ const Home = () => {
           <FeaturedTours />
           <About />
           <Partners />
+          <BlogCarousel />
           <FinalQuote />
         </div>
       </div>

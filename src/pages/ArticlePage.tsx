@@ -126,7 +126,7 @@ const ArticlePage = () => {
 
               if (section.type === 'image') {
                 return (
-                  <figure key={idx} className="my-16 -mx-6 md:-mx-20">
+                  <figure key={idx} className="my-16">
                     <img
                       src={section.image}
                       alt={section.title || 'Article image'}
