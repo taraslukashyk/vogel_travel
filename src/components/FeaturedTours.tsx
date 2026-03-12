@@ -1,38 +1,12 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { offers } from '../data/offers';
 
-const TOURS = [
-  {
-    id: 1,
-    location: "Кап-Кана, Домінікана",
-    title: "Eden Roc Cap Cana",
-    description: "Насолоджуйтеся бездоганним сервісом, власним басейном та кришталево чистим Карибським морем.",
-    img: "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&q=80&w=1200"
-  },
-  {
-    id: 2,
-    location: "Гуанакасте, Коста-Рика",
-    title: "Резерв",
-    description: "Відкрийте для себе неповторні курорти в екзотичних місцях – заповідниках, де захопливі враження та незаймана дика природа створюють міцні зв'язки.",
-    img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&q=80&w=1200"
-  },
-  {
-    id: 3,
-    location: "Рів'єра-Наяріт, Мексика",
-    title: "Заповідник Наяріт",
-    description: "Нове в портфоліо, заповідник Riviera Nayarit, пропонує приватний тихоокеанський курорт неперевершеного масштабу та усамітнення.",
-    img: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&q=80&w=1200"
-  },
-  {
-    id: 4,
-    location: "Баа Атол, Мальдіви",
-    title: "Духовне усамітнення",
-    description: "Надзвичайні вілли над водою та унікальний надводний сервіс на березі Індійського океану, створені для максимального комфорту.",
-    img: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=1200"
-  }
-];
+// Use first 4 offers from the shared data source (same as /offers page)
+const TOURS = offers.slice(0, 4);
 
 const FeaturedTours = () => {
-  const [activeIndex, setActiveIndex] = useState(2); // За замовчуванням відкриваємо 3-й слайд як на скріншоті
+  const [activeIndex, setActiveIndex] = useState(2);
 
   return (
     <section className="w-full py-16 px-6 md:px-12 lg:px-16 bg-transparent border-t border-white/5 relative z-10">
@@ -51,9 +25,12 @@ const FeaturedTours = () => {
             <p className="text-white/90 font-inter text-sm md:text-[15px] leading-relaxed mb-6 font-normal">
               Дозвольте нам запропонувати вам подорож на край світу. Відкрийте для себе неповторні курорти в найрідкісніших місцях світу — де захопливі враження та незаймана природна краса створюють міцні зв'язки.
             </p>
-            <button className="border border-white/40 text-white font-montserrat uppercase tracking-[0.15em] text-xs md:text-sm font-bold py-4 px-8 hover:bg-white hover:text-black transition-all duration-500 rounded-[2px] shadow-sm">
+            <Link
+              to="/offers"
+              className="border border-white/40 text-white font-montserrat uppercase tracking-[0.15em] text-xs md:text-sm font-bold py-4 px-8 hover:bg-white hover:text-black transition-all duration-500 rounded-[2px] shadow-sm"
+            >
               Ознайомитися з пропозиціями
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -74,23 +51,31 @@ const FeaturedTours = () => {
                 {/* Background Image */}
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
-                  style={{ backgroundImage: `url(${tour.img})`, transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
+                  style={{ backgroundImage: `url(${tour.image})`, transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
                 />
 
-                {/* Overlay gradient (darker at bottom for active slide) */}
+                {/* Overlay gradient */}
                 <div
                   className={`absolute inset-0 transition-opacity duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? 'bg-gradient-to-t from-black/90 via-black/20 to-black/10' : 'bg-black/40 group-hover:bg-black/20'}`}
                 />
 
-                {/* Content */}
+                {/* Discount Badge */}
+                {tour.discount && (
+                  <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-sm px-3 py-1 rounded-sm shadow-lg tracking-wider z-10">
+                    {tour.discount}
+                  </div>
+                )}
+
+                {/* Content (visible when active) */}
                 <div className={`absolute bottom-0 left-0 w-full p-8 md:p-10 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] transform ${isActive ? 'translate-y-0 opacity-100 delay-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
-                  <h3 className="text-white font-serif italic text-4xl md:text-5xl mb-4 text-shadow-lg leading-tight">
-                    {tour.location}
+                  <p className="text-white/60 font-montserrat text-xs uppercase tracking-widest mb-2">{tour.location}</p>
+                  <h3 className="text-white font-serif italic text-3xl md:text-4xl mb-3 leading-tight">
+                    {tour.hotel}
                   </h3>
-                  <div className="max-w-[450px]">
-                    <p className="text-white/95 font-inter text-[15px] leading-relaxed drop-shadow-md font-medium">
-                      {tour.description}
-                    </p>
+                  <div className="flex items-center gap-4 text-white/70 text-sm font-inter">
+                    <span>Бронюй до <strong className="text-white">{tour.bookBy}</strong></span>
+                    <span className="w-px h-4 bg-white/20"></span>
+                    <span>Живи з <strong className="text-white">{tour.stayFrom} — {tour.stayTo}</strong></span>
                   </div>
                 </div>
               </div>
@@ -104,3 +89,4 @@ const FeaturedTours = () => {
 };
 
 export default FeaturedTours;
+
