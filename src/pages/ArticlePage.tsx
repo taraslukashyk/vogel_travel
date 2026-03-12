@@ -27,7 +27,7 @@ const ArticlePage = () => {
 
   return (
     <main className="min-h-screen bg-white text-gray-900 selection:bg-[#5cc8bd]/20">
-      
+
       {/* ── Article Hero (Dark Theme Overlay for Title) ── */}
       <section className="relative w-full h-[65vh] min-h-[500px] flex items-end">
         <div className="absolute inset-0 overflow-hidden">
@@ -43,20 +43,20 @@ const ArticlePage = () => {
 
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <div className="max-w-4xl">
-            <Link 
-              to="/blog" 
+            <Link
+              to="/blog"
               className="inline-flex items-center gap-2 text-white/70 hover:text-[#5cc8bd] transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               Назад до блогу
             </Link>
-            
+
             <div className="flex items-center gap-4 text-[#5cc8bd] text-xs font-black uppercase tracking-[0.2em] mb-4">
               <span>{post.category}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-white/20"></span>
               <span className="text-white/60 font-medium">{post.date}</span>
             </div>
-            
+
             <h1 className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-4 drop-shadow-sm">
               {post.title}
             </h1>
@@ -66,8 +66,8 @@ const ArticlePage = () => {
 
       {/* ── Article Content (Magazine Style) ── */}
       <section className="relative py-24 px-6 md:px-8">
-        <div className="max-w-3xl mx-auto">
-          
+        <div className="max-w-5xl mx-auto">
+
           <div className="flex items-center justify-between mb-16 pb-8 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
@@ -78,7 +78,7 @@ const ArticlePage = () => {
                 <p className="text-sm font-medium text-gray-900">{post.date}</p>
               </div>
             </div>
-            
+
             <button className="flex items-center gap-2 text-gray-400 hover:text-[#5cc8bd] transition-colors group">
               <span className="text-[11px] font-bold uppercase tracking-widest">Поділитися</span>
               <Share2 className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={1.5} />
@@ -101,7 +101,7 @@ const ArticlePage = () => {
                   </div>
                 );
               }
-              
+
               if (section.type === 'list') {
                 return (
                   <div key={idx} className="mb-12 bg-gray-50 p-8 md:p-12 rounded-sm border-l-4 border-[#5cc8bd]">
@@ -140,15 +140,15 @@ const ArticlePage = () => {
                   </figure>
                 );
               }
-              
+
               return null;
             })}
           </div>
 
           <div className="mt-24 pt-16 border-t border-gray-100 flex flex-col items-center">
             <p className="text-gray-400 font-serif italic text-xl mb-8">Плануєте свою наступну подорож?</p>
-            <Link 
-              to="/services" 
+            <Link
+              to="/services"
               className="bg-black text-white font-montserrat font-bold uppercase tracking-[0.2em] text-xs px-10 py-5 hover:bg-[#5cc8bd] transition-all duration-300 rounded-[2px]"
             >
               Переглянути наші сервіси
