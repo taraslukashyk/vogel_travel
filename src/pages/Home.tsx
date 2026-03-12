@@ -11,7 +11,7 @@ const Home = () => {
     <>
       <Hero />
       
-      {/* ── Text Banner (Booking Modal Style) ── */}
+      {/* ── Text Banner (Glass Strip) ── */}
       <section className="relative z-20 w-full bg-zinc-950/90 backdrop-blur-2xl border-y border-white/10 py-12 shadow-2xl">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 text-center flex justify-center">
           <p className="font-inter text-white/90 text-[16px] md:text-[18px] lg:text-[20px] max-w-[1100px] leading-relaxed font-light tracking-wide drop-shadow-sm">
@@ -24,9 +24,6 @@ const Home = () => {
         </div>
       </section>
 
-      <About />
-      
-      {/* Grouping Phase 1 added sections with a premium parallax background */}
       <div 
         className="relative w-full overflow-hidden bg-fixed bg-cover bg-center"
         style={{ backgroundImage: `url(${bgImage})` }}
@@ -34,8 +31,9 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/85 backdrop-blur-[10px] pointer-events-none" />
         <div className="relative z-10 w-full flex flex-col">
           <Advantages />
-          <Partners />
           <FeaturedTours />
+          <About />
+          <Partners />
           <FinalQuote />
         </div>
       </div>

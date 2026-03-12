@@ -17,7 +17,7 @@ const FeaturedTours = () => {
           <div>
             <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">Ваша подорож</h2>
             <h1 className="text-white font-serif text-4xl sm:text-5xl md:text-6xl uppercase tracking-[0.15em]">
-              На все життя
+              Актуальні пропозиції
             </h1>
           </div>
 
