@@ -92,9 +92,9 @@ const Header = () => {
               <Link to="/about" className="hover:text-white/70 transition-colors py-2">ПРО НАС</Link>
               <Link to="/offers" className="hover:text-white/70 transition-colors py-2">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="hover:text-white/70 transition-colors py-2">СЕРВІСИ</Link>
-              <Link to="#" className="hover:text-white/70 transition-colors py-2">ПАРТНЕРСТВО</Link>
+              <a href="/#partners" className="hover:text-white/70 transition-colors py-2">ПАРТНЕРСТВО</a>
               <Link to="/blog" className="hover:text-white/70 transition-colors py-2">БЛОГ</Link>
-              <Link to="#" className="hover:text-white/70 transition-colors py-2">КОНТАКТИ</Link>
+              <a href="#footer" className="hover:text-white/70 transition-colors py-2">КОНТАКТИ</a>
             </nav>
 
             <div className="flex-grow hidden xl:block"></div>
@@ -158,13 +158,13 @@ const Header = () => {
               <a href="tel:+380444692882" className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-white/20"></span>+38 044 469 2882</a>
             </div>
 
-            <div className="flex flex-col gap-6 text-lg">
+            <div className="flex flex-col gap-6 text-lg items-end">
               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
               <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
               <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
-              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
+              <a href="/#partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</a>
               <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
-              <Link to="#" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
+              <a href="#footer" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</a>
             </div>
             
             <div className="h-px bg-white/10 w-full my-2"></div>

@@ -12,6 +12,7 @@ export interface BlogPost {
   date: string;
   image: string;
   category: string;
+  audio?: string;
   sections: BlogSection[];
 }
 
@@ -23,6 +24,7 @@ export const blogPosts: BlogPost[] = [
     date: '12.03.2026',
     image: 'https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?auto=format&fit=crop&w=1200&q=80',
     category: 'Фіджі',
+    audio: '/audio/fiji_review.wav',
     sections: [
       {
         type: 'text',
