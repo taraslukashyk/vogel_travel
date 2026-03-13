@@ -30,7 +30,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 
       {/* Modal Container: Full Width, 2/3 Height */}
       <div className={`relative w-full h-[90vh] md:h-[85vh] max-h-[900px] min-h-[500px] md:min-h-[600px] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-8 pointer-events-none'}`}>
-        
+
         {/* Modal Window Panel: Glassmorphism */}
         <div className="bg-black/90 md:bg-black/80 backdrop-blur-2xl border-y border-white/10 h-full w-full py-6 md:py-12 flex flex-col justify-center relative overflow-hidden">
 
@@ -56,13 +56,13 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 
               {/* Carousel Controls */}
               <div className="flex items-center justify-center md:justify-end gap-3 mb-1">
-                <button 
+                <button
                   onClick={() => scroll('left')}
                   className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all active:scale-95 bg-white/5"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button 
+                <button
                   onClick={() => scroll('right')}
                   className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all active:scale-95 bg-white/5"
                 >
@@ -74,22 +74,22 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             {/* Offers Carousel */}
             <div 
               ref={scrollRef}
-              className="flex gap-4 md:gap-6 mb-2 md:mb-4 flex-shrink-0 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 md:pb-4"
+              className="flex gap-4 md:gap-6 mb-2 md:mb-4 flex-shrink-0 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 md:pb-4 cursor-grab active:cursor-grabbing touch-pan-x"
             >
               {offers.map((offer) => (
-                <Link 
-                  key={offer.id} 
+                <Link
+                  key={offer.id}
                   to={`/offers/${offer.id}`}
                   onClick={onClose}
                   className="group relative min-w-[240px] md:min-w-[320px] h-[160px] md:h-[280px] overflow-hidden rounded-[2px] border border-white/10 hover:border-[#5cc8bd]/50 transition-all duration-500 bg-white/5 snap-start"
                 >
-                  <img 
-                    src={offer.image} 
-                    alt={offer.hotel} 
+                  <img
+                    src={offer.image}
+                    alt={offer.hotel}
                     className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                     <div className="text-[#5cc8bd] text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-1">
                       {offer.location}
@@ -127,7 +127,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Номер або нікнейм"
+                    placeholder="Номер, e-mail, або нікнейм у соцмережі"
                     className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
                     required
                   />
@@ -179,6 +179,8 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
         .no-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-x;
         }
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
