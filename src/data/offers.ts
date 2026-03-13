@@ -53,7 +53,7 @@ export const offers: Offer[] = [
       {
         type: 'text',
         title: 'Смак екзотики',
-        content: 'У ресторані Sea Grill ви зможете насолодитися свіжовиловленими морепродуктами та стейками на фоні заходу сонця. А для особливих моментів ми організовуємо приватні вечері на пляжі під зоряним небом.'
+        content: 'У ресторані Sea Grill ви зможете насолодитися свіжовиловленими морепродуктами та стейками на фоні заходу сонця. А для особливих моментів мы організовуємо приватні вечері на пляжі під зоряним небом.'
       },
       {
         type: 'image',
@@ -133,7 +133,7 @@ export const offers: Offer[] = [
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1549294413-26f195af01c1?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&w=1200&q=80',
         content: 'Розкішні інтер\'єри, що поєднують сучасне мистецтво та комфорт.'
       }
     ]
@@ -152,11 +152,11 @@ export const offers: Offer[] = [
       {
         type: 'text',
         title: 'Святилище Балійської Душі',
-        content: 'Розташований на схилах пагорба біля океану, курорт спроектований у стилі традиційного балійського селища. Тут ви зможете зануритися в атмосферу спокою, оточені мистецтвом та щирою гостинністю місцевих жителів.'
+        content: 'Розташований на схилах пагорба біля океану, курорт спроектований у стилі традиційного балійського селища. Тут ви зможете зануритися в атмосферу спокою, оточені мистецвтом та щирою гостинністю місцевих жителів.'
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1559139225-421502dc4844?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1551882547-ff43c61f3630?auto=format&fit=crop&w=1200&q=80',
         content: 'Приватна вілла з басейном серед тропічної зелені.'
       },
       {
@@ -171,8 +171,8 @@ export const offers: Offer[] = [
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1570737117675-c55635824ae2?auto=format&fit=crop&w=1200&q=80',
-        content: 'Традиційний балійський храм на території курорту.'
+        image: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80',
+        content: 'Традиційний балійський храм на території курорту'
       }
     ]
   },
@@ -194,7 +194,7 @@ export const offers: Offer[] = [
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1589197331516-4d84593e6446?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054?auto=format&fit=crop&w=1200&q=80',
         content: 'Вид на бухту Petit Anse, де пісок немов цукрова пудра.'
       },
       {
@@ -209,7 +209,7 @@ export const offers: Offer[] = [
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1506953823976-52e1bdc0149a?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
         content: 'Дика природа Сейшел у поєднанні з бездоганним сервісом.'
       }
     ]
@@ -232,7 +232,7 @@ export const offers: Offer[] = [
       },
       {
         type: 'image',
-        image: 'https://images.unsplash.com/photo-1548777123-e2169abba673?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1517176118179-65244ad0e59a?auto=format&fit=crop&w=1200&q=80',
         content: 'Відкритий термальний басейн з видом на снігові вершини.'
       },
       {

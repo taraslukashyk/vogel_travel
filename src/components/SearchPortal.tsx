@@ -86,7 +86,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredResults.offers.map(offer => (
-                        <Link key={offer.id} to={`/offers#offer-${offer.id}`} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
+                        <Link key={offer.id} to={`/offers/${offer.id}`} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
                           <div className="w-20 h-20 shrink-0 rounded-sm overflow-hidden">
                             <img src={offer.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={offer.hotel} />
                           </div>
