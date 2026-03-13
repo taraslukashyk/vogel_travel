@@ -25,6 +25,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   const instructionRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<HTMLButtonElement>(null);
   const isInteractiveRef = useRef(false);
+  const targetRef = useRef<{lng: number, lat: number}>({ lng: 30.5234, lat: 50.4501 });
   const markersRef = useRef<{ id: number; el: HTMLElement; lngLat: [number, number] }[]>([]);
 
   useEffect(() => {
@@ -88,6 +89,13 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
 
     map.on('move', checkProximity);
 
+    map.on('mousemove', (e) => {
+      // Capture the target coordinate only when fully zoomed out or near fully zoomed out
+      if (map.getZoom() < 2.0) {
+        targetRef.current = { lng: e.lngLat.lng, lat: e.lngLat.lat };
+      }
+    });
+
     // After map has loaded initially
     map.on('load', () => {
       if (!wrapperRef.current) return;
@@ -108,17 +116,28 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
           const pitch = progress * 60;
           // Animate Zoom: Start 1.5, go to 5.5
           const zoom = 1.5 + progress * 4.0;
-          // Animate Center: slightly shift map center dynamically to make it look like a real "flyTo"
-          // Starts at [0, 20], moves to Kyiv [30.5234, 50.4501]
-          const lng = 0 + progress * 30.5234;
-          const lat = 20 + progress * 30.4501;
+          
+          // Interpolate Center to the targeted area
+          const target = targetRef.current;
+          const lng = 0 + progress * (target.lng - 0);
+          const lat = 20 + progress * (target.lat - 20);
 
           map.setPitch(pitch);
           map.setZoom(zoom);
           map.setCenter([lng, lat]);
 
-          // Enable map dragging only when at max scroll progress
-          if (progress >= 0.99) {
+          if (progress === 0) {
+            isInteractiveRef.current = false;
+            if (mapContainer.current) mapContainer.current.style.pointerEvents = 'auto';
+            
+            markersRef.current.forEach(m => m.el.classList.remove('is-active'));
+
+            if (instructionRef.current) instructionRef.current.innerText = 'Скрольте щоб зануритись';
+            if (arrowRef.current) {
+              arrowRef.current.classList.add('opacity-0', 'pointer-events-none', 'h-0', 'mt-0');
+              arrowRef.current.classList.remove('opacity-100', 'pointer-events-auto', 'h-auto', 'mt-4');
+            }
+          } else if (progress >= 0.99) {
             isInteractiveRef.current = true;
             if (mapContainer.current) mapContainer.current.style.pointerEvents = 'auto';
 
@@ -170,7 +189,6 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
       <div 
         ref={mapContainer} 
         className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none"
-        style={{ pointerEvents: 'none' }}
       />
       
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
