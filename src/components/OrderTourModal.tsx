@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { X, ArrowRight, Send, ChevronLeft, ChevronRight } from 'lucide-react';
 import { offers } from '../data/offers';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,20 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflowX = 'hidden';
+      document.documentElement.style.overflowX = 'hidden';
+    } else {
+      document.body.style.overflowX = 'unset';
+      document.documentElement.style.overflowX = 'unset';
+    }
+    return () => {
+      document.body.style.overflowX = 'unset';
+      document.documentElement.style.overflowX = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <div className={`fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>

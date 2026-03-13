@@ -5,6 +5,10 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    @apply overflow-x-hidden w-full;
+    position: relative;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
