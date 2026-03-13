@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { offers } from '../data/offers';
 
 // Use first 4 offers from the shared data source (same as /offers page)
@@ -7,6 +7,17 @@ const TOURS = offers.slice(0, 4);
 
 const FeaturedTours = () => {
   const [activeIndex, setActiveIndex] = useState(2);
+  const navigate = useNavigate();
+
+  const handleTourClick = (index: number, id: number) => {
+    if (activeIndex === index) {
+      // Second click: Navigate to the detail page
+      navigate(`/offers/${id}`);
+    } else {
+      // First click: Just expand the card
+      setActiveIndex(index);
+    }
+  };
 
   return (
     <section className="w-full py-16 px-6 md:px-12 lg:px-16 bg-transparent border-t border-white/5 relative z-10">
@@ -14,6 +25,7 @@ const FeaturedTours = () => {
 
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-16 gap-8">
+          {/* ... existing header code ... */}
           <div>
             <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">Мистецтво подорожувати</h2>
             <h1 className="text-white font-serif text-4xl sm:text-5xl md:text-6xl uppercase tracking-[0.15em]">
@@ -41,7 +53,7 @@ const FeaturedTours = () => {
             return (
               <div
                 key={tour.id}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => handleTourClick(index, tour.id)}
                 className={`relative overflow-hidden cursor-pointer transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 group rounded-sm ${isActive
                   ? 'flex-[5] lg:flex-[8] min-h-[300px] lg:min-h-0'
                   : 'flex-1 min-h-[80px] lg:min-h-0 opacity-70 hover:opacity-100'
