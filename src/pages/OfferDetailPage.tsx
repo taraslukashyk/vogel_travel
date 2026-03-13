@@ -9,6 +9,30 @@ const OfferDetailPage = () => {
   const offer = offers.find(o => o.id === Number(id));
 
   const [currentImg, setCurrentImg] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // the required distance between touchStart and touchEnd to be considered a swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextImg();
+    } else if (isRightSwipe) {
+      prevImg();
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -242,7 +266,12 @@ const OfferDetailPage = () => {
             </div>
           </div>
 
-          <div className="relative h-[600px] w-full flex items-center justify-center px-4">
+          <div 
+            className="relative h-[400px] md:h-[600px] w-full flex items-center justify-center px-4"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <div className="relative w-full max-w-5xl h-full shadow-[0_50px_100px_rgba(0,0,0,0.8)] rounded-sm overflow-hidden border border-white/5">
               {imageSections.map((section, idx) => (
                 <div
@@ -256,9 +285,9 @@ const OfferDetailPage = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-10 left-10 max-w-2xl">
-                    <p className="text-white/40 font-montserrat text-[10px] font-black uppercase tracking-[0.3em] mb-4">Деталі курорту — Натисніть для перегляду</p>
-                    <p className="text-white text-2xl font-serif italic leading-relaxed">
+                  <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 max-w-2xl">
+                    <p className="text-white/40 font-montserrat text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-3 md:mb-4">Деталі курорту — Натисніть для перегляду</p>
+                    <p className="text-white text-lg md:text-2xl font-serif italic leading-relaxed">
                       {section.content as string}
                     </p>
                   </div>
