@@ -94,8 +94,8 @@ const Footer = () => {
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Навігація</h4>
             <div className="flex flex-col gap-3">
               <Link to="/about" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРО НАС</Link>
-              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">БЛОГ</Link>
-              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</Link>
+              <Link to="/blog" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">БЛОГ</Link>
+              <a href="#footer" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</a>
             </div>
           </div>
 
@@ -103,9 +103,9 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Подорожі</h4>
             <div className="flex flex-col gap-3">
-              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРОПОЗИЦІЇ</Link>
-              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">СЕРВІСИ</Link>
-              <Link to="#" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРСТВО</Link>
+              <Link to="/offers" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРОПОЗИЦІЇ</Link>
+              <Link to="/services" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">СЕРВІСИ</Link>
+              <a href="/#partners" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРСТВО</a>
             </div>
           </div>
 

@@ -88,13 +88,13 @@ const Header = () => {
             </div>
 
             {/* Center: Horizontal Navigation (Desktop Only) */}
-            <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-24">
-              <Link to="/about" className="hover:text-white/70 transition-colors py-2">ПРО НАС</Link>
-              <Link to="/offers" className="hover:text-white/70 transition-colors py-2">ПРОПОЗИЦІЇ</Link>
-              <Link to="/services" className="hover:text-white/70 transition-colors py-2">СЕРВІСИ</Link>
-              <a href="/#partners" className="hover:text-white/70 transition-colors py-2">ПАРТНЕРСТВО</a>
-              <Link to="/blog" className="hover:text-white/70 transition-colors py-2">БЛОГ</Link>
-              <a href="#footer" className="hover:text-white/70 transition-colors py-2">КОНТАКТИ</a>
+            <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-24 h-full">
+              <Link to="/about" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРО НАС</Link>
+              <Link to="/offers" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРОПОЗИЦІЇ</Link>
+              <Link to="/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
+              <a href="/#partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРСТВО</a>
+              <Link to="/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
+              <a href="#footer" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</a>
             </nav>
 
             <div className="flex-grow hidden xl:block"></div>
