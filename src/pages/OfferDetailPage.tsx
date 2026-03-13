@@ -54,7 +54,7 @@ const OfferDetailPage = () => {
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
 
       {/* ── Top Section: Split-Screen Header (Image 3/5, Content 2/5) ── */}
-      <section className="relative min-h-[750px] flex flex-col lg:flex-row overflow-hidden bg-zinc-950">
+      <section className="relative h-screen flex flex-col lg:flex-row overflow-hidden bg-zinc-950">
         
         {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
         <div className="w-full lg:w-[60%] relative z-20 h-[500px] lg:h-auto overflow-hidden">
@@ -139,8 +139,8 @@ const OfferDetailPage = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 font-montserrat">
-                <button className="flex-1 py-5 px-8 bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-3">
-                  <MessageSquare className="w-4 h-4" strokeWidth={2.5} />
+                <button className="flex-1 py-5 px-8 bg-white text-black font-black uppercase tracking-normal text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-3">
+                  <MessageSquare className="w-5 h-5" strokeWidth={2.5} />
                   Замовити у менеджера
                 </button>
                 <button 
