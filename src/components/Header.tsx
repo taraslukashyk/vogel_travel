@@ -126,7 +126,7 @@ const Header = () => {
                 {isContactModalOpen ? (
                   <X className="w-5 h-5 group-hover:text-black transition-colors" strokeWidth={1.5} />
                 ) : (
-                  <span>ЗВ'ЯЗОК</span>
+                  <span>ЗВ'ЯЖІТЬСЯ З НАМИ</span>
                 )}
               </button>
 
@@ -204,6 +204,9 @@ const Header = () => {
                 </a>
                 <a href="#" className="hover:text-white transition-colors">
                   <MessageCircle className="w-5 h-5" strokeWidth={1.5} />
+                </a>
+                <a href="#" target="_blank" className="hover:text-white transition-colors">
+                  <Send className="w-5 h-5" strokeWidth={1.5} />
                 </a>
               </div>
             </div>

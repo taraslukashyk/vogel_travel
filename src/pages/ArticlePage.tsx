@@ -91,35 +91,25 @@ const ArticlePage = () => {
               <span className="text-white/60 font-medium">{post.date}</span>
             </div>
 
-            <h1 className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-4 drop-shadow-sm">
+            <h1 className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 drop-shadow-sm">
               {post.title}
             </h1>
-          </div>
-        </div>
-      </section>
 
-      {/* ── Article Content (Magazine Style) ── */}
-      <section className="relative py-24 px-6 md:px-8 bg-zinc-200/50">
-        <div className="max-w-5xl mx-auto">
-
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 pb-8 border-b border-gray-100">
-            
-            <div className="flex flex-wrap items-center gap-8 md:gap-14">
+            <div className="flex flex-wrap items-center gap-8 md:gap-12 pt-4">
               {/* Audio Listen Button */}
               {post.audio && (
                 <button
                   onClick={toggleAudio}
                   className="flex items-center gap-3 group text-left"
                 >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:scale-105 active:scale-95 ${isPlaying ? 'bg-[#5cc8bd]' : 'bg-black'}`}>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white transition-all shadow-lg group-hover:scale-105 active:scale-95 border border-white/10 ${isPlaying ? 'bg-[#5cc8bd]' : 'bg-white/10 backdrop-blur-md'}`}>
                     {isPlaying ? (
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-5 h-5 focus:outline-none" viewBox="0 0 24 24" fill="currentColor">
                         <rect x="7" y="6" width="3" height="12" rx="1" />
                         <rect x="14" y="6" width="3" height="12" rx="1" />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5 ml-[-2px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        {/* Custom Ear with Soundwaves */}
+                      <svg className="w-5 h-5 ml-[-2px] focus:outline-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M8 8.5a5 5 0 1 1 10 0c0 4-4 4-4 7a2.5 2.5 0 1 1-5 0" />
                         <path d="M14 8.5a1.5 1.5 0 0 0-3 0v1a1.5 1.5 0 1 1 0 3" />
                         <path d="M19 7a3.5 3.5 0 0 1 0 5" />
@@ -129,10 +119,10 @@ const ArticlePage = () => {
                   </div>
                   
                   <div className="flex flex-col">
-                    <span className="font-montserrat font-bold text-[12px] uppercase tracking-widest text-gray-900 group-hover:text-[#5cc8bd] transition-colors">
+                    <span className="font-montserrat font-bold text-[12px] uppercase tracking-widest text-white group-hover:text-[#5cc8bd] transition-colors">
                       {isPlaying ? 'Пауза' : 'Прослухати'}
                     </span>
-                    <span className="font-inter text-[13px] font-medium text-gray-400 mt-0.5">
+                    <span className="font-inter text-[13px] font-medium text-white/40 mt-0.5">
                       {duration ? `${Math.ceil(duration / 60)} хв прослуховування` : 'Завантаження...'}
                     </span>
                   </div>
@@ -150,28 +140,24 @@ const ArticlePage = () => {
                 </button>
               )}
 
-              {/* Publish Date */}
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center text-gray-400">
-                  <Calendar className="w-5 h-5" strokeWidth={1.5} />
+              {/* Share Button */}
+              <button 
+                onClick={handleShare}
+                className="flex items-center gap-3 text-white/60 hover:text-[#5cc8bd] transition-colors group"
+              >
+                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                  <Share2 className="w-4 h-4 transition-transform group-hover:scale-110" strokeWidth={1.5} />
                 </div>
-                <div>
-                  <p className="font-montserrat text-[10px] font-bold text-gray-400 uppercase tracking-widest">Опубліковано</p>
-                  <p className="font-inter text-sm font-medium text-gray-900 mt-0.5">{post.date}</p>
-                </div>
-              </div>
+                <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">Поділитися</span>
+              </button>
             </div>
-
-            {/* Share Button */}
-            <button 
-              onClick={handleShare}
-              className="flex items-center gap-2 text-gray-400 hover:text-[#5cc8bd] transition-colors group"
-            >
-              <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">Поділитися</span>
-              <Share2 className="w-4 h-4 transition-transform group-hover:scale-110" strokeWidth={1.5} />
-            </button>
           </div>
+        </div>
+      </section>
 
+      {/* ── Article Content (Magazine Style) ── */}
+      <section className="relative py-16 px-6 md:px-8 bg-zinc-200/50">
+        <div className="max-w-5xl mx-auto">
           <div className="prose prose-lg prose-gray max-w-none prose-headings:font-serif prose-headings:italic prose-p:font-inter prose-p:leading-relaxed prose-p:text-gray-700">
             {post.sections.map((section, idx) => {
               if (section.type === 'text') {
