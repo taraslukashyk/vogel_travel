@@ -29,10 +29,10 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
       />
 
       {/* Modal Container: Full Width, 2/3 Height */}
-      <div className={`relative w-full h-[85vh] max-h-[900px] min-h-[600px] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-8 pointer-events-none'}`}>
-
+      <div className={`relative w-full h-[90vh] md:h-[85vh] max-h-[900px] min-h-[500px] md:min-h-[600px] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-8 pointer-events-none'}`}>
+        
         {/* Modal Window Panel: Glassmorphism */}
-        <div className="bg-black/80 backdrop-blur-2xl border-y border-white/10 h-full w-full py-8 md:py-12 flex flex-col justify-center relative overflow-hidden">
+        <div className="bg-black/90 md:bg-black/80 backdrop-blur-2xl border-y border-white/10 h-full w-full py-6 md:py-12 flex flex-col justify-center relative overflow-hidden">
 
           {/* Close Button */}
           <button
@@ -42,14 +42,14 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             <X className="w-6 h-6 md:w-8 h-8" strokeWidth={1} />
           </button>
 
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12 w-full h-full flex flex-col overflow-y-auto custom-scrollbar">
-            <div className="mb-6 md:mb-8 text-center md:text-left flex-shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-12 w-full h-full flex flex-col overflow-y-auto custom-scrollbar pt-4 md:pt-0">
+            <div className="mb-4 md:mb-8 text-center md:text-left flex-shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
-                <h2 className="text-xl md:text-3xl font-montserrat font-extrabold text-white mb-2 md:mb-3 tracking-tight uppercase">
+                <h2 className="text-xl md:text-3xl font-montserrat font-extrabold text-white mb-1.5 md:mb-3 tracking-tight uppercase">
                   Актуальні пропозиції
                 </h2>
-                <div className="w-16 md:w-20 h-1 bg-[#5cc8bd] mb-2 mx-auto md:mx-0" />
-                <p className="text-white/40 text-[10px] md:text-[11px] uppercase tracking-[0.2em] font-bold">
+                <div className="w-12 md:w-20 h-1 bg-[#5cc8bd] mb-1.5 mx-auto md:mx-0" />
+                <p className="text-white/40 text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-bold">
                   Гортайте та обирайте свій напрямок
                 </p>
               </div>
@@ -74,14 +74,14 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             {/* Offers Carousel */}
             <div 
               ref={scrollRef}
-              className="flex gap-4 md:gap-6 mb-8 flex-shrink-0 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-4"
+              className="flex gap-4 md:gap-6 mb-2 md:mb-4 flex-shrink-0 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 md:pb-4"
             >
               {offers.map((offer) => (
                 <Link 
                   key={offer.id} 
                   to={`/offers/${offer.id}`}
                   onClick={onClose}
-                  className="group relative min-w-[260px] md:min-w-[320px] h-[200px] md:h-[280px] overflow-hidden rounded-[2px] border border-white/10 hover:border-[#5cc8bd]/50 transition-all duration-500 bg-white/5 snap-start"
+                  className="group relative min-w-[240px] md:min-w-[320px] h-[160px] md:h-[280px] overflow-hidden rounded-[2px] border border-white/10 hover:border-[#5cc8bd]/50 transition-all duration-500 bg-white/5 snap-start"
                 >
                   <img 
                     src={offer.image} 
@@ -109,7 +109,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             </div>
 
             {/* Bottom Contact Section */}
-            <div className="mt-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center gap-8">
+            <div className="mt-auto border-t border-white/10 pt-2 md:pt-4 flex flex-col md:flex-row items-center gap-6 md:gap-8">
               <div className="flex-shrink-0 text-center md:text-left hidden lg:block">
                 <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-1">
                   Ваше побажання
@@ -119,23 +119,23 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                 </p>
               </div>
 
-              <form className="flex-grow flex flex-col lg:flex-row gap-4 w-full items-end">
+              <form className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full items-end">
                 {/* Contact Input */}
-                <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                  <label className="text-[9px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                  <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                     Контактні дані
                   </label>
                   <input
                     type="text"
-                    placeholder="Номер, e-mail, або нікнейм у соцмережі"
+                    placeholder="Номер або нікнейм"
                     className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
                     required
                   />
                 </div>
 
                 {/* Comment Textarea */}
-                <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                  <label className="text-[9px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                  <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                     Коментар (де ви хочете відпочити?)
                   </label>
                   <input
