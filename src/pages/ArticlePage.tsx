@@ -60,7 +60,7 @@ const ArticlePage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 text-gray-900 selection:bg-[#5cc8bd]/20">
+    <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
 
       {/* ── Article Hero (Dark Theme Overlay for Title) ── */}
       <section className="relative w-full h-[65vh] min-h-[500px] flex items-end">
@@ -99,7 +99,7 @@ const ArticlePage = () => {
       </section>
 
       {/* ── Article Content (Magazine Style) ── */}
-      <section className="relative py-24 px-6 md:px-8 bg-zinc-50">
+      <section className="relative py-24 px-6 md:px-8 bg-zinc-200/50">
         <div className="max-w-5xl mx-auto">
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 pb-8 border-b border-gray-100">

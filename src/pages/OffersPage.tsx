@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
 import { offers } from '../data/offers';
 
@@ -80,7 +80,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
             <div className="flex items-center gap-3 text-white/60 py-3">
               <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
               <span className="font-inter text-[14px] font-light">
-                Живи з{' '}
+                Період проживання з{' '}
                 <strong className="text-white/90 font-medium">
                   {offer.stayFrom} — {offer.stayTo}
                 </strong>
@@ -99,9 +99,12 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
           </div>
 
           {/* CTA button */}
-          <button className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 hover:bg-white hover:text-black transition-all duration-500 rounded-sm">
+          <Link 
+            to={`/offers/${offer.id}`}
+            className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 hover:bg-white hover:text-black transition-all duration-500 rounded-sm text-center block"
+          >
             Дізнатися більше
-          </button>
+          </Link>
         </div>
       </article>
     </div>

@@ -1,4 +1,24 @@
-export const offers = [
+export interface OfferSection {
+  type: 'text' | 'image' | 'list';
+  title?: string;
+  content: string | string[];
+  image?: string;
+}
+
+export interface Offer {
+  id: number;
+  location: string;
+  hotel: string;
+  image: string;
+  bookBy: string;
+  stayFrom: string;
+  stayTo: string;
+  discount: string;
+  description?: string;
+  sections?: OfferSection[];
+}
+
+export const offers: Offer[] = [
   {
     id: 1,
     location: 'Мальдіви',
@@ -8,6 +28,39 @@ export const offers = [
     stayFrom: '05/05',
     stayTo: '30/09',
     discount: '-60%',
+    description: 'Втеча до раю, де бірюзові води атолу Баа зустрічаються з легендарною тайською гостинністю. Dusit Thani Maldives поєднує в собі вишукану розкіш та незайману природу біосферного заповідника ЮНЕСКО.',
+    sections: [
+      {
+        type: 'text',
+        title: 'Острів Мудду: Серце океану',
+        content: 'Розташований на мальовничому острові Мудду, курорт пропонує унікальний досвід усамітнення. Тут кожен світанок дарує нові емоції, а вечори наповнені шепотом хвиль та ароматом тропічних квітів. Це ідеальне місце для тих, хто шукає гармонію з собою та природою.'
+      },
+      {
+        type: 'image',
+        image: 'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=1200&q=80',
+        content: 'Вид на безкрайній океан з вашої приватної тераси.'
+      },
+      {
+        type: 'list',
+        title: 'Що робить цей курорт особливим?',
+        content: [
+          'Домашній риф світового класу, де можна зустріти черепах та скатів прямо біля берега.',
+          'Devarana Spa — процедурні кабінети в кронах дерев з панорамним видом.',
+          'Автентичний тайський ресторан Benjarong, що вважається одним з кращих на Мальдівах.',
+          'Персональний батлер, який подбає про кожну деталь вашого відпочинку.'
+        ]
+      },
+      {
+        type: 'text',
+        title: 'Смак екзотики',
+        content: 'У ресторані Sea Grill ви зможете насолодитися свіжовиловленими морепродуктами та стейками на фоні заходу сонця. А для особливих моментів ми організовуємо приватні вечері на пляжі під зоряним небом.'
+      },
+      {
+        type: 'image',
+        image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=80',
+        content: 'Романтична атмосфера вечірнього пляжу.'
+      }
+    ]
   },
   {
     id: 2,
