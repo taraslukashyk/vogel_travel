@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
-import BookingModal from './BookingModal';
+import ContactModal from './ContactModal';
 import SearchPortal from './SearchPortal';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -118,16 +118,24 @@ const Header = () => {
                 />
               </form>
 
-              {/* Action Button: "Тарифи" */}
+              {/* Action Button: "Зв'язок" */}
               <button
-                onClick={() => setIsBookingModalOpen(!isBookingModalOpen)}
+                onClick={() => setIsContactModalOpen(!isContactModalOpen)}
                 className="hidden sm:flex items-center justify-center border border-white/20 rounded-sm py-3 px-8 bg-white/5 hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md shadow-lg cursor-pointer group text-xs lg:text-sm font-bold uppercase tracking-widest min-w-[160px]"
               >
-                {isBookingModalOpen ? (
+                {isContactModalOpen ? (
                   <X className="w-5 h-5 group-hover:text-black transition-colors" strokeWidth={1.5} />
                 ) : (
-                  <span>ТАРИФИ</span>
+                  <span>ЗВ'ЯЗОК</span>
                 )}
+              </button>
+
+              {/* Mobile Contact Button (Visible only on mobile, with icon) */}
+              <button
+                onClick={() => setIsContactModalOpen(true)}
+                className="flex sm:hidden items-center justify-center w-10 h-10 border border-white/20 rounded-full bg-white/5 hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md"
+              >
+                <MessageCircle className="w-5 h-5" strokeWidth={1.5} />
               </button>
 
               {/* Mobile Hamburger Trigger */}
@@ -171,12 +179,12 @@ const Header = () => {
             
             <button
               onClick={() => {
-                setIsBookingModalOpen(true);
+                setIsContactModalOpen(true);
                 setIsMobileMenuOpen(false);
               }}
               className="sm:hidden border border-white/20 py-4 px-6 text-center text-sm tracking-[0.2em] hover:bg-white hover:text-black transition-colors"
             >
-              ПЕРЕВІРИТИ ТАРИФИ
+              ЗВ'ЯЖІТЬСЯ З НАМИ
             </button>
 
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/10">
@@ -203,10 +211,10 @@ const Header = () => {
         )}
       </header>
 
-      {/* Booking Modal */}
-      <BookingModal 
-        isOpen={isBookingModalOpen} 
-        onClose={() => setIsBookingModalOpen(false)} 
+      {/* Contact Modal */}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
       />
       {/* Search Results Portal */}
       <SearchPortal 
