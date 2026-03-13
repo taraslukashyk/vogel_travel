@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
 const Partners = () => {
   const [isPaused, setIsPaused] = useState(false);
@@ -16,9 +18,12 @@ const Partners = () => {
   return (
     <section className="w-full py-20 bg-transparent border-t border-white/5 overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 mb-12 flex flex-col items-center text-center">
-        <h3 className="text-white/30 font-montserrat uppercase tracking-[0.3em] text-sm md:text-base font-black italic shadow-sm">
-          Наші партнери
-        </h3>
+        <Link to="/partners" className="group flex items-center gap-3 text-white/40 hover:text-[#5cc8bd] transition-colors cursor-pointer">
+          <h3 className="font-montserrat uppercase tracking-[0.2em] text-sm md:text-base font-black italic drop-shadow-sm transition-colors cursor-pointer">
+            Наші партнери на карті світу
+          </h3>
+          <ArrowRight className="w-4 h-4 md:w-5 md:h-5 transform group-hover:translate-x-3 transition-transform duration-300" strokeWidth={3} />
+        </Link>
         <div className="w-8 h-[1px] bg-white/10 mt-4"></div>
       </div>
 

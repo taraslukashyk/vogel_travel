@@ -72,21 +72,21 @@ const PartnershipPage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Features of Partnership */}
-            <div className="bg-white/5 border border-white/10 p-8 rounded-xl backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
+            <div className="bg-white/5 border border-white/10 p-8 rounded-none backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
               <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ЕКСКЛЮЗИВНІ УМОВИ</h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
                 Доступ до закритих баз даних та найкращі фінансові умови співпраці на спеціальному порталі.
               </p>
             </div>
             
-            <div className="bg-white/5 border border-white/10 p-8 rounded-xl backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
+            <div className="bg-white/5 border border-white/10 p-8 rounded-none backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
               <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ПЕРСОНАЛЬНИЙ МЕНЕДЖЕР</h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
                 Кожен партнер отримує виділеного експерта для розв'язання будь-яких запитів 24/7.
               </p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 p-8 rounded-xl backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
+            <div className="bg-white/5 border border-white/10 p-8 rounded-none backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
               <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ГЛОБАЛЬНЕ ПОКРИТТЯ</h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
                 Працюйте з нами для охоплення найпреміальніших локацій та сервісів у всьому світі.

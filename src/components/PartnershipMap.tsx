@@ -36,7 +36,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // Premium dark style
       center: [0, 20], // Center of the world roughly
-      zoom: 1.5,
+      zoom: window.innerWidth < 768 ? 0.0 : 1.5,
       pitch: 0,
       interactive: false, // Start completely locked
       attributionControl: false,
@@ -114,8 +114,9 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
           
           // Animate Pitch: 0 to 60
           const pitch = progress * 60;
-          // Animate Zoom: Start 1.5, go to 5.5
-          const zoom = 1.5 + progress * 4.0;
+          // Animate Zoom: Start from calculated initial zoom, go to 5.5
+          const initialZoom = window.innerWidth < 768 ? 0.0 : 1.5;
+          const zoom = initialZoom + progress * (5.5 - initialZoom);
           
           // Interpolate Center to the targeted area
           const target = targetRef.current;
