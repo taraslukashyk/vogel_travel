@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import logo from '../assets/logo.svg';
 import BirdCursorEffect from './BirdCursorEffect';
+import OrderTourModal from './OrderTourModal';
 
 const Hero = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
+    <>
+      <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
       <BirdCursorEffect />
       {/* Background Video */}
       <video
@@ -40,7 +45,10 @@ const Hero = () => {
             </span>
           </h1>
 
-          <button className="bg-white text-black font-montserrat uppercase tracking-[0.2em] font-bold py-4 px-10 hover:bg-white/90 active:scale-95 transition-all duration-300 rounded-[2px] shadow-lg w-full sm:w-auto text-sm">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-white text-black font-montserrat uppercase tracking-[0.2em] font-bold py-4 px-10 hover:bg-white/90 active:scale-95 transition-all duration-300 rounded-[2px] shadow-lg w-full sm:w-auto text-sm"
+          >
             Замовити Тур
           </button>
         </div>
@@ -51,7 +59,9 @@ const Hero = () => {
         </div>
 
       </div>
-    </section>
+      </section>
+      <OrderTourModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 
