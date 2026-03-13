@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare } from 'lucide-react';
+import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { offers } from '../data/offers';
 
 const OfferDetailPage = () => {
@@ -14,6 +14,9 @@ const OfferDetailPage = () => {
     window.scrollTo(0, 0);
   }, [location]);
 
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState('');
+
   if (!offer) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -26,6 +29,17 @@ const OfferDetailPage = () => {
       </div>
     );
   }
+
+  const openLightbox = (url: string) => {
+    setLightboxImg(url);
+    setIsLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+    document.body.style.overflow = 'unset';
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -57,13 +71,19 @@ const OfferDetailPage = () => {
       <section className="relative h-screen flex flex-col lg:flex-row overflow-hidden bg-zinc-950">
         
         {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
-        <div className="w-full lg:w-[60%] relative z-20 h-[500px] lg:h-auto overflow-hidden">
+        <div 
+          className="w-full lg:w-[60%] relative z-20 h-[500px] lg:h-auto overflow-hidden cursor-zoom-in group"
+          onClick={() => openLightbox(offer.image)}
+        >
           <img
             src={offer.image}
             alt={offer.hotel}
-            className="w-full h-full object-cover saturate-[1.15] transition-transform duration-1000"
+            className="w-full h-full object-cover saturate-[1.15] transition-transform duration-1000 group-hover:scale-105"
           />
           <div className="absolute inset-y-0 right-0 w-px bg-white/10 hidden lg:block" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.3em] font-montserrat">Натисніть для перегляду</span>
+          </div>
         </div>
 
         {/* Right Side: Frosted Content Area (2/5) */}
@@ -189,8 +209,18 @@ const OfferDetailPage = () => {
 
       {/* ── Images Carousel Section ── */}
       {imageSections.length > 0 && (
-        <section className="relative py-32 bg-zinc-950 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 mb-16 flex items-end justify-between">
+        <section className="relative py-20 overflow-hidden bg-zinc-950">
+          {/* Background Blurred Effect (Matching Header Matte Field) */}
+          <div className="absolute inset-0 z-0 opacity-60">
+            <img 
+              src={offer.image} 
+              className="w-full h-full object-cover opacity-20 saturate-[1.2] blur-[20px] scale-110" 
+              alt="" 
+            />
+            <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[20px]" />
+          </div>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mb-10 flex items-end justify-between">
             <h2 className="font-serif italic text-4xl md:text-5xl text-white">
               Галерея <br />
               <span className="text-white/30 not-italic font-montserrat uppercase text-sm font-black tracking-[0.4em]">Resort View</span>
@@ -217,16 +247,17 @@ const OfferDetailPage = () => {
               {imageSections.map((section, idx) => (
                 <div
                   key={idx}
-                  className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] ${idx === currentImg ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}
+                  className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-zoom-in group ${idx === currentImg ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}
+                  onClick={() => openLightbox(section.image || '')}
                 >
                   <img
                     src={section.image}
                     alt={section.content as string}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-10 left-10 max-w-2xl">
-                    <p className="text-white/40 font-montserrat text-[10px] font-black uppercase tracking-[0.3em] mb-4">Деталі курорту</p>
+                    <p className="text-white/40 font-montserrat text-[10px] font-black uppercase tracking-[0.3em] mb-4">Деталі курорту — Натисніть для перегляду</p>
                     <p className="text-white text-2xl font-serif italic leading-relaxed">
                       {section.content as string}
                     </p>
@@ -249,6 +280,27 @@ const OfferDetailPage = () => {
         </section>
       )}
 
+      {/* Fullscreen Lightbox Modal */}
+      {isLightboxOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300"
+          onClick={closeLightbox}
+        >
+          <button 
+            className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
+            onClick={closeLightbox}
+          >
+            <X className="w-10 h-10" />
+          </button>
+          <img 
+            src={lightboxImg} 
+            className="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500"
+            alt="Fullscreen view"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
       {/* Fallback for offers without content */}
       {!offer.sections && (
         <section className="py-32 px-6 bg-zinc-200/50">
@@ -268,5 +320,8 @@ const OfferDetailPage = () => {
     </main>
   );
 };
+
+// ... X icon used in lightbox should be imported from lucide-react if not already ...
+
 
 export default OfferDetailPage;
