@@ -53,72 +53,75 @@ const OfferDetailPage = () => {
   return (
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
 
-      {/* ── Top Section: Offer Card Style Header ── */}
-      <section className="relative pt-32 pb-20 px-6 md:px-12 overflow-hidden min-h-[650px] flex items-center">
-        <div className="absolute inset-0 z-0">
+      {/* ── Top Section: Split-Screen Header (Image 3/5, Content 2/5) ── */}
+      <section className="relative min-h-[750px] flex flex-col lg:flex-row overflow-hidden bg-zinc-950">
+        
+        {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
+        <div className="w-full lg:w-[60%] relative z-20 h-[500px] lg:h-auto overflow-hidden">
           <img
             src={offer.image}
-            className="w-full h-full object-cover opacity-60 scale-105 blur-[8px]"
-            alt=""
+            alt={offer.hotel}
+            className="w-full h-full object-cover saturate-[1.15] transition-transform duration-1000"
           />
-          <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[6px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-px bg-white/10 hidden lg:block" />
         </div>
 
-        <div className="max-w-7xl mx-auto relative z-10 w-full">
-          <Link
-            to="/offers"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-12 group font-montserrat"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            Всі пропозиції
-          </Link>
+        {/* Right Side: Frosted Content Area (2/5) */}
+        <div className="w-full lg:w-[40%] relative z-10 flex flex-col justify-center">
+          {/* Background Blurred Effect (Lightened "Matte Field") */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src={offer.image} 
+              className="w-full h-full object-cover opacity-40 saturate-[1.3] blur-[12px] scale-110" 
+              alt="" 
+            />
+            <div className="absolute inset-0 bg-zinc-950/50 backdrop-blur-[12px]" />
+            <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/30 via-transparent to-transparent" />
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left side: Hero Image Card */}
-            <div className="relative group rounded-sm overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.6)] aspect-[4/3] lg:aspect-square lg:max-h-[550px]">
-              <img
-                src={offer.image}
-                alt={offer.hotel}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
+          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-20 lg:py-24 w-full">
+            {/* Back button */}
+            <Link
+              to="/offers"
+              className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"
+            >
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              Всі пропозиції
+            </Link>
 
-            </div>
-
-            {/* Right side: Offer Information */}
             <div className="flex flex-col text-white">
               <div className="flex items-center gap-3 text-[#5cc8bd] text-[13px] font-black uppercase tracking-[0.4em] mb-6 font-montserrat">
                 <Tag className="w-4 h-4" />
                 <span>{offer.location}</span>
               </div>
 
-              <h1 className="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] mb-8 text-white drop-shadow-sm">
+              <h1 className="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] mb-10 text-white drop-shadow-sm">
                 {offer.hotel}
               </h1>
 
-              <p className="text-white/80 text-xl leading-relaxed mb-12 font-inter font-light max-w-xl border-l-2 border-[#5cc8bd]/40 pl-8">
+              <p className="text-white/80 text-lg leading-relaxed mb-12 font-inter font-light border-l-2 border-[#5cc8bd]/40 pl-8">
                 {offer.description}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 font-montserrat">
-                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-6 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20 shadow-[0_0_20px_rgba(92,200,189,0.1)]">
-                    <CalendarClock className="w-5 h-5" strokeWidth={2} />
+              {/* Data Grid with Accents */}
+              <div className="grid grid-cols-1 gap-4 mb-10 font-montserrat">
+                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-5 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
+                    <CalendarClock className="w-4 h-4" strokeWidth={2.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-1">Бронюй до</span>
-                    <span className="text-lg font-bold tracking-wide">{offer.bookBy}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">Бронюй до</span>
+                    <span className="text-base font-bold tracking-wide">{offer.bookBy}</span>
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-6 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20 shadow-[0_0_20px_rgba(92,200,189,0.1)]">
-                    <CalendarDays className="w-5 h-5" strokeWidth={2} />
+                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-5 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
+                    <CalendarDays className="w-4 h-4" strokeWidth={2.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-1">Проживання</span>
-                    <span className="text-lg font-bold tracking-wide whitespace-nowrap">{offer.stayFrom} — {offer.stayTo}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">Проживання</span>
+                    <span className="text-base font-bold tracking-wide whitespace-nowrap">{offer.stayFrom} — {offer.stayTo}</span>
                   </div>
                 </div>
               </div>
@@ -134,14 +137,15 @@ const OfferDetailPage = () => {
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-5 font-montserrat">
-                <button className="flex-1 md:flex-none py-5 px-10 bg-white text-black font-black uppercase tracking-[0.2em] text-xs hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-3">
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 font-montserrat">
+                <button className="flex-1 py-5 px-8 bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-3">
                   <MessageSquare className="w-4 h-4" strokeWidth={2.5} />
                   Замовити у менеджера
                 </button>
-                <button
+                <button 
                   onClick={handleShare}
-                  className="w-16 h-16 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
+                  className="w-full sm:w-16 h-16 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
                 >
                   <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
                 </button>
