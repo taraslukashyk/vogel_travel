@@ -68,11 +68,11 @@ const OfferDetailPage = () => {
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
 
       {/* ── Top Section: Split-Screen Header (Image 3/5, Content 2/5) ── */}
-      <section className="relative h-screen flex flex-col lg:flex-row overflow-hidden bg-zinc-950">
-        
+      <section className="relative lg:h-screen flex flex-col lg:flex-row lg:overflow-hidden bg-zinc-950">
+
         {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
-        <div 
-          className="w-full lg:w-[60%] relative z-20 h-[500px] lg:h-auto overflow-hidden cursor-zoom-in group"
+        <div
+          className="w-full lg:w-[60%] relative z-20 h-48 lg:h-auto overflow-hidden cursor-zoom-in group"
           onClick={() => openLightbox(offer.image)}
         >
           <img
@@ -90,16 +90,16 @@ const OfferDetailPage = () => {
         <div className="w-full lg:w-[40%] relative z-10 flex flex-col justify-center">
           {/* Background Blurred Effect (Lightened "Matte Field") */}
           <div className="absolute inset-0 z-0">
-            <img 
-              src={offer.image} 
-              className="w-full h-full object-cover opacity-40 saturate-[1.3] blur-[12px] scale-110" 
-              alt="" 
+            <img
+              src={offer.image}
+              className="w-full h-full object-cover opacity-40 saturate-[1.3] blur-[12px] scale-110"
+              alt=""
             />
             <div className="absolute inset-0 bg-zinc-950/50 backdrop-blur-[12px]" />
             <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/30 via-transparent to-transparent" />
           </div>
 
-          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-20 lg:py-24 w-full">
+          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
             {/* Back button */}
             <Link
               to="/offers"
@@ -119,7 +119,7 @@ const OfferDetailPage = () => {
                 {offer.hotel}
               </h1>
 
-              <p className="text-white/80 text-lg leading-relaxed mb-12 font-inter font-light border-l-2 border-[#5cc8bd]/40 pl-8">
+              <p className="hidden lg:block text-white/80 text-lg leading-relaxed mb-12 font-inter font-light border-l-2 border-[#5cc8bd]/40 pl-8">
                 {offer.description}
               </p>
 
@@ -158,14 +158,14 @@ const OfferDetailPage = () => {
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 font-montserrat">
-                <button className="flex-1 py-5 px-8 bg-white text-black font-black uppercase tracking-normal text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-3">
-                  <MessageSquare className="w-5 h-5" strokeWidth={2.5} />
-                  Замовити у менеджера
+              <div className="flex flex-row gap-3 font-montserrat">
+                <button className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3">
+                  <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
+                  <span>Замовити у менеджера</span>
                 </button>
-                <button 
+                <button
                   onClick={handleShare}
-                  className="w-full sm:w-16 h-16 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
+                  className="w-14 lg:w-16 h-14 lg:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
                 >
                   <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
                 </button>
@@ -212,10 +212,10 @@ const OfferDetailPage = () => {
         <section className="relative py-20 overflow-hidden bg-zinc-950">
           {/* Background Blurred Effect (Matching Header Matte Field) */}
           <div className="absolute inset-0 z-0 opacity-60">
-            <img 
-              src={offer.image} 
-              className="w-full h-full object-cover opacity-20 saturate-[1.2] blur-[20px] scale-110" 
-              alt="" 
+            <img
+              src={offer.image}
+              className="w-full h-full object-cover opacity-20 saturate-[1.2] blur-[20px] scale-110"
+              alt=""
             />
             <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[20px]" />
           </div>
@@ -282,18 +282,18 @@ const OfferDetailPage = () => {
 
       {/* Fullscreen Lightbox Modal */}
       {isLightboxOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300"
           onClick={closeLightbox}
         >
-          <button 
+          <button
             className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
             onClick={closeLightbox}
           >
             <X className="w-10 h-10" />
           </button>
-          <img 
-            src={lightboxImg} 
+          <img
+            src={lightboxImg}
             className="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500"
             alt="Fullscreen view"
             onClick={(e) => e.stopPropagation()}
