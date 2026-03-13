@@ -92,7 +92,7 @@ const Header = () => {
               <Link to="/about" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРО НАС</Link>
               <Link to="/offers" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
-              <a href="/#partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРСТВО</a>
+              <Link to="/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРСТВО</Link>
               <Link to="/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
               <a href="#footer" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</a>
             </nav>
@@ -170,7 +170,7 @@ const Header = () => {
               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
               <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
               <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
-              <a href="/#partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</a>
+              <Link to="/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
               <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
               <a href="#footer" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</a>
             </div>
