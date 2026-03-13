@@ -1,11 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import PartnershipMap from '../components/PartnershipMap';
 import FinalQuote from '../components/FinalQuote';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 
 const PartnershipPage = () => {
+  const [showBottom, setShowBottom] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleScrollDown = () => {
+    setShowBottom(true);
+    // Allow React to mount the DOM node, then refresh ScrollTrigger and scroll down
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
 
   return (
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
@@ -24,10 +37,14 @@ const PartnershipPage = () => {
 
       {/* ── 3D Scroll-driven Map Section ── */}
       <section className="relative w-full z-10 border-b border-white/5">
-        <PartnershipMap />
+        <PartnershipMap onNextDown={handleScrollDown} />
       </section>
 
       {/* ── More Content Below to enable scrolling past map ── */}
+      <div 
+        ref={bottomRef}
+        className={`transition-opacity duration-1000 ${showBottom ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden select-none pointer-events-none'}`}
+      >
       <section className="relative w-full py-24 bg-zinc-950/50">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="text-center mb-16">
@@ -73,6 +90,7 @@ const PartnershipPage = () => {
       </section>
 
       <FinalQuote />
+      </div>
     </div>
   );
 };

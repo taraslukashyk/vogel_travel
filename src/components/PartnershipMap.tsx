@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { ChevronDown } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import gsap from 'gsap';
@@ -17,11 +18,13 @@ const PARTNERS = [
   { id: 8, name: 'Stripe', lng: -6.2603, lat: 53.3498, tag: 'STR', color: '#635BFF' },
 ];
 
-const PartnershipMap = () => {
+const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const instructionRef = useRef<HTMLSpanElement>(null);
+  const arrowRef = useRef<HTMLButtonElement>(null);
+  const isInteractiveRef = useRef(false);
   const markersRef = useRef<{ id: number; el: HTMLElement; lngLat: [number, number] }[]>([]);
 
   useEffect(() => {
@@ -63,6 +66,8 @@ const PartnershipMap = () => {
 
     // Handle Proximity Effect
     const checkProximity = () => {
+      if (!isInteractiveRef.current) return;
+
       const center = map.getCenter();
       const centerPx = map.project(center);
       
@@ -104,9 +109,9 @@ const PartnershipMap = () => {
           // Animate Zoom: Start 1.5, go to 5.5
           const zoom = 1.5 + progress * 4.0;
           // Animate Center: slightly shift map center dynamically to make it look like a real "flyTo"
-          // Starts at [0, 20], moves to [15, 48]
-          const lng = 0 + progress * 15;
-          const lat = 20 + progress * 28;
+          // Starts at [0, 20], moves to Kyiv [30.5234, 50.4501]
+          const lng = 0 + progress * 30.5234;
+          const lat = 20 + progress * 30.4501;
 
           map.setPitch(pitch);
           map.setZoom(zoom);
@@ -114,6 +119,9 @@ const PartnershipMap = () => {
 
           // Enable map dragging only when at max scroll progress
           if (progress >= 0.99) {
+            isInteractiveRef.current = true;
+            if (mapContainer.current) mapContainer.current.style.pointerEvents = 'auto';
+
             map.dragPan.enable();
             map.scrollZoom.disable(); // Prevent wheel from zooming while on the map to allow page scroll down
             
@@ -123,7 +131,14 @@ const PartnershipMap = () => {
             if (instructionRef.current) {
               instructionRef.current.innerText = 'Перетягуйте карту до місця призначення';
             }
+            if (arrowRef.current) {
+              arrowRef.current.classList.remove('opacity-0', 'pointer-events-none', 'h-0', 'mt-0');
+              arrowRef.current.classList.add('opacity-100', 'pointer-events-auto', 'h-auto', 'mt-4');
+            }
           } else {
+            isInteractiveRef.current = false;
+            if (mapContainer.current) mapContainer.current.style.pointerEvents = 'none';
+
             map.dragPan.disable();
             
             // Remove active states while scrolling
@@ -131,6 +146,10 @@ const PartnershipMap = () => {
             
             if (instructionRef.current) {
               instructionRef.current.innerText = 'Скрольте щоб зануритись';
+            }
+            if (arrowRef.current) {
+              arrowRef.current.classList.add('opacity-0', 'pointer-events-none', 'h-0', 'mt-0');
+              arrowRef.current.classList.remove('opacity-100', 'pointer-events-auto', 'h-auto', 'mt-4');
             }
           }
         }
@@ -150,23 +169,21 @@ const PartnershipMap = () => {
       {/* Container for MapLibre */}
       <div 
         ref={mapContainer} 
-        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none" 
+        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none"
+        style={{ pointerEvents: 'none' }}
       />
       
-      {/* Interactive overlay instructions */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center mix-blend-difference">
-        <h2 className="text-white font-montserrat tracking-[0.3em] font-black text-2xl md:text-5xl uppercase opacity-80 select-none">
-          Глобальна присутність
-        </h2>
-        <p className="text-white/60 mt-4 text-sm uppercase tracking-widest hidden md:block">
-          Скрольте вниз для дослідження 
-        </p>
-      </div>
-
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-full shadow-2xl transition-opacity duration-500 map-instruction-pill">
-        <span ref={instructionRef} className="text-[#5cc8bd] text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
+        <span ref={instructionRef} className="text-[#5cc8bd] text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 pointer-events-none">
           Скрольте щоб зануритись
         </span>
+        <button 
+          ref={arrowRef}
+          onClick={onNextDown}
+          className="opacity-0 pointer-events-none h-0 mt-0 overflow-hidden transition-all duration-500 hover:text-white text-[#5cc8bd]"
+        >
+          <ChevronDown className="w-6 h-6 animate-bounce" />
+        </button>
       </div>
     </div>
   );
