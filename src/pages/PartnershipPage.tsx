@@ -9,7 +9,23 @@ const PartnershipPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    return () => {
+      const footer = document.querySelector('footer');
+      if (footer) footer.style.display = '';
+    };
   }, []);
+
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (footer) {
+      if (!showBottom) {
+        footer.style.display = 'none';
+      } else {
+        footer.style.display = '';
+      }
+      setTimeout(() => ScrollTrigger.refresh(), 50);
+    }
+  }, [showBottom]);
 
   const handleScrollDown = () => {
     setShowBottom(true);
