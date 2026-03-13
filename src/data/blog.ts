@@ -99,6 +99,7 @@ export const blogPosts: BlogPost[] = [
     date: '10.03.2026',
     image: 'https://images.unsplash.com/photo-1468581264429-2548ef9eb732?auto=format&fit=crop&w=1200&q=80',
     category: 'Домінікана',
+    audio: '/audio/dominicana_review.wav',
     sections: [
       {
         type: 'text',
@@ -170,6 +171,7 @@ export const blogPosts: BlogPost[] = [
     date: '08.03.2026',
     image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80',
     category: 'Маврикій',
+    audio: '/audio/mauritius_review.wav',
     sections: [
       {
         type: 'text',
@@ -225,6 +227,7 @@ export const blogPosts: BlogPost[] = [
     date: '05.03.2026',
     image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
     category: 'Мексика',
+    audio: '/audio/mexico_review.wav',
     sections: [
       {
         type: 'text',
@@ -279,6 +282,7 @@ export const blogPosts: BlogPost[] = [
     date: '03.03.2026',
     image: 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=1200&q=80',
     category: 'Куба',
+    audio: '/audio/cuba_review.wav',
     sections: [
       {
         type: 'text',
