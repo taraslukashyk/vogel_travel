@@ -1,66 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import PartnershipMap from '../components/PartnershipMap';
 import FinalQuote from '../components/FinalQuote';
-import ScrollTrigger from 'gsap/ScrollTrigger';
 
 const PartnershipPage = () => {
-  const [showBottom, setShowBottom] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     window.scrollTo(0, 0);
-    return () => {
-      const footer = document.querySelector('footer');
-      if (footer) footer.style.display = '';
-    };
   }, []);
-
-  useEffect(() => {
-    const footer = document.querySelector('footer');
-    if (footer) {
-      if (!showBottom) {
-        footer.style.display = 'none';
-      } else {
-        footer.style.display = '';
-      }
-      setTimeout(() => ScrollTrigger.refresh(), 50);
-    }
-  }, [showBottom]);
-
-  const handleScrollDown = () => {
-    setShowBottom(true);
-    // Allow React to mount the DOM node, then refresh ScrollTrigger and scroll down
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
 
   return (
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
-      {/* ── Text Banner (Hero Section) ── */}
-      <section className="relative z-20 w-full py-16 md:py-24 border-b border-white/10 bg-gradient-to-b from-zinc-950/90 to-black overflow-hidden relative">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 text-center flex flex-col items-center">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-montserrat font-black uppercase tracking-[0.3em] mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-white/40 drop-shadow-sm">
-            ПАРТНЕРСТВО
-          </h1>
-          <p className="font-inter text-white/80 text-[16px] md:text-[18px] max-w-[800px] leading-relaxed font-light tracking-wide">
-            Наша глобальна мережа партнерів охоплює найкращі агенції, готелі та сервіси по всьому світу.  
-            Ми пишаємось співпрацею з лідерами індустрії туризму та консьєрж-послуг.
-          </p>
-        </div>
-      </section>
-
       {/* ── 3D Scroll-driven Map Section ── */}
       <section className="relative w-full z-10 border-b border-white/5">
-        <PartnershipMap onNextDown={handleScrollDown} />
+        <PartnershipMap />
       </section>
 
       {/* ── More Content Below to enable scrolling past map ── */}
-      <div 
-        ref={bottomRef}
-        className={`transition-opacity duration-1000 ${showBottom ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden select-none pointer-events-none'}`}
-      >
       <section className="relative w-full py-24 bg-zinc-950/50">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="text-center mb-16">
@@ -106,7 +60,6 @@ const PartnershipPage = () => {
       </section>
 
       <FinalQuote />
-      </div>
     </div>
   );
 };
