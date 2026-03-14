@@ -22,6 +22,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   const arrowRef = useRef<HTMLButtonElement>(null);
   const markersRef = useRef<{ id: number; el: HTMLElement; lngLat: [number, number] }[]>([]);
   const zoomTaskRef = useRef<number | null>(null);
+  const isInteractingRef = useRef(false);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -106,19 +107,29 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
         newPitch = progress * 60;
       }
       
-      // Update pitch only if significantly different and NOT during a native pinch to avoid stutter
-      // MapLibre is better at handling pitch if we don't fight its internal render loop
       const currentPitch = map.getPitch();
-      if (Math.abs(currentPitch - newPitch) > 1.0) {
-        // Use a low-impact update
-        map.setPitch(newPitch);
+      
+      // CRITICAL FIX: To avoid stuttering/jerking during active touch gestures (Google Maps feel),
+      // we only update pitch automatically if the user is NOT actively manipulating the map.
+      // We will 'catch up' the pitch on 'moveend' once the interaction is complete.
+      if (!isInteractingRef.current) {
+        if (Math.abs(currentPitch - newPitch) > 0.5) {
+          map.setPitch(newPitch);
+        }
       }
     };
 
-    map.on('zoom', handleMapTransform);
-    map.on('move', handleMapTransform);
-    map.on('rotate', handleMapTransform);
+    map.on('zoom', () => handleMapTransform());
+    map.on('move', () => handleMapTransform());
+    map.on('rotate', () => handleMapTransform());
+    map.on('moveend', () => handleMapTransform()); // Final correction after gesture
     map.on('pitch', () => checkProximity());
+
+    // Track active interactions to help handleMapTransform
+    map.on('touchstart', () => { isInteractingRef.current = true; });
+    map.on('touchend', () => { isInteractingRef.current = false; });
+    map.on('mousedown', () => { isInteractingRef.current = true; });
+    map.on('mouseup', () => { isInteractingRef.current = false; });
 
     // Handle custom scroll zooming when Ctrl is pressed
     const handleWheel = (e: WheelEvent) => {
@@ -215,7 +226,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
       
       <div 
         ref={mapContainer} 
-        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none touch-none"
+        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none"
       />
       
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
