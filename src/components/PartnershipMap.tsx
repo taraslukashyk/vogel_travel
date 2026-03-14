@@ -20,7 +20,6 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const instructionRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<HTMLButtonElement>(null);
-  const isInteractiveRef = useRef(false);
   const markersRef = useRef<{ id: number; el: HTMLElement; lngLat: [number, number] }[]>([]);
   const zoomTaskRef = useRef<number | null>(null);
 
@@ -68,23 +67,20 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
 
     // Handle Proximity Effect
     const checkProximity = () => {
-      if (!isInteractiveRef.current) return;
-
       const currentZoom = map.getZoom();
       const center = map.getCenter();
       const centerPx = map.project(center);
       
-      // Dynamic radius: starts small when zoomed out, grows as we zoom in
-      // This makes markers 'open' more easily as you descend
-      const baseRadius = window.innerWidth < 768 ? 80 : 120;
-      const zoomFactor = Math.max(1, currentZoom - 1);
-      const activeRadius = baseRadius * zoomFactor;
+      // Strict threshold: at zoom >= 4.0, open all visible cards.
+      // Below that, collapse them entirely to dots.
+      const revealAllZoom = 4.0;
+      const activeRadius = currentZoom >= revealAllZoom ? 5000 : -1;
 
       markersRef.current.forEach(m => {
         const markerPx = map.project(m.lngLat);
         const dist = Math.sqrt(Math.pow(markerPx.x - centerPx.x, 2) + Math.pow(markerPx.y - centerPx.y, 2));
 
-        if (dist < activeRadius) {
+        if (dist <= activeRadius) {
           m.el.classList.add('is-active');
         } else {
           m.el.classList.remove('is-active');
@@ -93,20 +89,20 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
     };
 
     map.on('move', checkProximity);
-    map.on('zoom', checkProximity);
 
-    // Dynamically adjust pitch based on zoom level (supports mobile pinch-to-zoom and ctrl-scroll)
+    // Consolidated zoom listener for proximity, pitch, and cards
     map.on('zoom', () => {
+      checkProximity();
+
       const currentZoom = map.getZoom();
       let newPitch = 0;
-      const startPitchZoom = window.innerWidth < 768 ? 0.0 : 1.5; // Start pitching immediately from base zoom
+      const startPitchZoom = window.innerWidth < 768 ? 0.0 : 1.5;
 
       if (currentZoom > startPitchZoom) {
         const progress = Math.min((currentZoom - startPitchZoom) / 3.0, 1);
         newPitch = progress * 60;
       }
       
-      // Prevent infinite loops and only update if changed significantly
       if (Math.abs(map.getPitch() - newPitch) > 0.1) {
         map.jumpTo({ pitch: newPitch });
       }
