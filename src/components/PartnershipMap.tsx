@@ -26,15 +26,19 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   useEffect(() => {
     if (!mapContainer.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     // Initialize MapLibre
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: [0, 20], // Center of the world roughly
-      zoom: window.innerWidth < 768 ? 0.0 : 1.5,
+      zoom: isMobile ? 0.0 : 1.5,
       pitch: 0,
+      maxPitch: 60,
       interactive: true,
-      cooperativeGestures: true,
+      // We'll disable cooperativeGestures to allow fluid one-finger pan and two-finger pinch zoom
+      cooperativeGestures: false,
       touchZoomRotate: true,
       attributionControl: false,
     });
@@ -88,25 +92,33 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
       });
     };
 
-    map.on('move', checkProximity);
-
-    // Consolidated zoom listener for proximity, pitch, and cards
-    map.on('zoom', () => {
+    // Consolidated listener for proximity, pitch, and cards
+    const handleMapTransform = () => {
       checkProximity();
 
       const currentZoom = map.getZoom();
       let newPitch = 0;
-      const startPitchZoom = window.innerWidth < 768 ? 0.0 : 1.5;
+      const startPitchZoom = isMobile ? 0.0 : 1.5;
 
       if (currentZoom > startPitchZoom) {
-        const progress = Math.min((currentZoom - startPitchZoom) / 3.0, 1);
+        // Map zoom level [0-15] to pitch [0-60]
+        const progress = Math.min((currentZoom - startPitchZoom) / 4.0, 1);
         newPitch = progress * 60;
       }
       
-      if (Math.abs(map.getPitch() - newPitch) > 0.1) {
-        map.jumpTo({ pitch: newPitch });
+      // Update pitch only if significantly different and NOT during a native pinch to avoid stutter
+      // MapLibre is better at handling pitch if we don't fight its internal render loop
+      const currentPitch = map.getPitch();
+      if (Math.abs(currentPitch - newPitch) > 1.0) {
+        // Use a low-impact update
+        map.setPitch(newPitch);
       }
-    });
+    };
+
+    map.on('zoom', handleMapTransform);
+    map.on('move', handleMapTransform);
+    map.on('rotate', handleMapTransform);
+    map.on('pitch', () => checkProximity());
 
     // Handle custom scroll zooming when Ctrl is pressed
     const handleWheel = (e: WheelEvent) => {
@@ -135,7 +147,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
         map.setZoom(newZoom);
       } else {
         // Show hint if they try to scroll without ctrl inside the map area
-        if (instructionRef.current) {
+        if (instructionRef.current && !isMobile) {
           instructionRef.current.innerText = 'Використовуйте Ctrl + Scroll для наближення';
           instructionRef.current.classList.remove('opacity-0');
           instructionRef.current.classList.add('animate-pulse');
@@ -201,10 +213,9 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
     <div ref={wrapperRef} className="map-section-wrapper relative w-full h-[60vh] md:h-screen bg-black">
       <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
       
-      {/* Container for MapLibre */}
       <div 
         ref={mapContainer} 
-        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none"
+        className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none touch-none"
       />
       
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
