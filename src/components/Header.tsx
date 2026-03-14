@@ -94,7 +94,7 @@ const Header = () => {
               <Link to="/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
               <Link to="/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРСТВО</Link>
               <Link to="/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
-              <a href="#footer" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</a>
+              <Link to="/contacts" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</Link>
             </nav>
 
             <div className="flex-grow hidden xl:block"></div>
@@ -172,7 +172,7 @@ const Header = () => {
               <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
               <Link to="/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
               <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
-              <a href="#footer" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</a>
+              <Link to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
             
             <div className="h-px bg-white/10 w-full my-2"></div>

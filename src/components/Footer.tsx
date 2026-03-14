@@ -95,7 +95,7 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <Link to="/about" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРО НАС</Link>
               <Link to="/blog" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">БЛОГ</Link>
-              <a href="#footer" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</a>
+              <Link to="/contacts" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">КОНТАКТИ</Link>
             </div>
           </div>
 
