@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# 🕊️ Vogel Travel — Premium Travel Concierge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-Currently, two official plugins are available:
+Vogel Travel — це сучасна веб-платформа для преміального туристичного консьєрж-сервісу. Проєкт поєднує вишуканий дизайн, високу продуктивність та інтерактивні елементи для створення найкращого клієнтського досвіду.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Основні особливості
 
-## React Compiler
+- **High Performance**: Lazy loading секцій через `React.lazy` + `Suspense`.
+- **Image Optimization**: Використання WebP, `loading="lazy"` та адаптивних розмірів (`srcset`).
+- **Code Splitting**: Оптимізована збірка через `manualChunks` у Rollup.
+- **Smart Caching**: Інтеграція `TanStack Query` (React Query) для ефективного управління станом та кешування.
+- **Modern E2E Testing**: Повна міграція з Python на Playwright (TypeScript) для надійного тестування.
+- **Unit Testing**: Компонентне тестування через `Vitest` та `Testing Library`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Технологічний стек
 
-## Expanding the ESLint configuration
+- **Frontend**: React 19, TypeScript, TailwindCSS
+- **Animations**: GSAP, Framer Motion
+- **Maps**: MapLibre GL
+- **State/API**: TanStack Query
+- **Testing**: Playwright (E2E), Vitest (Unit)
+- **Build Tool**: Vite
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Встановлення та запуск
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Клонуйте репозиторій:
+   ```bash
+   git clone https://github.com/taraslukashyk/vogel_travel.git
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2. Встановіть залежності:
+   ```bash
+   npm install
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3. Запустіть сервер для розробки:
+   ```bash
+   npm run dev
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+4. Збірка проєкту:
+   ```bash
+   npm run build
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧪 Тестування
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Unit тести**: `npm run test`
+- **E2E тести**: `npm run test:e2e`
+- **UI режим тестів**: `npm run test:ui`
+
+## 📈 Оптимізація
+
+Ми використовуємо автоматичне розбиття коду на чанки:
+- `vendor-react`: Ядро React
+- `vendor-map`: Картографічні сервіси
+- `vendor-icons`: Набір іконок Lucide
+- `vendor-animation`: GSAP та інші анімації
+
+## 📱 Скріншоти
+
+*(Тут можна додати скріншоти вашого проєкту)*
+
+![Hero Section](https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=1200)
+
+## 📄 Ліцензія
+
+Proprietary © 2026 Vogel Family Travel.

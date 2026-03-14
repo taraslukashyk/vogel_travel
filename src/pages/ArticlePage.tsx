@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Share2 } from 'lucide-react';
 import { blogPosts } from '../data/blog';
+import OptimizedImage from '../components/OptimizedImage';
 
 const ArticlePage = () => {
   const { id } = useParams();
@@ -65,10 +66,12 @@ const ArticlePage = () => {
       {/* ── Article Hero (Dark Theme Overlay for Title) ── */}
       <section className="relative w-full h-[65vh] min-h-[500px] flex items-end">
         <div className="absolute inset-0 overflow-hidden">
-          <img
+          <OptimizedImage
             src={post.image}
             alt={post.title}
             className="w-full h-full object-cover"
+            sizes="100vw"
+            loading="eager"
           />
           {/* Subtle overlay for better title legibility if needed, but keeping it light and premium */}
           <div className="absolute inset-0 bg-black/30" />
@@ -200,10 +203,11 @@ const ArticlePage = () => {
               if (section.type === 'image') {
                 return (
                   <figure key={idx} className="my-16">
-                    <img
-                      src={section.image}
+                    <OptimizedImage
+                      src={section.image || ''}
                       alt={section.title || 'Article image'}
                       className="w-full h-auto rounded-sm shadow-xl"
+                      sizes="(max-width: 1024px) 100vw, 1024px"
                     />
                     {section.content && (
                       <figcaption className="mt-4 text-center text-sm text-gray-400 italic">

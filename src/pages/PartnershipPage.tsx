@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
-import PartnershipMap from '../components/PartnershipMap';
+import { useEffect, lazy, Suspense } from 'react';
 import FinalQuote from '../components/FinalQuote';
+
+const PartnershipMap = lazy(() => import('../components/PartnershipMap'));
 
 const PartnershipPage = () => {
   useEffect(() => {
@@ -11,7 +12,9 @@ const PartnershipPage = () => {
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
       {/* ── 3D Scroll-driven Map Section ── */}
       <section className="relative w-full z-10 border-b border-white/5">
-        <PartnershipMap />
+        <Suspense fallback={<div className="h-[600px] flex items-center justify-center bg-zinc-950">Завантаження мапи...</div>}>
+          <PartnershipMap />
+        </Suspense>
       </section>
 
       {/* ── More Content Below to enable scrolling past map ── */}

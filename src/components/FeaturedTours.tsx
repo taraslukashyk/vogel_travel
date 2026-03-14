@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { offers } from '../data/offers';
+import OptimizedImage from './OptimizedImage';
 
 // Use first 4 offers from the shared data source (same as /offers page)
 const TOURS = offers.slice(0, 4);
@@ -60,10 +61,15 @@ const FeaturedTours = () => {
                   }`}
               >
                 {/* Background Image */}
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
-                  style={{ backgroundImage: `url(${tour.image})`, transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
-                />
+                <div className="absolute inset-0 overflow-hidden">
+                  <OptimizedImage
+                    src={tour.image}
+                    alt={tour.hotel}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
+                    style={{ transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
+                    sizes={isActive ? "100vw" : "25vw"}
+                  />
+                </div>
 
                 {/* Overlay gradient */}
                 <div
