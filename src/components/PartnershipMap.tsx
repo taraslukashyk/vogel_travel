@@ -254,7 +254,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
         <button
           onClick={() => {
             if (mapRef.current) {
-              mapRef.current.easeTo({ bearing: 0, pitch: 0, duration: 1000 });
+              mapRef.current.easeTo({ bearing: 0, pitch: 0, duration: 500 });
             }
           }}
           className="w-10 h-10 md:w-12 md:h-12 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/70 hover:text-[#5cc8bd] hover:border-[#5cc8bd]/50 hover:bg-black/80 transition-all duration-300 shadow-xl active:scale-95 touch-none group"
