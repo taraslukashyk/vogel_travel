@@ -50,7 +50,12 @@ const Footer = () => {
 
             <div className="flex flex-col sm:flex-row gap-8 items-start mb-8">
               {/* QR Code Placeholder */}
-              <div className="w-40 h-40 bg-white p-2 rounded-sm shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500">
+              <a 
+                href="https://t.me/Taras_luka" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-40 h-40 bg-white p-2 rounded-sm shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500"
+              >
                 {/* This represents a QR code */}
                 <div className="w-full h-full border-2 border-black border-dashed flex items-center justify-center opacity-80">
                   <div className="grid grid-cols-3 gap-1">
@@ -59,7 +64,7 @@ const Footer = () => {
                     ))}
                   </div>
                 </div>
-              </div>
+              </a>
 
               <div className="flex flex-col justify-center py-2 text-left">
                 <p className="font-inter text-white/50 text-sm leading-relaxed mb-4">
@@ -124,8 +129,8 @@ const Footer = () => {
             <div className="flex items-center gap-6">
               <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Instagram className="w-5 h-5" /></a>
               <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
-              <a href="#" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
+              <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
             </div>
           </div>
         </div>

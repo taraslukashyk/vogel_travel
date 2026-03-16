@@ -46,7 +46,7 @@ const ContactsPage = () => {
       const map = new maplibregl.Map({
         container: mapContainer.current,
         style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-        center: [30.5234, 50.4501], // Kyiv BC Gulliver
+        center: [30.5233, 50.4382], // Kyiv, Sportyvna Sq, 1A
         zoom: 15,
         attributionControl: false,
       });
@@ -56,7 +56,7 @@ const ContactsPage = () => {
       markerEl.className = 'w-5 h-5 bg-[#5cc8bd] rounded-full border-2 border-white shadow-lg animate-pulse';
 
       new maplibregl.Marker({ element: markerEl })
-        .setLngLat([30.5234, 50.4501])
+        .setLngLat([30.5233, 50.4382])
         .addTo(map);
 
       mapRef.current = map;
@@ -448,11 +448,11 @@ const ContactsPage = () => {
                       <Facebook className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Facebook</span>
                     </a>
-                    <a href="https://t.me/me_ppo" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <Send className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Telegram</span>
                     </a>
-                    <a href="https://wa.me/380504692882" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <MessageCircle className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">WhatsApp</span>
                     </a>
@@ -476,7 +476,7 @@ const ContactsPage = () => {
                   <div className="w-full h-44 bg-black/40 rounded-sm overflow-hidden border border-white/10 shadow-inner group mt-4 relative">
                     <div ref={mapContainer} className="w-full h-full grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
                     <div className="absolute inset-x-0 bottom-0 bg-zinc-950/90 backdrop-blur-sm py-2 px-3 flex justify-between items-center z-20">
-                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">Gulliver, Tower A</span>
+                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">Спортивна площа, 1А</span>
                       <MapPin className="w-3 h-3 text-white/40" />
                     </div>
                   </div>

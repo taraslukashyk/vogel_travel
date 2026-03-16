@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ChevronDown, Plus, Minus, Globe } from 'lucide-react';
+import { ChevronDown, Plus, Minus, Globe, Compass } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -20,6 +20,7 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const instructionRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<HTMLButtonElement>(null);
+  const compassRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<{ id: number; el: HTMLElement; lngLat: [number, number] }[]>([]);
   const zoomTaskRef = useRef<number | null>(null);
   const isInteractingRef = useRef(false);
@@ -116,6 +117,12 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
         if (Math.abs(currentPitch - newPitch) > 0.5) {
           map.setPitch(newPitch);
         }
+      }
+
+      // Update compass orientation
+      if (compassRef.current) {
+        const bearing = map.getBearing();
+        compassRef.current.style.transform = `rotate(${-bearing}deg)`;
       }
     };
 
@@ -244,6 +251,19 @@ const PartnershipMap = ({ onNextDown }: { onNextDown?: () => void }) => {
 
       {/* Map Controls */}
       <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-8 z-20 flex flex-col gap-3">
+        <button
+          onClick={() => {
+            if (mapRef.current) {
+              mapRef.current.easeTo({ bearing: 0, pitch: 0, duration: 1000 });
+            }
+          }}
+          className="w-10 h-10 md:w-12 md:h-12 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/70 hover:text-[#5cc8bd] hover:border-[#5cc8bd]/50 hover:bg-black/80 transition-all duration-300 shadow-xl active:scale-95 touch-none group"
+          aria-label="Reset North"
+        >
+          <div ref={compassRef} className="transition-transform duration-200">
+            <Compass className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2} />
+          </div>
+        </button>
         <button
           onMouseDown={() => startContinuousZoom('in')}
           onMouseUp={stopContinuousZoom}

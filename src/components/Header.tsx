@@ -57,10 +57,10 @@ const Header = () => {
               <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 <Facebook className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
-              <a href="#" target="_blank" className="hover:text-white transition-colors">
+              <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
-              <a href="#" target="_blank" className="hover:text-white transition-colors">
+              <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
             </div>
@@ -202,10 +202,10 @@ const Header = () => {
                 <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   <Facebook className="w-5 h-5" strokeWidth={1.5} />
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   <MessageCircle className="w-5 h-5" strokeWidth={1.5} />
                 </a>
-                <a href="#" target="_blank" className="hover:text-white transition-colors">
+                <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   <Send className="w-5 h-5" strokeWidth={1.5} />
                 </a>
               </div>
