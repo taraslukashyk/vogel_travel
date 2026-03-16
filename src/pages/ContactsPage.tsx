@@ -474,6 +474,15 @@ const ContactsPage = () => {
                   </div>
 
                   <div className="w-full h-44 bg-black/40 rounded-sm overflow-hidden border border-white/10 shadow-inner group mt-4 relative">
+                    <a 
+                      href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-2 right-2 z-20 bg-zinc-950/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-sm text-[8px] font-black text-white/50 hover:text-[#5cc8bd] hover:border-[#5cc8bd]/50 transition-all opacity-0 group-hover:opacity-100 uppercase tracking-widest flex items-center gap-2"
+                    >
+                      Відкрити в картах
+                      <ChevronRight className="w-2.5 h-2.5" />
+                    </a>
                     <div ref={mapContainer} className="w-full h-full grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
                     <div className="absolute inset-x-0 bottom-0 bg-zinc-950/90 backdrop-blur-sm py-2 px-3 flex justify-between items-center z-20">
                       <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">Спортивна площа, 1А</span>
