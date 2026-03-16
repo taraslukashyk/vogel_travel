@@ -17,7 +17,6 @@ import {
   Briefcase,
   MapPin,
   ChevronRight,
-  Shield,
   Lock,
   Cookie
 } from 'lucide-react';
@@ -34,9 +33,8 @@ const ContactsPage = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [isOfferAccepted, setIsOfferAccepted] = useState(false);
   const [isPrivacyAccepted, setIsPrivacyAccepted] = useState(false);
-  const [isAgeAccepted, setIsAgeAccepted] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [ _, setCopiedField] = useState<string | null>(null);
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -103,7 +101,6 @@ const ContactsPage = () => {
     return (
       isOfferAccepted &&
       isPrivacyAccepted &&
-      isAgeAccepted &&
       selectedPayment &&
       selectedServiceId &&
       (selectedServiceId !== 'custom' || parseFloat(customAmount) > 0)
