@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typography Showcase | Vogel Family Travel</title>
+    <!-- Google Fonts Imports -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Forum&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;600&family=Josefin+Sans:wght@300;400;600&family=Jost:wght@300;400;500&family=Lato:wght@300;400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Marck+Script&family=Merriweather:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;600&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Prata&family=Raleway:wght@300;400;700&family=Roboto:wght@300;400&family=Sora:wght@300;400;700&family=Tenor+Sans&family=Unbounded:wght@300;400;900&family=Urbanist:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0c0c0c;
+            --text-color: #f5f5f5;
+            --accent-color: #5cc8bd;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 40px;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.1rem;
+        }
+
+        .showcase-section {
+            margin-bottom: 120px;
+            padding: 80px 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .section-label {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+        }
+
+        .pairing-info {
+            margin-bottom: 50px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+        }
+
+        .lang-block { margin-bottom: 40px; position: relative; }
+        .lang-label { position: absolute; left: -25px; top: 5px; font-size: 0.6rem; color: var(--accent-color); transform: rotate(-90deg); transform-origin: left top; font-weight: 800; opacity: 0.5; }
+
+        h2.h { line-height: 1.1; margin-bottom: 15px; }
+        p.b { line-height: 1.7; font-size: 1.1rem; max-width: 800px; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+        
+        .buttons-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
+        .btn { display: inline-block; padding: 14px 35px; cursor: pointer; transition: all 0.3s; text-decoration: none; text-align: center; }
+
+        /* --- Variants Customization --- */
+        .v1 .h { font-family: 'Playfair Display', serif; font-size: 4rem; }
+        .v1 .b { font-family: 'Inter', sans-serif; font-weight: 300; }
+        .v1 .btn { font-family: 'Tenor Sans', sans-serif; border: 1px solid #fff; color: #fff; text-transform: uppercase; letter-spacing: 0.2em; }
+
+        .v2 .h { font-family: 'Cinzel', serif; font-size: 3.5rem; letter-spacing: 0.1em; }
+        .v2 .b { font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.25rem; }
+        .v2 .btn { font-family: 'Josefin Sans', sans-serif; background: var(--accent-color); color: #000; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 2px; }
+
+        .v3 .h { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5rem; letter-spacing: -0.04em; text-transform: uppercase; }
+        .v3 .b { font-family: 'Jost', sans-serif; font-weight: 400; }
+        .v3 .btn { font-family: 'Montserrat', sans-serif; font-weight: 700; border: 2px solid var(--accent-color); color: var(--accent-color); text-transform: uppercase; }
+
+        .v4 .h { font-family: 'Bodoni Moda', serif; font-size: 4.8rem; font-weight: 800; font-style: italic; }
+        .v4 .b { font-family: 'Montserrat', sans-serif; font-weight: 400; }
+        .v4 .btn { font-family: 'Montserrat', sans-serif; background: #fff; color: #000; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; }
+
+        .v5 .h { font-family: 'Tenor Sans', sans-serif; font-size: 3.8rem; text-transform: uppercase; letter-spacing: 0.4rem; }
+        .v5 .b { font-family: 'Jost', sans-serif; font-weight: 300; letter-spacing: 0.05em; line-height: 2; }
+        .v5 .btn { font-family: 'Jost', sans-serif; border-bottom: 2px solid var(--text-color); color: #fff; font-weight: 500; text-transform: uppercase; padding: 10px 0; }
+
+        .v6 .h { font-family: 'Forum', serif; font-size: 4.2rem; text-transform: uppercase; }
+        .v6 .b { font-family: 'Roboto', sans-serif; font-weight: 300; }
+        .v6 .btn { font-family: 'Forum', serif; border: 1px solid rgba(255,255,255,0.3); color: #fff; background: rgba(255,255,255,0.02); text-transform: uppercase; }
+
+        .v7 .h { font-family: 'Prata', serif; font-size: 4.5rem; }
+        .v7 .b { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+        .v7 .btn { font-family: 'Open Sans', sans-serif; border: 1px solid var(--accent-color); color: #fff; text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .v8 .h { font-family: 'Lora', serif; font-size: 3.8rem; font-style: italic; }
+        .v8 .b { font-family: 'Lato', sans-serif; font-weight: 300; font-size: 1.2rem; }
+        .v8 .btn { font-family: 'Lato', sans-serif; background: rgba(255,255,255,0.1); color: #fff; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid rgba(255,255,255,0.1); }
+
+        .v9 .h { font-family: 'Unbounded', sans-serif; font-size: 4.2rem; font-weight: 900; text-transform: uppercase; }
+        .v9 .b { font-family: 'Inter', sans-serif; font-weight: 400; }
+        .v9 .btn { font-family: 'Unbounded', sans-serif; background: var(--accent-color); color: #000; font-weight: 800; border-radius: 0; text-transform: uppercase; }
+
+        .v10 .h { font-family: 'Raleway', sans-serif; font-size: 4rem; font-weight: 200; text-transform: uppercase; letter-spacing: 0.25rem; }
+        .v10 .b { font-family: 'Merriweather', serif; font-weight: 300; font-style: italic; color: rgba(255,255,255,0.65); }
+        .v10 .btn { font-family: 'Raleway', sans-serif; border: 2px solid #fff; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; }
+
+        .v11 .h { font-family: 'Sora', sans-serif; font-size: 4.2rem; font-weight: 800; letter-spacing: -0.05em; text-transform: uppercase; }
+        .v11 .b { font-family: 'Outfit', sans-serif; font-weight: 300; font-size: 1.25rem; }
+        .v11 .btn { font-family: 'Sora', sans-serif; background: #fff; color: #000; font-weight: 700; text-transform: uppercase; box-shadow: 6px 6px 0 var(--accent-color); }
+
+        .v12 .h { font-family: 'Alice', serif; font-size: 4.5rem; }
+        .v12 .b { font-family: 'Montserrat', sans-serif; font-weight: 400; text-transform: lowercase; }
+        .v12 .btn { font-family: 'Alice', serif; background: var(--accent-color); color: #000; border-radius: 4px; font-size: 1.1rem; }
+
+        .v13 .h { font-family: 'Fraunces', serif; font-size: 4.8rem; font-weight: 100; font-variation-settings: 'SOFT' 100; font-style: italic; }
+        .v13 .b { font-family: 'Urbanist', sans-serif; font-weight: 400; }
+        .v13 .btn { font-family: 'Urbanist', sans-serif; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; backdrop-filter: blur(15px); text-transform: uppercase; letter-spacing: 0.2em; border-radius: 50px; }
+
+        footer { text-align: center; padding: 100px 0; font-size: 0.8rem; color: rgba(255,255,255,0.2); border-top: 1px solid var(--border-color); }
+
+        @media (max-width: 768px) {
+            h2.h { font-size: 2.5rem !important; }
+            .showcase-section { padding: 40px 20px; }
+            .lang-label { left: -15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vogel Family Travel</h1>
+            <p>13 Unified Typography Pairings (UA & EN Comparisons)</p>
+        </header>
+
+        <script>
+            const UA_TITLE = "Мистецтво подорожувати без компромісів";
+            const EN_TITLE = "The Art of Travel Without Compromise";
+            const UA_BODY = "Ми проєктуємо подорожі, виходячи з вашого ритму життя, цілей та контексту. Наш критерій якості — стан, у якому ви повертаєтесь додому.";
+            const EN_BODY = "We design journeys based on your life rhythm, goals, and context. Our quality criterion is the state in which you return back home.";
+            const UA_BTN = "Замовити тур";
+            const EN_BTN = "Book a Tour";
+
+            const variants = [
+                { id: "v1", label: "01: Timeless", info: "Playfair Display + Inter + Tenor Sans" },
+                { id: "v2", label: "02: Boutique", info: "Cinzel + Josefin Sans + Marck Script" },
+                { id: "v3", label: "03: Modern", info: "Montserrat + Jost + Cormorant" },
+                { id: "v4", label: "04: Luxury", info: "Bodoni Moda + Montserrat" },
+                { id: "v5", label: "05: Minimal", info: "Tenor Sans + Jost" },
+                { id: "v6", label: "06: Heritage", info: "Forum + Roboto" },
+                { id: "v7", label: "07: Editorial", info: "Prata + Open Sans" },
+                { id: "v8", label: "08: Grace", info: "Lora + Lato" },
+                { id: "v9", label: "09: Techno", info: "Unbounded + Inter" },
+                { id: "v10", label: "10: Air", info: "Raleway + Merriweather" },
+                { id: "v11", label: "11: Sleek", info: "Sora + Outfit" },
+                { id: "v12", label: "12: Vintage", info: "Alice + Montserrat" },
+                { id: "v13", label: "13: Soft", info: "Fraunces + Urbanist" }
+            ];
+
+            document.write(variants.map(v => `
+                <div class="showcase-section ${v.id}">
+                    <span class="section-label">${v.label}</span>
+                    <div class="pairing-info">${v.info}</div>
+                    
+                    <div class="lang-block">
+                        <span class="lang-label">UA</span>
+                        <h2 class="h">${UA_TITLE}</h2>
+                        <p class="b">${UA_BODY}</p>
+                    </div>
+
+                    <div class="lang-block">
+                        <span class="lang-label">EN</span>
+                        <h2 class="h">${EN_TITLE}</h2>
+                        <p class="b">${EN_BODY}</p>
+                    </div>
+
+                    <div class="buttons-row">
+                        <div class="btn">${UA_BTN}</div>
+                        <div class="btn">${EN_BTN}</div>
+                    </div>
+                </div>
+            `).join(''));
+        </script>
+
+        <footer>
+            &copy; 2026 Vogel Family Travel | 13 Unified Comparisons | UI/UX Pro Max Intelligence
+        </footer>
+    </div>
+</body>
+</html>
