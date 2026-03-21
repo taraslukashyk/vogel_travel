@@ -7,7 +7,7 @@
     <!-- Google Fonts Imports -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Forum&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;600&family=Josefin+Sans:wght@300;400;600&family=Jost:wght@300;400;500&family=Lato:wght@300;400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Marck+Script&family=Merriweather:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;600&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Prata&family=Raleway:wght@300;400;700&family=Roboto:wght@300;400&family=Sora:wght@300;400;700&family=Tenor+Sans&family=Unbounded:wght@300;400;900&family=Urbanist:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Forum&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;600&family=Josefin+Sans:wght@300;400;600&family=Jost:wght@300;400;500&family=Lato:wght@300;400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Marck+Script&family=Merriweather:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;600&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Prata&family=Raleway:wght@300;400;700&family=Roboto:wght@300;400&family=Sora:wght@300;400;700&family=Tenor+Sans&family=Unbounded:wght@300;400;900&family=Urbanist:wght@300;400;700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nunito:wght@200;400;700&family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Serif:wght@300;400;600&family=Manrope:wght@200;400;700&family=Exo+2:wght@300;400;800&family=Comfortaa:wght@300;400;700&family=Mulish:wght@300;400;700&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Philosopher:ital,wght@0,400;0,700;1,400&family=Oranienbaum&family=Heebo:wght@300;400;700&family=Kanit:wght@200;400;700&family=Rubik:wght@300;400;700&family=Kelly+Slab&family=Caveat:wght@400;700&family=Bad+Script&family=Ruslan+Display&family=Vollkorn:ital,wght@0,400;0,700;1,400&family=Golos+Text:wght@400;700&family=Onest:wght@300;400;700&family=Geologica:wght@300;400;700&family=Schibsted+Grotesk:wght@400;700&family=Pacifico&family=Unbounded:wght@300;900&family=Arimo:wght@400;700&family=Tinos:wght@400;700&family=Cuprum:wght@400;700&family=Podkova:wght@400;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&family=Montserrat+Alternates:wght@400;800&family=Oswald:wght@300;500&family=Ubuntu:wght@300;500&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -52,8 +52,8 @@
         }
 
         .showcase-section {
-            margin-bottom: 120px;
-            padding: 80px 40px;
+            margin-bottom: 150px;
+            padding: 90px 40px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -75,77 +75,23 @@
 
         .pairing-info {
             margin-bottom: 50px;
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.3);
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.2);
             text-transform: uppercase;
             letter-spacing: 0.15em;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             padding-bottom: 10px;
         }
 
-        .lang-block { margin-bottom: 40px; position: relative; }
-        .lang-label { position: absolute; left: -25px; top: 5px; font-size: 0.6rem; color: var(--accent-color); transform: rotate(-90deg); transform-origin: left top; font-weight: 800; opacity: 0.5; }
+        .lang-block { margin-bottom: 60px; position: relative; }
+        .lang-label { position: absolute; left: -25px; top: 10px; font-size: 0.6rem; color: var(--accent-color); transform: rotate(-90deg); transform-origin: left top; font-weight: 800; opacity: 0.4; pointer-events: none; }
 
-        h2.h { line-height: 1.1; margin-bottom: 15px; }
-        p.b { line-height: 1.7; font-size: 1.1rem; max-width: 800px; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+        .accent-text { color: var(--accent-color); margin-bottom: 20px; display: block; font-size: 1.8rem; letter-spacing: 0.05em; line-height: 1.2; }
+        h2.h { line-height: 1.05; margin-bottom: 15px; }
+        p.b { line-height: 1.7; font-size: 1.15rem; max-width: 850px; color: rgba(255,255,255,0.8); margin-bottom: 25px; }
         
-        .buttons-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
-        .btn { display: inline-block; padding: 14px 35px; cursor: pointer; transition: all 0.3s; text-decoration: none; text-align: center; }
-
-        /* --- Variants Customization --- */
-        .v1 .h { font-family: 'Playfair Display', serif; font-size: 4rem; }
-        .v1 .b { font-family: 'Inter', sans-serif; font-weight: 300; }
-        .v1 .btn { font-family: 'Tenor Sans', sans-serif; border: 1px solid #fff; color: #fff; text-transform: uppercase; letter-spacing: 0.2em; }
-
-        .v2 .h { font-family: 'Cinzel', serif; font-size: 3.5rem; letter-spacing: 0.1em; }
-        .v2 .b { font-family: 'Josefin Sans', sans-serif; font-weight: 300; font-size: 1.25rem; }
-        .v2 .btn { font-family: 'Josefin Sans', sans-serif; background: var(--accent-color); color: #000; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 2px; }
-
-        .v3 .h { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5rem; letter-spacing: -0.04em; text-transform: uppercase; }
-        .v3 .b { font-family: 'Jost', sans-serif; font-weight: 400; }
-        .v3 .btn { font-family: 'Montserrat', sans-serif; font-weight: 700; border: 2px solid var(--accent-color); color: var(--accent-color); text-transform: uppercase; }
-
-        .v4 .h { font-family: 'Bodoni Moda', serif; font-size: 4.8rem; font-weight: 800; font-style: italic; }
-        .v4 .b { font-family: 'Montserrat', sans-serif; font-weight: 400; }
-        .v4 .btn { font-family: 'Montserrat', sans-serif; background: #fff; color: #000; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; }
-
-        .v5 .h { font-family: 'Tenor Sans', sans-serif; font-size: 3.8rem; text-transform: uppercase; letter-spacing: 0.4rem; }
-        .v5 .b { font-family: 'Jost', sans-serif; font-weight: 300; letter-spacing: 0.05em; line-height: 2; }
-        .v5 .btn { font-family: 'Jost', sans-serif; border-bottom: 2px solid var(--text-color); color: #fff; font-weight: 500; text-transform: uppercase; padding: 10px 0; }
-
-        .v6 .h { font-family: 'Forum', serif; font-size: 4.2rem; text-transform: uppercase; }
-        .v6 .b { font-family: 'Roboto', sans-serif; font-weight: 300; }
-        .v6 .btn { font-family: 'Forum', serif; border: 1px solid rgba(255,255,255,0.3); color: #fff; background: rgba(255,255,255,0.02); text-transform: uppercase; }
-
-        .v7 .h { font-family: 'Prata', serif; font-size: 4.5rem; }
-        .v7 .b { font-family: 'Open Sans', sans-serif; font-weight: 400; }
-        .v7 .btn { font-family: 'Open Sans', sans-serif; border: 1px solid var(--accent-color); color: #fff; text-transform: uppercase; letter-spacing: 0.1em; }
-
-        .v8 .h { font-family: 'Lora', serif; font-size: 3.8rem; font-style: italic; }
-        .v8 .b { font-family: 'Lato', sans-serif; font-weight: 300; font-size: 1.2rem; }
-        .v8 .btn { font-family: 'Lato', sans-serif; background: rgba(255,255,255,0.1); color: #fff; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid rgba(255,255,255,0.1); }
-
-        .v9 .h { font-family: 'Unbounded', sans-serif; font-size: 4.2rem; font-weight: 900; text-transform: uppercase; }
-        .v9 .b { font-family: 'Inter', sans-serif; font-weight: 400; }
-        .v9 .btn { font-family: 'Unbounded', sans-serif; background: var(--accent-color); color: #000; font-weight: 800; border-radius: 0; text-transform: uppercase; }
-
-        .v10 .h { font-family: 'Raleway', sans-serif; font-size: 4rem; font-weight: 200; text-transform: uppercase; letter-spacing: 0.25rem; }
-        .v10 .b { font-family: 'Merriweather', serif; font-weight: 300; font-style: italic; color: rgba(255,255,255,0.65); }
-        .v10 .btn { font-family: 'Raleway', sans-serif; border: 2px solid #fff; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; }
-
-        .v11 .h { font-family: 'Sora', sans-serif; font-size: 4.2rem; font-weight: 800; letter-spacing: -0.05em; text-transform: uppercase; }
-        .v11 .b { font-family: 'Outfit', sans-serif; font-weight: 300; font-size: 1.25rem; }
-        .v11 .btn { font-family: 'Sora', sans-serif; background: #fff; color: #000; font-weight: 700; text-transform: uppercase; box-shadow: 6px 6px 0 var(--accent-color); }
-
-        .v12 .h { font-family: 'Alice', serif; font-size: 4.5rem; }
-        .v12 .b { font-family: 'Montserrat', sans-serif; font-weight: 400; text-transform: lowercase; }
-        .v12 .btn { font-family: 'Alice', serif; background: var(--accent-color); color: #000; border-radius: 4px; font-size: 1.1rem; }
-
-        .v13 .h { font-family: 'Fraunces', serif; font-size: 4.8rem; font-weight: 100; font-variation-settings: 'SOFT' 100; font-style: italic; }
-        .v13 .b { font-family: 'Urbanist', sans-serif; font-weight: 400; }
-        .v13 .btn { font-family: 'Urbanist', sans-serif; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; backdrop-filter: blur(15px); text-transform: uppercase; letter-spacing: 0.2em; border-radius: 50px; }
-
-        footer { text-align: center; padding: 100px 0; font-size: 0.8rem; color: rgba(255,255,255,0.2); border-top: 1px solid var(--border-color); }
+        .buttons-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
+        .btn { display: inline-block; padding: 15px 40px; cursor: pointer; transition: all 0.3s; text-decoration: none; text-align: center; border: 1px solid rgba(255,255,255,0.15); color: #fff; text-transform: uppercase; letter-spacing: 0.1em; }
 
         @media (max-width: 768px) {
             h2.h { font-size: 2.5rem !important; }
@@ -158,10 +104,12 @@
     <div class="container">
         <header>
             <h1>Vogel Family Travel</h1>
-            <p>13 Unified Typography Pairings (UA & EN Comparisons)</p>
+            <p>50 Premium Unified Typography Trios (UA & EN Comparisons)</p>
         </header>
 
         <script>
+            const UA_ACCENT = "За межами звичного";
+            const EN_ACCENT = "BEYOND THE ORDINARY";
             const UA_TITLE = "Мистецтво подорожувати без компромісів";
             const EN_TITLE = "The Art of Travel Without Compromise";
             const UA_BODY = "Ми проєктуємо подорожі, виходячи з вашого ритму життя, цілей та контексту. Наш критерій якості — стан, у якому ви повертаєтесь додому.";
@@ -170,48 +118,91 @@
             const EN_BTN = "Book a Tour";
 
             const variants = [
-                { id: "v1", label: "01: Timeless", info: "Playfair Display + Inter + Tenor Sans" },
-                { id: "v2", label: "02: Boutique", info: "Cinzel + Josefin Sans + Marck Script" },
-                { id: "v3", label: "03: Modern", info: "Montserrat + Jost + Cormorant" },
-                { id: "v4", label: "04: Luxury", info: "Bodoni Moda + Montserrat" },
-                { id: "v5", label: "05: Minimal", info: "Tenor Sans + Jost" },
-                { id: "v6", label: "06: Heritage", info: "Forum + Roboto" },
-                { id: "v7", label: "07: Editorial", info: "Prata + Open Sans" },
-                { id: "v8", label: "08: Grace", info: "Lora + Lato" },
-                { id: "v9", label: "09: Techno", info: "Unbounded + Inter" },
-                { id: "v10", label: "10: Air", info: "Raleway + Merriweather" },
-                { id: "v11", label: "11: Sleek", info: "Sora + Outfit" },
-                { id: "v12", label: "12: Vintage", info: "Alice + Montserrat" },
-                { id: "v13", label: "13: Soft", info: "Fraunces + Urbanist" }
+                { id: "v1", label: "01: Timeless", info: "Playfair Display + Inter + Tenor Sans", h: "Playfair Display", b: "Inter", a: "Tenor Sans" },
+                { id: "v2", label: "02: Boutique", info: "Cinzel + Josefin Sans + Marck Script", h: "Cinzel", b: "Josefin Sans", a: "Marck Script" },
+                { id: "v3", label: "03: Modern", info: "Montserrat + Jost + Cormorant Garamond", h: "Montserrat", b: "Jost", a: "Cormorant Garamond" },
+                { id: "v4", label: "04: Luxury", info: "Bodoni Moda + Montserrat + Alice", h: "Bodoni Moda", b: "Montserrat", a: "Alice" },
+                { id: "v5", label: "05: Minimal", info: "Tenor Sans + Jost + Unbounded", h: "Tenor Sans", b: "Jost", a: "Unbounded" },
+                { id: "v6", label: "06: Heritage", info: "Forum + Roboto + Ruslan Display", h: "Forum", b: "Roboto", a: "Ruslan Display" },
+                { id: "v7", label: "07: Editorial", info: "Prata + Open Sans + Oswald", h: "Prata", b: "Open Sans", a: "Oswald" },
+                { id: "v8", label: "08: Grace", info: "Lora + Lato + Caveat", h: "Lora", b: "Lato", a: "Caveat" },
+                { id: "v9", label: "09: Techno", info: "Unbounded + Inter + Sora", h: "Unbounded", b: "Inter", a: "Sora" },
+                { id: "v10", label: "10: Air", info: "Raleway + Merriweather + Tenor Sans", h: "Raleway", b: "Merriweather", a: "Tenor Sans" },
+                { id: "v11", label: "11: Sleek", info: "Sora + Outfit + Unbounded", h: "Sora", b: "Outfit", a: "Unbounded" },
+                { id: "v12", label: "12: Vintage", info: "Alice + Montserrat + Marck Script", h: "Alice", b: "Montserrat", a: "Marck Script" },
+                { id: "v13", label: "13: Soft", info: "Fraunces + Urbanist + Pacifico", h: "Fraunces", b: "Urbanist", a: "Pacifico" },
+                { id: "v14", label: "14: Classic Elegance", info: "EB Garamond + Montserrat + Tenor Sans", h: "EB Garamond", b: "Montserrat", a: "Tenor Sans" },
+                { id: "v15", label: "15: Soft Modern", info: "Nunito + Merriweather + Comfortaa", h: "Nunito", b: "Merriweather", a: "Comfortaa" },
+                { id: "v16", label: "16: Reliable", info: "IBM Plex Serif + IBM Plex Sans + Oswald", h: "IBM Plex Serif", b: "IBM Plex Sans", a: "Oswald" },
+                { id: "v17", label: "17: Clean Minimalist", info: "Manrope + Inter + Unbounded", h: "Manrope", b: "Inter", a: "Unbounded" },
+                { id: "v18", label: "18: Bold Display", info: "Exo 2 + Lato + Kanit", h: "Exo 2", b: "Lato", a: "Kanit" },
+                { id: "v19", label: "19: Playful Luxury", info: "Comfortaa + Montserrat + Marck Script", h: "Comfortaa", b: "Montserrat", a: "Marck Script" },
+                { id: "v20", label: "20: Sophisticated", info: "Mulish + Lato + Playfair Display", h: "Mulish", b: "Lato", a: "Playfair Display" },
+                { id: "v21", label: "21: Traditional", info: "Spectral + Open Sans + Forum", h: "Spectral", b: "Open Sans", a: "Forum" },
+                { id: "v22", label: "2Art Deco", info: "Philosopher + Montserrat + Kelly Slab", h: "Philosopher", b: "Montserrat", a: "Kelly Slab" },
+                { id: "v23", label: "23: Graceful", info: "Oranienbaum + Roboto + Marck Script", h: "Oranienbaum", b: "Roboto", a: "Marck Script" },
+                { id: "v24", label: "24: Humanist", info: "Heebo + Open Sans + Outfit", h: "Heebo", b: "Open Sans", a: "Outfit" },
+                { id: "v25", label: "25: Geometric", info: "Kanit + Lato + Unbounded", h: "Kanit", b: "Lato", a: "Unbounded" },
+                { id: "v26", label: "26: Friendly", info: "Rubik + Inter + Comfortaa", h: "Rubik", b: "Inter", a: "Comfortaa" },
+                { id: "v27", label: "27: Slab Style", info: "Kelly Slab + Roboto + Oswald", h: "Kelly Slab", b: "Roboto", a: "Oswald" },
+                { id: "v28", label: "28: Exotic Script", info: "Caveat + Montserrat + Sora", h: "Caveat", b: "Montserrat", a: "Sora" },
+                { id: "v29", label: "29: Handmade", info: "Bad Script + Lato + Alice", h: "Bad Script", b: "Lato", a: "Alice" },
+                { id: "v30", label: "30: Old Style", info: "Ruslan Display + PT Serif + Forum", h: "Ruslan Display", b: "PT Serif", a: "Forum" },
+                { id: "v31", label: "31: Contemporary", info: "Vollkorn + Open Sans + Tenor Sans", h: "Vollkorn", b: "Open Sans", a: "Tenor Sans" },
+                { id: "v32", label: "32: Clean Grotesque", info: "Golos Text + Inter + Montserrat", h: "Golos Text", b: "Inter", a: "Montserrat" },
+                { id: "v33", label: "33: Professional", info: "Onest + Inter + Geologica", h: "Onest", b: "Inter", a: "Geologica" },
+                { id: "v34", label: "34: Tech Savvy", info: "Geologica + Inter + Unbounded", h: "Geologica", b: "Inter", a: "Unbounded" },
+                { id: "v35", label: "35: Smooth Lines", info: "Schibsted Grotesk + Inter + Sora", h: "Schibsted Grotesk", b: "Inter", a: "Sora" },
+                { id: "v36", label: "36: Elegant Script", info: "Pacifico + Lato + Tenor Sans", h: "Pacifico", b: "Lato", a: "Tenor Sans" },
+                { id: "v37", label: "37: Adventurous", info: "Unbounded + Manrope + Kanit", h: "Unbounded", b: "Manrope", a: "Kanit" },
+                { id: "v38", label: "38: Formal", info: "Arimo + Tinos + PT Serif", h: "Arimo", b: "Tinos", a: "PT Serif" },
+                { id: "v39", label: "39: Narrow Corporate", info: "Cuprum + Roboto + Ubuntu", h: "Cuprum", b: "Roboto", a: "Ubuntu" },
+                { id: "v40", label: "40: Vintage News", info: "Podkova + Roboto + Oranienbaum", h: "Podkova", b: "Roboto", a: "Oranienbaum" },
+                { id: "v41", label: "41: Universal Serif", info: "Noto Serif + Noto Sans + Inter", h: "Noto Serif", b: "Noto Sans", a: "Inter" },
+                { id: "v42", label: "42: Clean Slab", info: "PT Serif + PT Sans + Roboto", h: "PT Serif", b: "PT Sans", a: "Roboto" },
+                { id: "v43", label: "43: Modern Alt", info: "Montserrat Alternates + Lora + Caveat", h: "Montserrat Alternates", b: "Lora", a: "Caveat" },
+                { id: "v44", label: "44: Sharp Display", info: "Tenor Sans + Mulish + Cinzel", h: "Tenor Sans", b: "Mulish", a: "Cinzel" },
+                { id: "v45", label: "45: Artistic Sans", info: "Jost + Spectral + Forum", h: "Jost", b: "Spectral", a: "Forum" },
+                { id: "v46", label: "46: Boutique Min", info: "Raleway + Vollkorn + Amatic SC", h: "Raleway", b: "Vollkorn", a: "Amatic SC" },
+                { id: "v47", label: "47: High Luxe", info: "Playfair Display + Lato + Tenor Sans", h: "Playfair Display", b: "Lato", a: "Tenor Sans" },
+                { id: "v48", label: "48: Ultimate Modern", info: "Unbounded + Jost + Manrope", h: "Unbounded", b: "Jost", a: "Manrope" },
+                { id: "v49", label: "49: Soft Journey", info: "Alice + Merriweather + Marck Script", h: "Alice", b: "Merriweather", a: "Marck Script" },
+                { id: "v50", label: "50: Final Premium", info: "Montserrat + Montserrat + Oswald", h: "Montserrat", b: "Montserrat", a: "Oswald" }
             ];
 
-            document.write(variants.map(v => `
-                <div class="showcase-section ${v.id}">
+            const html = variants.map(v => `
+                <div class="showcase-section">
                     <span class="section-label">${v.label}</span>
                     <div class="pairing-info">${v.info}</div>
                     
-                    <div class="lang-block">
-                        <span class="lang-label">UA</span>
-                        <h2 class="h">${UA_TITLE}</h2>
-                        <p class="b">${UA_BODY}</p>
-                    </div>
+                    <div class="demo-content">
+                        <div class="lang-block">
+                            <span class="lang-label">UA</span>
+                            <span class="accent-text" style="font-family: '${v.a}';">${UA_ACCENT}</span>
+                            <h2 class="h" style="font-family: '${v.h}'; font-size: 3.5rem;">${UA_TITLE}</h2>
+                            <p class="b" style="font-family: '${v.b}';">${UA_BODY}</p>
+                        </div>
 
-                    <div class="lang-block">
-                        <span class="lang-label">EN</span>
-                        <h2 class="h">${EN_TITLE}</h2>
-                        <p class="b">${EN_BODY}</p>
-                    </div>
+                        <div class="lang-block">
+                            <span class="lang-label">EN</span>
+                            <span class="accent-text" style="font-family: '${v.a}';">${EN_ACCENT}</span>
+                            <h2 class="h" style="font-family: '${v.h}'; font-size: 3.5rem;">${EN_TITLE}</h2>
+                            <p class="b" style="font-family: '${v.b}';">${EN_BODY}</p>
+                        </div>
 
-                    <div class="buttons-row">
-                        <div class="btn">${UA_BTN}</div>
-                        <div class="btn">${EN_BTN}</div>
+                        <div class="buttons-row">
+                            <div class="btn" style="font-family: '${v.h}'; font-weight: bold;">${UA_BTN}</div>
+                            <div class="btn" style="font-family: '${v.h}'; font-weight: bold;">${EN_BTN}</div>
+                        </div>
                     </div>
                 </div>
-            `).join(''));
+            `).join('');
+
+            document.write(html);
         </script>
 
         <footer>
-            &copy; 2026 Vogel Family Travel | 13 Unified Comparisons | UI/UX Pro Max Intelligence
+            &copy; 2026 Vogel Family Travel | 50 Typography Trios | UI/UX Pro Max Intelligence
         </footer>
     </div>
 </body>
