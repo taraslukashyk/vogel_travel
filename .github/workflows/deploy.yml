@@ -30,7 +30,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci # Чисте встановлення залежностей
+        run: npm install
 
       - name: Build project
         run: npm run build
