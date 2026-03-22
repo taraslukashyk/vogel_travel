@@ -83,12 +83,12 @@ export default function BlogForm() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Новий пост' : 'Редагувати пост'}</h1>
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
-        <FormField label="Заголовок" required>
+        <FormField label="Заголовок" required tooltip="Головний заголовок сторінки статті (H1).">
           <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} required />
         </FormField>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Категорія" required>
+          <FormField label="Категорія" required tooltip="До якої категорії належить стаття, наприклад: Новини, Поради, Гіди.">
             <input className={inputClass} value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Фіджі" required />
           </FormField>
           <FormField label="Дата" required>
@@ -96,22 +96,24 @@ export default function BlogForm() {
           </FormField>
         </div>
 
-        <FormField label="Зображення" required>
+        <FormField label="Зображення" required tooltip="Обкладинка статті. Оптимальний розмір від 800x600 пикселів.">
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
+        </FormField>
+        <FormField label="Alt текст фото" tooltip="Альтернативний текст фото. Важливо для SEO та людей з порушенням зору.">
           <input
             type="text"
             value={form.image_alt}
             onChange={(e) => set('image_alt', e.target.value)}
-            placeholder="Alt текст зображення (опис для SEO та доступності)"
-            className={inputClass + ' mt-2'}
+            placeholder="Опишіть, що на фото..."
+            className={inputClass}
           />
         </FormField>
 
-        <FormField label="Короткий опис (excerpt)" required>
+        <FormField label="Короткий опис (excerpt)" required tooltip="Цей текст буде відображатися в списку статей, як прев'ю (до 2-3 речень).">
           <textarea className={inputClass} rows={3} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} required />
         </FormField>
 
-        <FormField label="Аудіо URL">
+        <FormField label="Аудіо URL" tooltip="Посилання на аудіоверсію статті (формат .mp3, .m4a), якщо вона є.">
           <input className={inputClass} value={form.audio} onChange={(e) => set('audio', e.target.value)} placeholder="/audio/file.wav" />
         </FormField>
 
@@ -126,11 +128,11 @@ export default function BlogForm() {
             🔍 SEO для цієї сторінки
             <span className="text-xs font-normal text-gray-400">(/blog/{id || 'new'})</span>
           </h3>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" tooltip="Заголовок для пошукових систем (50-60 символів).">
             <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.title} — Vogel Family Travel`} />
             <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" tooltip="Короткий опис для пошукових систем (до 160 символів).">
             <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.excerpt || 'Опис для пошукових систем'} />
             <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
           </FormField>

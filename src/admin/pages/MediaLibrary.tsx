@@ -27,8 +27,8 @@ export default function MediaLibrary() {
         sortBy: { column: 'created_at', order: 'desc' },
       });
       if (error) throw error;
-      // Filter out folder entries (they have no id) and .emptyFolderPlaceholder
-      return (data || []).filter(f => f.id && f.name !== '.emptyFolderPlaceholder') as StorageFile[];
+      // Filter out folder entries (they usually don't have metadata/size) and placeholders
+      return (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && f.created_at) as StorageFile[];
     },
   });
 
@@ -109,7 +109,7 @@ export default function MediaLibrary() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {files.map((file) => (
-            <div key={file.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden group">
+            <div key={file.name} className="bg-white rounded-lg border border-gray-200 overflow-hidden group">
               <div className="aspect-square bg-gray-100 relative">
                 <img
                   src={getPublicUrl(file.name)}

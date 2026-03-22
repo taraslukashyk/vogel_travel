@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Package, FileText, Briefcase, Search, Image, LogOut, Menu, X } from 'lucide-react';
+import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
 
 const navItems = [
@@ -8,7 +8,7 @@ const navItems = [
   { to: '/admin/blog', label: 'Блог', icon: FileText },
   { to: '/admin/services', label: 'Сервіси', icon: Briefcase },
   { to: '/admin/seo', label: 'SEO', icon: Search },
-  { to: '/admin/media', label: 'Медіа', icon: Image },
+  { to: '/admin/help', label: 'Довідка', icon: HelpCircle },
 ];
 
 export default function AdminLayout() {

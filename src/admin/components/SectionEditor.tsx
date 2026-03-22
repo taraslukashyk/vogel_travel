@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import RichTextEditor from './RichTextEditor';
 import ImageUploader from './ImageUploader';
-import { inputClass } from './FormField';
+import FormField, { inputClass } from './FormField';
 import type { DBSection } from '../../lib/types';
 
 interface SectionEditorProps {
@@ -76,20 +76,24 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
             onChange={(url) => onUpdate(index, { ...section, image: url })}
             folder="sections"
           />
-          <input
-            type="text"
-            value={typeof section.content === 'string' ? section.content : ''}
-            onChange={(e) => onUpdate(index, { ...section, content: e.target.value })}
-            placeholder="Підпис до зображення"
-            className={inputClass}
-          />
-          <input
-            type="text"
-            value={section.alt || ''}
-            onChange={(e) => onUpdate(index, { ...section, alt: e.target.value })}
-            placeholder="Alt текст (опис зображення для SEO)"
-            className={inputClass + ' text-xs'}
-          />
+          <FormField label="Підпис до зображення" tooltip="Текст під картинкою (не обов'язково)">
+            <input
+              type="text"
+              value={typeof section.content === 'string' ? section.content : ''}
+              onChange={(e) => onUpdate(index, { ...section, content: e.target.value })}
+              placeholder="Введіть підпис..."
+              className={inputClass}
+            />
+          </FormField>
+          <FormField label="Alt текст" tooltip="Опис зображення для SEO та людей з порушенням зору.">
+            <input
+              type="text"
+              value={section.alt || ''}
+              onChange={(e) => onUpdate(index, { ...section, alt: e.target.value })}
+              placeholder="Що зображено на фото?"
+              className={inputClass + ' text-xs'}
+            />
+          </FormField>
         </>
       )}
 

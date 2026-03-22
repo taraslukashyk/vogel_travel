@@ -41,20 +41,24 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
       </div>
       <div className="flex-1 space-y-2">
         <ImageUploader value={item.image} onChange={(url) => onUpdate(index, { image: url })} folder="offers" />
-        <input
-          type="text"
-          value={item.caption}
-          onChange={(e) => onUpdate(index, { caption: e.target.value })}
-          placeholder="Підпис до фото (для галереї)"
-          className={inputClass}
-        />
-        <input
-          type="text"
-          value={item.alt}
-          onChange={(e) => onUpdate(index, { alt: e.target.value })}
-          placeholder="Alt текст (опис зображення для SEO)"
-          className={inputClass + ' text-xs'}
-        />
+        <FormField label="Підпис до фото" tooltip="Текст, який відображатиметься під фото у галереї.">
+          <input
+            type="text"
+            value={item.caption}
+            onChange={(e) => onUpdate(index, { caption: e.target.value })}
+            placeholder="Наприклад: Вид з вікна"
+            className={inputClass}
+          />
+        </FormField>
+        <FormField label="Alt текст" tooltip="Опис зображення для SEO (допомагає пошуковим системам зрозуміти що на фото).">
+          <input
+            type="text"
+            value={item.alt}
+            onChange={(e) => onUpdate(index, { alt: e.target.value })}
+            placeholder="Опис зображення для SEO"
+            className={inputClass + ' text-xs'}
+          />
+        </FormField>
       </div>
       <button type="button" onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 shrink-0 mt-2">
         <Trash2 size={16} />
@@ -182,38 +186,40 @@ export default function OfferForm() {
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Готель" required>
+          <FormField label="Готель" required tooltip="Назва готелю. Це буде головним заголовком на картці пропозиції.">
             <input className={inputClass} value={form.hotel} onChange={(e) => set('hotel', e.target.value)} required />
           </FormField>
-          <FormField label="Локація" required>
+          <FormField label="Локація" required tooltip="Місто, курорт або країна.">
             <input className={inputClass} value={form.location} onChange={(e) => set('location', e.target.value)} required />
           </FormField>
-          <FormField label="Бронювання до" required>
+          <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
             <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
           </FormField>
-          <FormField label="Знижка">
+          <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як червоний бейдж на картинці.">
             <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
           </FormField>
-          <FormField label="Перебування з" required>
+          <FormField label="Перебування з" required tooltip="Початкова дата періоду, в який діє ця пропозиція на проживання.">
             <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
           </FormField>
-          <FormField label="Перебування до" required>
+          <FormField label="Перебування до" required tooltip="Кінцева дата періоду, в який діє ця пропозиція на проживання.">
             <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
           </FormField>
         </div>
 
-        <FormField label="Зображення" required>
+        <FormField label="Зображення" required tooltip="Головне фото пропозиції, яке виводиться на картці. Рекомендований розмір 800x600 px.">
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
+        </FormField>
+        <FormField label="Alt текст фото" tooltip="Опишіть, що зображено на головному фото. Це допомагає пошуковим системам та людям з порушенням зору.">
           <input
             type="text"
             value={form.image_alt}
             onChange={(e) => set('image_alt', e.target.value)}
-            placeholder="Alt текст зображення (опис для SEO та доступності)"
-            className={inputClass + ' mt-2'}
+            placeholder="Наприклад: Вигляд на сучасний готельний комплекс біля моря"
+            className={inputClass}
           />
         </FormField>
 
-        <FormField label="Короткий опис">
+        <FormField label="Короткий опис" tooltip="Текст-анонс, який описує головні переваги. До 150 символів.">
           <textarea className={inputClass} rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} />
         </FormField>
 
@@ -258,11 +264,11 @@ export default function OfferForm() {
             🔍 SEO для цієї сторінки
             <span className="text-xs font-normal text-gray-400">(/offers/{id || 'new'})</span>
           </h3>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" tooltip="Заголовок для пошукових систем (50-60 символів).">
             <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.hotel} — ${form.location} | Vogel Travel`} />
             <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" tooltip="Короткий опис сторінки пропозиції для пошукових систем (до 160 символів).">
             <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.description || 'Опис для пошукових систем'} />
             <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
           </FormField>

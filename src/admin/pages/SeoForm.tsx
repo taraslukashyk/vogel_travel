@@ -82,36 +82,36 @@ export default function SeoForm() {
           </p>
         </div>
 
-        <FormField label="Title">
+        <FormField label="Title" tooltip="Головний заголовок сторінки, який відображатиметься у вкладці браузера і пошуковій видачі. Оптимально 50-60 символів.">
           <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} />
           <p className="text-xs text-gray-400 mt-1">{form.title.length}/60 символів</p>
         </FormField>
 
-        <FormField label="Meta Description">
+        <FormField label="Meta Description" tooltip="Короткий опис сторінки. Відображається під заголовком у результатах пошуку (сніпет). Оптимально близько 150-160 символів.">
           <textarea className={inputClass} rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} />
           <p className="text-xs text-gray-400 mt-1">{form.description.length}/160 символів</p>
         </FormField>
 
-        <FormField label="Keywords">
+        <FormField label="Keywords" tooltip="Ключові слова або фрази, щоб пошукові системи краще розуміли тему сторінки. Вводьте через кому.">
           <input className={inputClass} value={form.keywords} onChange={(e) => set('keywords', e.target.value)} placeholder="подорожі, тури, мальдіви" />
         </FormField>
 
-        <FormField label="Canonical URL">
+        <FormField label="Canonical URL" tooltip="Вкажіть, якщо ця сторінка є дублікатом іншої. Допоможе уникнути санкцій за дублювання контенту. Формат: https://vmeneoselya... або залиште порожнім.">
           <input className={inputClass} value={form.canonical_url} onChange={(e) => set('canonical_url', e.target.value)} placeholder="https://..." />
         </FormField>
 
         <hr className="border-gray-200" />
         <h2 className="text-lg font-semibold text-gray-700">Open Graph (соцмережі)</h2>
 
-        <FormField label="OG Title">
+        <FormField label="OG Title" tooltip="Заголовок, який буде використовуватися при поширенні посилання в соціальних мережах (Facebook, Telegram, Instagram).">
           <input className={inputClass} value={form.og_title} onChange={(e) => set('og_title', e.target.value)} />
         </FormField>
 
-        <FormField label="OG Description">
+        <FormField label="OG Description" tooltip="Опис для соціальних мереж при поширенні посилання.">
           <textarea className={inputClass} rows={2} value={form.og_description} onChange={(e) => set('og_description', e.target.value)} />
         </FormField>
 
-        <FormField label="OG Image">
+        <FormField label="OG Image" tooltip="Зображення, яке підтягуватиметься як прев'ю (банер) при поширенні сторінки у соціальних мережах. Рекомендований розмір: 1200x630.">
           <ImageUploader value={form.og_image} onChange={(url) => set('og_image', url)} folder="seo" />
         </FormField>
 

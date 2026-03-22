@@ -26,7 +26,7 @@ const ServicesList = lazy(() => import('./admin/pages/ServicesList'));
 const ServiceForm = lazy(() => import('./admin/pages/ServiceForm'));
 const SeoList = lazy(() => import('./admin/pages/SeoList'));
 const SeoForm = lazy(() => import('./admin/pages/SeoForm'));
-const MediaLibrary = lazy(() => import('./admin/pages/MediaLibrary'));
+const AdminHelp = lazy(() => import('./admin/pages/AdminHelp'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -80,7 +80,7 @@ function App() {
             <Route path="services/:id" element={<ServiceForm />} />
             <Route path="seo" element={<SeoList />} />
             <Route path="seo/:id" element={<SeoForm />} />
-            <Route path="media" element={<MediaLibrary />} />
+            <Route path="help" element={<AdminHelp />} />
           </Route>
         </Routes>
       </Suspense>

@@ -81,10 +81,10 @@ export default function ServiceForm() {
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Номер" required>
+          <FormField label="Номер" required tooltip="Порядковий номер для сортування (наприклад: 01, 02).">
             <input className={inputClass} value={form.num} onChange={(e) => set('num', e.target.value)} placeholder="01" required />
           </FormField>
-          <FormField label="Тип">
+          <FormField label="Тип" tooltip="Тип іконки/сервісу. Допускаються значення: plane, hotel, umbrella (впливає на візуальне оформлення).">
             <input className={inputClass} value={form.type} onChange={(e) => set('type', e.target.value)} placeholder="Сервіс" />
           </FormField>
         </div>
@@ -93,11 +93,11 @@ export default function ServiceForm() {
           <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} required />
         </FormField>
 
-        <FormField label="Зображення" required>
+        <FormField label="Зображення" required tooltip="Основне фото для сервісу. Рекомендований розмір 800x600 px.">
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="services" />
         </FormField>
 
-        <FormField label="Опис" required>
+        <FormField label="Опис" required tooltip="Основний текстовий опис послуги.">
           <textarea className={inputClass} rows={4} value={form.description} onChange={(e) => set('description', e.target.value)} required />
         </FormField>
 
