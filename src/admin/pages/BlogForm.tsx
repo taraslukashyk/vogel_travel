@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
+import AudioUploader from '../components/AudioUploader';
 import SectionEditor from '../components/SectionEditor';
 import type { DBBlogPost, DBSection } from '../../lib/types';
 
@@ -113,8 +114,8 @@ export default function BlogForm() {
           <textarea className={inputClass} rows={3} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} required />
         </FormField>
 
-        <FormField label="Аудіо URL" tooltip="Посилання на аудіоверсію статті (формат .mp3, .m4a), якщо вона є.">
-          <input className={inputClass} value={form.audio} onChange={(e) => set('audio', e.target.value)} placeholder="/audio/file.wav" />
+        <FormField label="Аудіофайл (опціонально)" tooltip="Завантажте або вкажіть посилання на аудіоверсію.">
+          <AudioUploader value={form.audio} onChange={(url) => set('audio', url)} />
         </FormField>
 
         <div>
