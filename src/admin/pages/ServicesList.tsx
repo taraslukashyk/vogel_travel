@@ -1,42 +1,40 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
-import { Link } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react';
 import { btnPrimary } from '../components/FormField';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { DBService } from '../../lib/types';
 
-function SortableRow({ service, onToggle, onDelete }: { service: DBService; onToggle: () => void; onDelete: () => void }) {
+function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBService; onToggle: () => void; onDelete: () => void; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: service.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <tr ref={setNodeRef} style={style} className="border-b border-gray-100 hover:bg-gray-50">
-      <td className="px-3 py-3">
+    <tr ref={setNodeRef} style={style} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={onClick}>
+      <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
         <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
           <GripVertical size={16} />
         </button>
       </td>
       <td className="px-3 py-3 font-medium text-gray-500">{service.num}</td>
       <td className="px-3 py-3 font-medium text-gray-800">{service.title}</td>
-      <td className="px-3 py-3">
+      <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
         <button onClick={onToggle} className={`${service.is_published ? 'text-green-600' : 'text-gray-400'}`}>
           {service.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
         </button>
       </td>
-      <td className="px-3 py-3">
-        <div className="flex gap-2">
-          <Link to={`/admin/services/${service.id}`} className="text-teal-600 hover:text-teal-800"><Edit size={16} /></Link>
-          <button onClick={onDelete} className="text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
-        </div>
+      <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
+        <button onClick={onDelete} className="text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
       </td>
     </tr>
   );
 }
 
 export default function ServicesList() {
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -104,7 +102,7 @@ export default function ServicesList() {
               <th className="px-3 py-2 w-16">№</th>
               <th className="px-3 py-2">Назва</th>
               <th className="px-3 py-2 w-16">Статус</th>
-              <th className="px-3 py-2 w-20">Дії</th>
+              <th className="px-3 py-2 w-12"></th>
             </tr>
           </thead>
           <tbody>
@@ -114,6 +112,7 @@ export default function ServicesList() {
                   <SortableRow
                     key={service.id}
                     service={service}
+                    onClick={() => navigate(`/admin/services/${service.id}`)}
                     onToggle={() => toggleMutation.mutate({ id: service.id, is_published: !service.is_published })}
                     onDelete={() => { if (confirm('Видалити цей сервіс?')) deleteMutation.mutate(service.id); }}
                   />
