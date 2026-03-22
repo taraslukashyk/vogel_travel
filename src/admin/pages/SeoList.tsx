@@ -48,8 +48,11 @@ export default function SeoList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">SEO</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Налаштування пошукової оптимізації (SEO)</h1>
+        <p className="text-sm text-gray-600 max-w-4xl">
+          SEO (Search Engine Optimization) — це налаштування, які допомагають пошуковим системам (Google) краще розуміти вміст вашого сайту. Правильно заповнені <strong>Title</strong>, <strong>Description</strong> та ключові слова піднімають ваші пропозиції та статті у пошуковій видачі, приводячи безкоштовних клієнтів. А налаштування <strong>Open Graph (OG)</strong> роблять ваші посилання красивими при поширенні у соцмережах та месенджерах (Telegram, Viber).
+        </p>
       </div>
 
       {/* Info block */}
