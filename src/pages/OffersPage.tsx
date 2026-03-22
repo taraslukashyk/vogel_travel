@@ -115,7 +115,7 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
 
 /* ─── Page Component ─── */
 const OffersPage = () => {
-  const { data: offers = [], isLoading } = useOffers();
+  const { data: offers = [] } = useOffers();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
 

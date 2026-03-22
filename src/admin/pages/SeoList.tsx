@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
 import { Edit, Plus, Check, X } from 'lucide-react';
-import { btnPrimary } from '../components/FormField';
 import type { DBSeoMeta } from '../../lib/types';
 
 const defaultPages = [
