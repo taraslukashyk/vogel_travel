@@ -19,16 +19,16 @@ const Footer = () => {
             <h2 className="text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">
               Контакти
             </h2>
-            
+
             <div className="flex flex-col gap-3 font-inter text-white/90 text-sm md:text-base leading-relaxed mb-8 xl:mb-0">
               <a href="tel:+380504692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 050 469 2882</a>
               <a href="tel:+380444692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 044 469 2882</a>
               <a href="mailto:booking@vogel.travel" className="hover:text-white transition-colors text-white/70 w-fit">booking@vogel.travel</a>
-              
+
               <div className="mt-4">
-                <a 
-                  href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ" 
-                  target="_blank" 
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/50 hover:text-white transition-colors max-w-sm block leading-relaxed"
                 >
@@ -50,10 +50,10 @@ const Footer = () => {
 
             <div className="flex flex-col sm:flex-row gap-8 items-start mb-8">
               {/* QR Code Placeholder */}
-              <a 
-                href="https://t.me/Taras_luka" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href="https://t.me/Taras_luka"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-40 h-40 bg-white p-2 rounded-sm shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500"
               >
                 {/* This represents a QR code */}
@@ -110,7 +110,7 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <Link to="/offers" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">СЕРВІСИ</Link>
-              <Link to="/partners" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРСТВО</Link>
+              <Link to="/partners" className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">ПАРТНЕРИ</Link>
             </div>
           </div>
 

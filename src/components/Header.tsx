@@ -31,10 +31,10 @@ const Header = () => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 w-full pointer-events-auto flex flex-col">
-        
+
         {/* ── Top Bar Container ── */}
         <div className="w-full bg-black/60 backdrop-blur-md border-b border-white/5 py-1.5 px-6 md:px-8 lg:px-12 hidden md:flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-white/70">
-          
+
           {/* Left: Phone Numbers */}
           <div className="flex items-center gap-6">
             <a href="tel:+380504692882" className="hover:text-white transition-colors flex items-center gap-2">
@@ -92,7 +92,7 @@ const Header = () => {
               <Link to="/about" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРО НАС</Link>
               <Link to="/offers" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРОПОЗИЦІЇ</Link>
               <Link to="/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
-              <Link to="/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРСТВО</Link>
+              <Link to="/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРИ</Link>
               <Link to="/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
               <Link to="/contacts" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</Link>
             </nav>
@@ -102,18 +102,18 @@ const Header = () => {
             {/* Right: Search & Action Button */}
             <div className="flex items-center gap-6 shrink-0">
               {/* Open Search Bar */}
-              <form 
+              <form
                 onSubmit={handleSearchSubmit}
                 className="hidden sm:flex items-center bg-white/5 border border-white/10 rounded-sm px-3 py-1.5 focus-within:border-[#5cc8bd]/50 transition-colors"
               >
                 <button type="submit" className="text-white/40 hover:text-[#5cc8bd] transition-colors">
                   <Search className="w-4 h-4" strokeWidth={2} />
                 </button>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  placeholder="Пошук..." 
+                  placeholder="Пошук..."
                   className="bg-transparent border-none outline-none text-[11px] font-bold tracking-widest text-white placeholder:text-white/20 ml-2 w-24 lg:w-32"
                 />
               </form>
@@ -159,7 +159,7 @@ const Header = () => {
         {/* ── Mobile Menu Dropdown ── */}
         {isMobileMenuOpen && (
           <div className="xl:hidden bg-black/95 backdrop-blur-xl border-b border-white/10 p-8 flex flex-col gap-8 text-white font-montserrat tracking-widest uppercase font-semibold animate-in fade-in slide-in-from-top-2 max-h-[calc(100vh-100px)] overflow-y-auto">
-            
+
             {/* Mobile Contact Info (shown in menu if top bar is hidden on mobile) */}
             <div className="md:hidden flex flex-col gap-3 text-sm text-white/70 mb-4 border-b border-white/10 pb-6">
               <a href="tel:+380504692882" className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-white/20"></span>+38 050 469 2882</a>
@@ -170,13 +170,13 @@ const Header = () => {
               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
               <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
               <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
-              <Link to="/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРСТВО</Link>
+              <Link to="/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРИ</Link>
               <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
               <Link to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
-            
+
             <div className="h-px bg-white/10 w-full my-2"></div>
-            
+
             <button
               onClick={() => {
                 setIsContactModalOpen(true);
@@ -188,12 +188,12 @@ const Header = () => {
             </button>
 
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/10">
-               {/* Mobile Language */}
-               <div className="flex gap-4 text-sm">
+              {/* Mobile Language */}
+              <div className="flex gap-4 text-sm">
                 <button className="text-white">UA</button>
                 <button className="text-white/40">EN</button>
               </div>
-              
+
               {/* Mobile Socials */}
               <div className="flex items-center gap-6 text-white/50">
                 <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
@@ -215,14 +215,14 @@ const Header = () => {
       </header>
 
       {/* Contact Modal */}
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
       />
       {/* Search Results Portal */}
-      <SearchPortal 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
+      <SearchPortal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
         query={searchQuery}
       />
     </>
