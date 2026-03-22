@@ -1,54 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Building2, Compass, PhoneCall, Users, Gem } from 'lucide-react';
-import { services as servicesData } from '../data/services';
+import { useServices } from '../lib/queries/services';
+import type { Service } from '../lib/queries/services';
+import SEOHead from '../components/SEOHead';
 
-const icons = {
+const icons: Record<string, React.ReactNode> = {
   '01': <Building2 className="w-8 h-8" strokeWidth={1} />,
   '02': <Compass className="w-8 h-8" strokeWidth={1} />,
   '03': <PhoneCall className="w-8 h-8" strokeWidth={1} />,
   '04': <Users className="w-8 h-8" strokeWidth={1} />,
   '05': <Gem className="w-8 h-8" strokeWidth={1} />,
 };
-
-// Re-map items which were slightly simplified in the search data but need detail here
-const servicesDetails = [
-  {
-    id: 1,
-    items: null,
-  },
-  {
-    id: 2,
-    items: [
-      { label: 'Пляжний відпочинок', text: 'ретельно підібрані курорти з балансом комфорту, сервісу і релаксу.' },
-      { label: 'Сімейні подорожі', text: 'продумані маршрути з безпечними локаціями і логістикою, цікаві дітям і дорослим.' },
-      { label: 'Романтичні поїздки', text: 'приватність, атмосфера та деталі, що роблять спільний відпочинок унікальним.' },
-      { label: 'Пригодницькі подорожі', text: 'активні маршрути з контролем ризиків, екстремальні експедиції з безпекою на першому місці.' },
-      { label: 'Культурні подорожі та екскурсії', text: 'локальні гіди, закриті формати, занурення в традиції та історію.' },
-    ],
-  },
-  {
-    id: 3,
-    items: [
-      { label: 'Travel Audit', text: 'перевірка і оптимізація вашого маршруту, таймінгів та бюджету для максимальної ефективності і комфорту.' },
-      { label: '24/7 підтримка', text: 'конкретний менеджер знає всі деталі вашої поїздки і має повноваження вирішувати будь-які питання оперативно.' },
-    ],
-  },
-  {
-    id: 4,
-    items: null,
-  },
-  {
-    id: 5,
-    items: null,
-  },
-];
-
-const services = servicesData.map(s => ({
-  ...s,
-  icon: icons[s.num as keyof typeof icons],
-  items: servicesDetails.find(d => d.id === s.id)?.items || null
-}));
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -73,7 +36,7 @@ function useScrollReveal() {
 }
 
 /* ─── Single Service Block ─── */
-const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: number }) => {
+const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.ReactNode }; idx: number }) => {
   const ref = useScrollReveal();
   const isReversed = idx % 2 !== 0;
   return (
@@ -137,6 +100,8 @@ const ServiceBlock = ({ service, idx }: { service: typeof services[0]; idx: numb
 
 /* ─── Page Component ─── */
 const ServicesPage = () => {
+  const { data: servicesData = [] } = useServices();
+  const services = servicesData.map(s => ({ ...s, icon: icons[s.num] }));
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
 
@@ -162,6 +127,7 @@ const ServicesPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
+      <SEOHead pagePath="/services" fallbackTitle="Сервіси — Vogel Family Travel" fallbackDescription="Повний спектр послуг для преміальних подорожей — від оренди вілл до професійного супроводу." />
 
       {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

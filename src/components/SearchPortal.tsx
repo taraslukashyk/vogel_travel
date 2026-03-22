@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Building2, BookOpen, ArrowRight, X } from 'lucide-react';
-import { offers } from '../data/offers';
-import { services } from '../data/services';
-import { blogPosts } from '../data/blog';
+import { useOffers } from '../lib/queries/offers';
+import { useServices } from '../lib/queries/services';
+import { useBlogPosts } from '../lib/queries/blog';
 
 interface SearchPortalProps {
   isOpen: boolean;
@@ -12,6 +12,10 @@ interface SearchPortalProps {
 }
 
 const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) => {
+  const { data: offers = [] } = useOffers();
+  const { data: services = [] } = useServices();
+  const { data: blogPosts = [] } = useBlogPosts();
+
   const filteredResults = useMemo(() => {
     if (!query || query.length < 2) return null;
 
@@ -33,7 +37,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
       blog: matchedBlog,
       total: matchedOffers.length + matchedServices.length + matchedBlog.length
     };
-  }, [query]);
+  }, [query, offers, services, blogPosts]);
 
   if (!isOpen) return null;
 

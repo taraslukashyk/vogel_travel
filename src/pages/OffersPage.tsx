@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
-import { offers } from '../data/offers';
+import { useOffers } from '../lib/queries/offers';
+import type { Offer } from '../data/offers';
+import SEOHead from '../components/SEOHead';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -26,7 +28,7 @@ function useScrollReveal() {
 }
 
 /* ─── Single Offer Card ─── */
-const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => {
+const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
   const ref = useScrollReveal();
   return (
     <div
@@ -113,6 +115,7 @@ const OfferCard = ({ offer, idx }: { offer: typeof offers[0]; idx: number }) => 
 
 /* ─── Page Component ─── */
 const OffersPage = () => {
+  const { data: offers = [], isLoading } = useOffers();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
 
@@ -138,6 +141,7 @@ const OffersPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
+      <SEOHead pagePath="/offers" fallbackTitle="Пропозиції — Vogel Family Travel" fallbackDescription="Ексклюзивні пропозиції від наших партнерів — перевірених готелів преміального рівня по всьому світу." />
 
       {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

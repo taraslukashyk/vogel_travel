@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
-import { offers } from '../data/offers';
+import { useOffer } from '../lib/queries/offers';
 
 const OfferDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const offer = offers.find(o => o.id === Number(id));
+  const { data: offer, isLoading } = useOffer(Number(id));
 
   const [currentImg, setCurrentImg] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -40,6 +40,14 @@ const OfferDetailPage = () => {
 
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState('');
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#5cc8bd] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!offer) {
     return (

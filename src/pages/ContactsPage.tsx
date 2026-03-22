@@ -22,10 +22,13 @@ import {
 } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { offers } from '../data/offers';
-import { services } from '../data/services';
+import { useOffers } from '../lib/queries/offers';
+import { useServices } from '../lib/queries/services';
+import SEOHead from '../components/SEOHead';
 
 const ContactsPage = () => {
+  const { data: offers = [] } = useOffers();
+  const { data: services = [] } = useServices();
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState('');
   const [persons, setPersons] = useState('1');
@@ -109,6 +112,7 @@ const ContactsPage = () => {
 
   return (
     <main className="w-full bg-zinc-950 text-white min-h-screen overflow-hidden relative selection:bg-[#5cc8bd]/30">
+      <SEOHead pagePath="/contacts" fallbackTitle="Контакти — Vogel Family Travel" fallbackDescription="Зв'яжіться з нами для консультації та бронювання преміальних подорожей." />
 
       {/* Background Video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Calendar, ArrowRight } from 'lucide-react';
-import { blogPosts } from '../data/blog';
+import { useBlogPosts } from '../lib/queries/blog';
+import type { BlogPost } from '../data/blog';
+import SEOHead from '../components/SEOHead';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal<T extends HTMLElement>() {
@@ -26,7 +28,7 @@ function useScrollReveal<T extends HTMLElement>() {
 }
 
 /* ─── Single Blog Card ─── */
-const BlogCard = ({ post, idx }: { post: typeof blogPosts[0]; idx: number }) => {
+const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
   const ref = useScrollReveal<HTMLAnchorElement>();
   return (
     <Link
@@ -79,6 +81,7 @@ const BlogCard = ({ post, idx }: { post: typeof blogPosts[0]; idx: number }) => 
 
 /* ─── Page Component ─── */
 const BlogPage = () => {
+  const { data: blogPosts = [] } = useBlogPosts();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
 
@@ -95,7 +98,8 @@ const BlogPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      
+      <SEOHead pagePath="/blog" fallbackTitle="Блог — Vogel Family Travel" fallbackDescription="Натхнення, практичні поради та ексклюзивні огляди найкращих місць планети." />
+
       {/* Background video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { offers } from '../data/offers';
+import { useOffers } from '../lib/queries/offers';
 import OptimizedImage from './OptimizedImage';
 
-// Use first 4 offers from the shared data source (same as /offers page)
-const TOURS = offers.slice(0, 4);
-
 const FeaturedTours = () => {
+  const { data: offers = [] } = useOffers();
+  const TOURS = offers.slice(0, 4);
   const [activeIndex, setActiveIndex] = useState(2);
   const navigate = useNavigate();
 

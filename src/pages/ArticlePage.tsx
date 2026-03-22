@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Share2 } from 'lucide-react';
-import { blogPosts } from '../data/blog';
+import { useBlogPost } from '../lib/queries/blog';
 import OptimizedImage from '../components/OptimizedImage';
+import SEOHead from '../components/SEOHead';
 
 const ArticlePage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const post = blogPosts.find(p => p.id === Number(id));
+  const { data: post, isLoading } = useBlogPost(Number(id));
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
@@ -47,6 +48,14 @@ const ArticlePage = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#5cc8bd] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   if (!post) {
     return (
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
@@ -62,6 +71,7 @@ const ArticlePage = () => {
 
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
+      <SEOHead pagePath={`/blog/${id}`} fallbackTitle={post?.title ? `${post.title} — Vogel Family Travel` : 'Блог — Vogel Family Travel'} fallbackDescription={post?.excerpt} />
 
       {/* ── Article Hero (Dark Theme Overlay for Title) ── */}
       <section className="relative w-full h-[65vh] min-h-[500px] flex items-end">

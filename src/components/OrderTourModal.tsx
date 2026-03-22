@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { X, ArrowRight, Send, ChevronLeft, ChevronRight } from 'lucide-react';
-import { offers } from '../data/offers';
+import { useOffers } from '../lib/queries/offers';
 import { Link } from 'react-router-dom';
 
 interface OrderTourModalProps {
@@ -9,6 +9,7 @@ interface OrderTourModalProps {
 }
 
 const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
+  const { data: offers = [] } = useOffers();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {

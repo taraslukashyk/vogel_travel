@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { blogPosts } from '../data/blog';
+import { useBlogPosts } from '../lib/queries/blog';
 
 const BlogCarousel = () => {
+  const { data: blogPosts = [] } = useBlogPosts();
   const [current, setCurrent] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
