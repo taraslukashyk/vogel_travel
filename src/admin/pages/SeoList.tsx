@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Check, X, Globe, FileText } from 'lucide-react';
 import type { DBSeoMeta } from '../../lib/types';
+import SeoPromptGenerator from '../components/SeoPromptGenerator';
 
 const defaultPages = [
   { path: '/', label: 'Головна' },
@@ -103,6 +104,8 @@ export default function SeoList() {
         </table>
         {seoEntries.length === 0 && <div className="text-center py-10 text-gray-400">Немає SEO записів</div>}
       </div>
+
+      <SeoPromptGenerator />
     </div>
   );
 }
