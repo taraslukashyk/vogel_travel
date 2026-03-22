@@ -1,5 +1,6 @@
 import { useEffect, lazy, Suspense } from 'react';
 import FinalQuote from '../components/FinalQuote';
+import SEOHead from '../components/SEOHead';
 
 const PartnershipMap = lazy(() => import('../components/PartnershipMap'));
 
@@ -10,6 +11,7 @@ const PartnershipPage = () => {
 
   return (
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
+      <SEOHead pagePath="/partners" fallbackTitle="Партнерство — Vogel Family Travel" />
       {/* ── 3D Scroll-driven Map Section ── */}
       <section className="relative w-full z-10 border-b border-white/5">
         <Suspense fallback={<div className="h-[600px] flex items-center justify-center bg-zinc-950">Завантаження мапи...</div>}>

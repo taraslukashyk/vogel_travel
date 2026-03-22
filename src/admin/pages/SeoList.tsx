@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
-import { Link } from 'react-router-dom';
-import { Edit, Plus, Check, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Check, X, Globe, FileText } from 'lucide-react';
 import type { DBSeoMeta } from '../../lib/types';
 
 const defaultPages = [
@@ -15,6 +15,7 @@ const defaultPages = [
 ];
 
 export default function SeoList() {
+  const navigate = useNavigate();
   const qc = useQueryClient();
 
   const { data: seoEntries = [], isLoading } = useQuery({
@@ -50,6 +51,12 @@ export default function SeoList() {
         <h1 className="text-2xl font-bold text-gray-800">SEO</h1>
       </div>
 
+      {/* Info block */}
+      <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 space-y-1">
+        <p><Globe size={14} className="inline mr-1" /><strong>Статичні сторінки</strong> (/, /offers, /blog...) — SEO налаштовується тут</p>
+        <p><FileText size={14} className="inline mr-1" /><strong>Підсторінки</strong> (/offers/1, /blog/3...) — SEO вводиться в формі редагування кожної пропозиції/статті</p>
+      </div>
+
       {missingPages.length > 0 && (
         <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800 mb-2">Є сторінки без SEO налаштувань:</p>
@@ -75,22 +82,20 @@ export default function SeoList() {
               <th className="px-3 py-2">Title</th>
               <th className="px-3 py-2">Description</th>
               <th className="px-3 py-2 w-16">OG</th>
-              <th className="px-3 py-2 w-16">Дії</th>
             </tr>
           </thead>
           <tbody>
             {seoEntries.map((entry) => (
-              <tr key={entry.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <tr
+                key={entry.id}
+                className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                onClick={() => navigate(`/admin/seo/${entry.id}`)}
+              >
                 <td className="px-3 py-3 font-medium text-gray-800">{entry.page_path}</td>
                 <td className="px-3 py-3 text-gray-600 max-w-[200px] truncate">{entry.title || '—'}</td>
                 <td className="px-3 py-3 text-gray-600 max-w-[200px] truncate">{entry.description || '—'}</td>
                 <td className="px-3 py-3">
                   {entry.og_title ? <Check size={16} className="text-green-500" /> : <X size={16} className="text-gray-300" />}
-                </td>
-                <td className="px-3 py-3">
-                  <Link to={`/admin/seo/${entry.id}`} className="text-teal-600 hover:text-teal-800">
-                    <Edit size={16} />
-                  </Link>
                 </td>
               </tr>
             ))}

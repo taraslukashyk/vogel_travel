@@ -5,11 +5,13 @@ import Partners from '../components/Partners'
 import FeaturedTours from '../components/FeaturedTours'
 import FinalQuote from '../components/FinalQuote'
 import BlogCarousel from '../components/BlogCarousel'
+import SEOHead from '../components/SEOHead'
 import bgImage from '../assets/about-bg.png'
 
 const Home = () => {
   return (
     <>
+      <SEOHead pagePath="/" fallbackTitle="Vogel Family Travel — Преміальні подорожі" />
       <Hero />
       
       {/* ── Text Banner (Glass Strip) ── */}

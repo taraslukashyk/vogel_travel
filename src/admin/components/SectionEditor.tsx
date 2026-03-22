@@ -83,6 +83,13 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
             placeholder="Підпис до зображення"
             className={inputClass}
           />
+          <input
+            type="text"
+            value={section.alt || ''}
+            onChange={(e) => onUpdate(index, { ...section, alt: e.target.value })}
+            placeholder="Alt текст (опис зображення для SEO)"
+            className={inputClass + ' text-xs'}
+          />
         </>
       )}
 

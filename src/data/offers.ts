@@ -3,6 +3,7 @@ export interface OfferSection {
   title?: string;
   content: string | string[];
   image?: string;
+  alt?: string;
 }
 
 export interface Offer {
@@ -10,12 +11,15 @@ export interface Offer {
   location: string;
   hotel: string;
   image: string;
+  imageAlt?: string;
   bookBy: string;
   stayFrom: string;
   stayTo: string;
   discount: string;
   description?: string;
   sections?: OfferSection[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const offers: Offer[] = [

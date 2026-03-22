@@ -71,7 +71,12 @@ const ArticlePage = () => {
 
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
-      <SEOHead pagePath={`/blog/${id}`} fallbackTitle={post?.title ? `${post.title} — Vogel Family Travel` : 'Блог — Vogel Family Travel'} fallbackDescription={post?.excerpt} />
+      <SEOHead
+        pagePath={`/blog/${id}`}
+        title={post.seoTitle || `${post.title} — Vogel Family Travel`}
+        description={post.seoDescription || post.excerpt}
+        ogImage={post.image}
+      />
 
       {/* ── Article Hero (Dark Theme Overlay for Title) ── */}
       <section className="relative w-full h-[65vh] min-h-[500px] flex items-end">

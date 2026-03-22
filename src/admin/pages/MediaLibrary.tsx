@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
-import { Trash2, Copy, Check, Upload } from 'lucide-react';
+import { Trash2, Copy, Check, Upload, FolderOpen } from 'lucide-react';
 import { useImageUpload } from '../hooks/useImageUpload';
 
 interface StorageFile {
@@ -11,30 +11,24 @@ interface StorageFile {
   metadata: { size: number; mimetype: string };
 }
 
+const FOLDERS = ['general', 'offers', 'blog', 'sections'] as const;
+
 export default function MediaLibrary() {
   const qc = useQueryClient();
   const { upload, uploading } = useImageUpload();
   const [copied, setCopied] = useState<string | null>(null);
-  const [folder, setFolder] = useState('');
+  const [folder, setFolder] = useState('general');
 
   const { data: files = [], isLoading } = useQuery({
     queryKey: ['media_files', folder],
     queryFn: async () => {
-      const { data, error } = await supabase.storage.from('images').list(folder || undefined, {
-        limit: 100,
+      const { data, error } = await supabase.storage.from('images').list(folder, {
+        limit: 200,
         sortBy: { column: 'created_at', order: 'desc' },
       });
       if (error) throw error;
-      return (data || []).filter(f => f.id) as StorageFile[];
-    },
-  });
-
-  const { data: folders = [] } = useQuery({
-    queryKey: ['media_folders'],
-    queryFn: async () => {
-      const { data, error } = await supabase.storage.from('images').list('', { limit: 100 });
-      if (error) throw error;
-      return (data || []).filter(f => !f.id).map(f => f.name);
+      // Filter out folder entries (they have no id) and .emptyFolderPlaceholder
+      return (data || []).filter(f => f.id && f.name !== '.emptyFolderPlaceholder') as StorageFile[];
     },
   });
 
@@ -47,7 +41,7 @@ export default function MediaLibrary() {
   });
 
   const getPublicUrl = (name: string) => {
-    const path = folder ? `${folder}/${name}` : name;
+    const path = `${folder}/${name}`;
     return supabase.storage.from('images').getPublicUrl(path).data.publicUrl;
   };
 
@@ -59,15 +53,18 @@ export default function MediaLibrary() {
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await upload(file, folder || 'general');
-      qc.invalidateQueries({ queryKey: ['media_files'] });
+    const fileList = e.target.files;
+    if (!fileList?.length) return;
+
+    for (let i = 0; i < fileList.length; i++) {
+      await upload(fileList[i], folder);
     }
+    qc.invalidateQueries({ queryKey: ['media_files', folder] });
     e.target.value = '';
   };
 
   const formatSize = (bytes: number) => {
+    if (!bytes) return '—';
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / 1048576).toFixed(1)} MB`;
@@ -79,35 +76,36 @@ export default function MediaLibrary() {
         <h1 className="text-2xl font-bold text-gray-800">Медіа-бібліотека</h1>
         <label className="px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors cursor-pointer flex items-center gap-2">
           <Upload size={16} />
-          {uploading ? 'Завантаження...' : 'Завантажити'}
-          <input type="file" accept="image/*" onChange={handleUpload} className="hidden" disabled={uploading} />
+          {uploading ? 'Конвертація в WebP...' : 'Завантажити'}
+          <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
         </label>
       </div>
 
-      {folders.length > 0 && (
-        <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {FOLDERS.map(f => (
           <button
-            onClick={() => setFolder('')}
-            className={`px-3 py-1 rounded text-sm ${!folder ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+            key={f}
+            onClick={() => setFolder(f)}
+            className={`px-3 py-1.5 rounded text-sm flex items-center gap-1.5 ${folder === f ? 'bg-teal-100 text-teal-700 font-medium' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
           >
-            Всі
+            <FolderOpen size={14} />
+            {f}
           </button>
-          {folders.map(f => (
-            <button
-              key={f}
-              onClick={() => setFolder(f)}
-              className={`px-3 py-1 rounded text-sm ${folder === f ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-      )}
+        ))}
+      </div>
+
+      <p className="text-xs text-gray-400 mb-4">
+        Завантажені зображення автоматично конвертуються в WebP. Папка: <strong>{folder}</strong>
+      </p>
 
       {isLoading ? (
         <div className="text-center py-10 text-gray-400">Завантаження...</div>
       ) : files.length === 0 ? (
-        <div className="text-center py-10 text-gray-400">Немає файлів</div>
+        <div className="text-center py-20 text-gray-400">
+          <Upload size={48} className="mx-auto mb-4 opacity-30" />
+          <p className="text-lg">Папка порожня</p>
+          <p className="text-sm mt-1">Завантажте зображення кнопкою вище</p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {files.map((file) => (
@@ -128,7 +126,7 @@ export default function MediaLibrary() {
                     {copied === file.name ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
                   </button>
                   <button
-                    onClick={() => { if (confirm('Видалити файл?')) deleteMutation.mutate(folder ? `${folder}/${file.name}` : file.name); }}
+                    onClick={() => { if (confirm('Видалити файл?')) deleteMutation.mutate(`${folder}/${file.name}`); }}
                     className="p-2 bg-white rounded-lg text-red-500 hover:bg-red-50"
                     title="Видалити"
                   >

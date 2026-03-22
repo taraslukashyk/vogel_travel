@@ -11,9 +11,12 @@ function mapPost(db: DBBlogPost): BlogPost {
     excerpt: db.excerpt,
     date: db.date,
     image: db.image,
+    imageAlt: db.image_alt ?? undefined,
     category: db.category,
     audio: db.audio ?? undefined,
     sections: db.sections,
+    seoTitle: db.seo_title ?? undefined,
+    seoDescription: db.seo_description ?? undefined,
   };
 }
 

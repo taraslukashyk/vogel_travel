@@ -5,18 +5,77 @@ import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
+import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { DBOffer, DBSection } from '../../lib/types';
+
+interface GalleryImage {
+  image: string;
+  caption: string;
+  alt: string;
+  _id: string;
+}
+
+function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
+  item: GalleryImage;
+  index: number;
+  onUpdate: (index: number, updates: Partial<{ image: string; caption: string; alt: string }>) => void;
+  onRemove: (index: number) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item._id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex gap-3 items-start bg-white border border-gray-200 rounded-lg p-3">
+      <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 mt-2 shrink-0">
+        <GripVertical size={16} />
+      </button>
+      <div className="shrink-0">
+        {item.image ? (
+          <img src={item.image} alt={item.alt} className="w-20 h-20 rounded object-cover" />
+        ) : (
+          <div className="w-20 h-20 rounded bg-gray-100 flex items-center justify-center text-gray-300 text-xs">Фото</div>
+        )}
+      </div>
+      <div className="flex-1 space-y-2">
+        <ImageUploader value={item.image} onChange={(url) => onUpdate(index, { image: url })} folder="offers" />
+        <input
+          type="text"
+          value={item.caption}
+          onChange={(e) => onUpdate(index, { caption: e.target.value })}
+          placeholder="Підпис до фото (для галереї)"
+          className={inputClass}
+        />
+        <input
+          type="text"
+          value={item.alt}
+          onChange={(e) => onUpdate(index, { alt: e.target.value })}
+          placeholder="Alt текст (опис зображення для SEO)"
+          className={inputClass + ' text-xs'}
+        />
+      </div>
+      <button type="button" onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 shrink-0 mt-2">
+        <Trash2 size={16} />
+      </button>
+    </div>
+  );
+}
 
 const emptyOffer = {
   location: '',
   hotel: '',
   image: '',
+  image_alt: '',
   book_by: '',
   stay_from: '',
   stay_to: '',
   discount: '',
   description: '',
   sections: [] as DBSection[],
+  seo_title: '',
+  seo_description: '',
   is_published: true,
 };
 
@@ -26,6 +85,8 @@ export default function OfferForm() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyOffer);
+  const [gallery, setGallery] = useState<{ image: string; caption: string; alt: string }[]>([]);
+  const gallerySensors = useSensors(useSensor(PointerSensor));
 
   const { data: existing } = useQuery({
     queryKey: ['admin_offer', id],
@@ -39,30 +100,54 @@ export default function OfferForm() {
 
   useEffect(() => {
     if (existing) {
+      // Separate image sections (gallery) from text/list sections
+      const allSections = existing.sections || [];
+      const textSections = allSections.filter(s => s.type !== 'image');
+      const imageSections = allSections.filter(s => s.type === 'image');
+
       setForm({
         location: existing.location,
         hotel: existing.hotel,
         image: existing.image,
+        image_alt: existing.image_alt || '',
         book_by: existing.book_by,
         stay_from: existing.stay_from,
         stay_to: existing.stay_to,
         discount: existing.discount,
         description: existing.description || '',
-        sections: existing.sections || [],
+        sections: textSections,
+        seo_title: existing.seo_title || '',
+        seo_description: existing.seo_description || '',
         is_published: existing.is_published,
       });
+
+      setGallery(imageSections.map(s => ({
+        image: s.image || '',
+        caption: typeof s.content === 'string' ? s.content : '',
+        alt: s.alt || '',
+      })));
     }
   }, [existing]);
 
+  // Combine text sections + gallery into final sections array for saving
+  const buildSections = (): DBSection[] => {
+    const textSections = form.sections;
+    const imageSections: DBSection[] = gallery
+      .filter(g => g.image)
+      .map(g => ({ type: 'image' as const, content: g.caption, image: g.image, alt: g.alt || undefined }));
+    return [...textSections, ...imageSections];
+  };
+
   const mutation = useMutation({
     mutationFn: async () => {
+      const payload = { ...form, sections: buildSections() };
       if (isNew) {
         const { data: maxOrder } = await supabase.from('offers').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('offers').insert({ ...form, sort_order });
+        const { error } = await supabase.from('offers').insert({ ...payload, sort_order });
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('offers').update({ ...form, updated_at: new Date().toISOString() }).eq('id', Number(id));
+        const { error } = await supabase.from('offers').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', Number(id));
         if (error) throw error;
       }
     },
@@ -74,6 +159,22 @@ export default function OfferForm() {
   });
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
+
+  // Gallery helpers
+  const addGalleryImage = () => setGallery(prev => [...prev, { image: '', caption: '', alt: '' }]);
+  const updateGalleryImage = (index: number, updates: Partial<{ image: string; caption: string; alt: string }>) => {
+    setGallery(prev => prev.map((g, i) => i === index ? { ...g, ...updates } : g));
+  };
+  const removeGalleryImage = (index: number) => setGallery(prev => prev.filter((_, i) => i !== index));
+  const handleGalleryDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const items = gallery.map((g, i) => ({ ...g, _id: `gal-${i}` }));
+      const oldIndex = items.findIndex(g => g._id === active.id);
+      const newIndex = items.findIndex(g => g._id === over.id);
+      setGallery(arrayMove(gallery, oldIndex, newIndex));
+    }
+  };
 
   return (
     <div>
@@ -103,6 +204,13 @@ export default function OfferForm() {
 
         <FormField label="Зображення" required>
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
+          <input
+            type="text"
+            value={form.image_alt}
+            onChange={(e) => set('image_alt', e.target.value)}
+            placeholder="Alt текст зображення (опис для SEO та доступності)"
+            className={inputClass + ' mt-2'}
+          />
         </FormField>
 
         <FormField label="Короткий опис">
@@ -110,8 +218,54 @@ export default function OfferForm() {
         </FormField>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Секції детальної сторінки</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Контент-секції (текст, списки)</label>
           <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Галерея фото ({gallery.length} {gallery.length === 1 ? 'фото' : 'фото'})
+          </label>
+          <p className="text-xs text-gray-400 mb-3">Ці фото відображатимуться в каруселі на сторінці пропозиції</p>
+          <div className="space-y-3">
+            <DndContext sensors={gallerySensors} collisionDetection={closestCenter} onDragEnd={handleGalleryDragEnd}>
+              <SortableContext items={gallery.map((_, i) => `gal-${i}`)} strategy={verticalListSortingStrategy}>
+                {gallery.map((item, index) => (
+                  <SortableGalleryItem
+                    key={`gal-${index}`}
+                    item={{ ...item, _id: `gal-${index}` }}
+                    index={index}
+                    onUpdate={updateGalleryImage}
+                    onRemove={removeGalleryImage}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+            <button
+              type="button"
+              onClick={addGalleryImage}
+              className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-teal-500 hover:text-teal-600 w-full justify-center transition-colors"
+            >
+              <Plus size={16} />
+              Додати фото до галереї
+            </button>
+          </div>
+        </div>
+
+        {/* SEO */}
+        <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
+          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            🔍 SEO для цієї сторінки
+            <span className="text-xs font-normal text-gray-400">(/offers/{id || 'new'})</span>
+          </h3>
+          <FormField label="SEO Title">
+            <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.hotel} — ${form.location} | Vogel Travel`} />
+            <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
+          </FormField>
+          <FormField label="SEO Description">
+            <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.description || 'Опис для пошукових систем'} />
+            <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
+          </FormField>
         </div>
 
         <div className="flex items-center gap-3">

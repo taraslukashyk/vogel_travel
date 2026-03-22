@@ -12,9 +12,12 @@ const emptyPost = {
   excerpt: '',
   date: new Date().toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.'),
   image: '',
+  image_alt: '',
   category: '',
   audio: '',
   sections: [] as DBSection[],
+  seo_title: '',
+  seo_description: '',
   is_published: true,
 };
 
@@ -42,9 +45,12 @@ export default function BlogForm() {
         excerpt: existing.excerpt,
         date: existing.date,
         image: existing.image,
+        image_alt: existing.image_alt || '',
         category: existing.category,
         audio: existing.audio || '',
         sections: existing.sections || [],
+        seo_title: existing.seo_title || '',
+        seo_description: existing.seo_description || '',
         is_published: existing.is_published,
       });
     }
@@ -92,6 +98,13 @@ export default function BlogForm() {
 
         <FormField label="Зображення" required>
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
+          <input
+            type="text"
+            value={form.image_alt}
+            onChange={(e) => set('image_alt', e.target.value)}
+            placeholder="Alt текст зображення (опис для SEO та доступності)"
+            className={inputClass + ' mt-2'}
+          />
         </FormField>
 
         <FormField label="Короткий опис (excerpt)" required>
@@ -105,6 +118,22 @@ export default function BlogForm() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Секції статті</label>
           <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+        </div>
+
+        {/* SEO */}
+        <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
+          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            🔍 SEO для цієї сторінки
+            <span className="text-xs font-normal text-gray-400">(/blog/{id || 'new'})</span>
+          </h3>
+          <FormField label="SEO Title">
+            <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.title} — Vogel Family Travel`} />
+            <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
+          </FormField>
+          <FormField label="SEO Description">
+            <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.excerpt || 'Опис для пошукових систем'} />
+            <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
+          </FormField>
         </div>
 
         <div className="flex items-center gap-3">

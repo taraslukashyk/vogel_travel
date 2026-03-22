@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { useOffer } from '../lib/queries/offers';
+import SEOHead from '../components/SEOHead';
 
 const OfferDetailPage = () => {
   const { id } = useParams();
@@ -98,6 +99,12 @@ const OfferDetailPage = () => {
 
   return (
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
+      <SEOHead
+        pagePath={`/offers/${id}`}
+        title={offer.seoTitle || `${offer.hotel} — ${offer.location} | Vogel Travel`}
+        description={offer.seoDescription || offer.description || ''}
+        ogImage={offer.image}
+      />
 
       {/* ── Top Section: Split-Screen Header (Image 3/5, Content 2/5) ── */}
       <section className="relative lg:h-screen flex flex-col lg:flex-row lg:overflow-hidden bg-zinc-950">
@@ -109,7 +116,7 @@ const OfferDetailPage = () => {
         >
           <img
             src={offer.image}
-            alt={offer.hotel}
+            alt={offer.imageAlt || offer.hotel}
             className="w-full h-full object-cover saturate-[1.15] transition-transform duration-1000 group-hover:scale-105"
           />
           <div className="absolute inset-y-0 right-0 w-px bg-white/10 hidden lg:block" />
@@ -289,7 +296,7 @@ const OfferDetailPage = () => {
                 >
                   <img
                     src={section.image}
-                    alt={section.content as string}
+                    alt={section.alt || (section.content as string)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

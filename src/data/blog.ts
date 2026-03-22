@@ -11,9 +11,12 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   image: string;
+  imageAlt?: string;
   category: string;
   audio?: string;
   sections: BlogSection[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const blogPosts: BlogPost[] = [

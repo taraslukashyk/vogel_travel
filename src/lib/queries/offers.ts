@@ -10,12 +10,15 @@ function mapOffer(db: DBOffer): Offer {
     location: db.location,
     hotel: db.hotel,
     image: db.image,
+    imageAlt: db.image_alt ?? undefined,
     bookBy: db.book_by,
     stayFrom: db.stay_from,
     stayTo: db.stay_to,
     discount: db.discount,
     description: db.description ?? undefined,
     sections: db.sections,
+    seoTitle: db.seo_title ?? undefined,
+    seoDescription: db.seo_description ?? undefined,
   };
 }
 
