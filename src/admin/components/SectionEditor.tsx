@@ -22,32 +22,33 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <div ref={setNodeRef} style={style} className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-      <div className="flex items-center gap-2">
-        <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
-          <GripVertical size={18} />
-        </button>
-        <select
-          value={section.type}
-          onChange={(e) => {
-            const type = e.target.value as DBSection['type'];
-            const updated: DBSection = type === 'list'
-              ? { type, title: section.title, content: [] }
-              : type === 'image'
-                ? { type, content: '', image: '' }
-                : { type, title: section.title, content: '' };
-            onUpdate(index, updated);
-          }}
-          className="px-2 py-1 border border-gray-300 rounded text-sm"
-        >
-          <option value="text">Текст</option>
-          <option value="image">Зображення</option>
-          <option value="list">Список</option>
-        </select>
-        <span className="text-xs text-gray-400">#{index + 1}</span>
-        <div className="flex-1" />
-        <button type="button" onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600">
-          <Trash2 size={16} />
+    <div ref={setNodeRef} style={style} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3 shadow-sm">
+      <div className="flex items-center justify-between gap-2 border-b border-gray-100 pb-2 mb-2">
+        <div className="flex items-center gap-2">
+          <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-1">
+            <GripVertical size={18} />
+          </button>
+          <select
+            value={section.type}
+            onChange={(e) => {
+              const type = e.target.value as DBSection['type'];
+              const updated: DBSection = type === 'list'
+                ? { type, title: section.title, content: [] }
+                : type === 'image'
+                  ? { type, content: '', image: '' }
+                  : { type, title: section.title, content: '' };
+              onUpdate(index, updated);
+            }}
+            className="px-2 py-1 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:ring-2 focus:ring-teal-500 outline-none"
+          >
+            <option value="text">Текст</option>
+            <option value="image">Зображення</option>
+            <option value="list">Список</option>
+          </select>
+          <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">#{index + 1}</span>
+        </div>
+        <button type="button" onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-lg transition-colors">
+          <Trash2 size={18} />
         </button>
       </div>
 

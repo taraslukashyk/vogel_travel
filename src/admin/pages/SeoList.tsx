@@ -78,13 +78,13 @@ export default function SeoList() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50 text-left text-gray-500">
               <th className="px-3 py-2">Сторінка</th>
               <th className="px-3 py-2">Title</th>
-              <th className="px-3 py-2">Description</th>
+              <th className="px-3 py-2 hidden md:table-cell">Description</th>
               <th className="px-3 py-2 w-16">OG</th>
             </tr>
           </thead>
@@ -97,9 +97,9 @@ export default function SeoList() {
               >
                 <td className="px-3 py-3 font-medium text-gray-800">{entry.page_path}</td>
                 <td className="px-3 py-3 text-gray-600 max-w-[200px] truncate">{entry.title || '—'}</td>
-                <td className="px-3 py-3 text-gray-600 max-w-[200px] truncate">{entry.description || '—'}</td>
-                <td className="px-3 py-3">
-                  {entry.og_title ? <Check size={16} className="text-green-500" /> : <X size={16} className="text-gray-300" />}
+                <td className="px-3 py-3 text-gray-600 max-w-[200px] truncate hidden md:table-cell">{entry.description || '—'}</td>
+                <td className="px-3 py-3 text-center">
+                  {entry.og_title ? <Check size={16} className="text-green-500 mx-auto" /> : <X size={16} className="text-gray-300 mx-auto" />}
                 </td>
               </tr>
             ))}

@@ -28,18 +28,24 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <div ref={setNodeRef} style={style} className="flex gap-3 items-start bg-white border border-gray-200 rounded-lg p-3">
-      <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 mt-2 shrink-0">
-        <GripVertical size={16} />
-      </button>
-      <div className="shrink-0">
-        {item.image ? (
-          <img src={item.image} alt={item.alt} className="w-20 h-20 rounded object-cover" />
-        ) : (
-          <div className="w-20 h-20 rounded bg-gray-100 flex items-center justify-center text-gray-300 text-xs">Фото</div>
-        )}
+    <div ref={setNodeRef} style={style} className="flex flex-col sm:flex-row gap-3 items-start bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+      <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-3">
+        <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 shrink-0">
+          <GripVertical size={16} />
+        </button>
+        <div className="shrink-0">
+          {item.image ? (
+            <img src={item.image} alt={item.alt} className="w-20 h-20 rounded-lg object-cover" />
+          ) : (
+            <div className="w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300 text-xs font-medium">Фото</div>
+          )}
+        </div>
+        <button type="button" onClick={() => onRemove(index)} className="sm:hidden text-red-400 hover:text-red-600 p-2">
+          <Trash2 size={18} />
+        </button>
       </div>
-      <div className="flex-1 space-y-2">
+
+      <div className="flex-1 w-full space-y-2">
         <ImageUploader value={item.image} onChange={(url) => onUpdate(index, { image: url })} folder="offers" />
         <FormField label="Підпис до фото" tooltip="Текст, який відображатиметься під фото у галереї.">
           <input
@@ -60,7 +66,8 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
           />
         </FormField>
       </div>
-      <button type="button" onClick={() => onRemove(index)} className="text-red-400 hover:text-red-600 shrink-0 mt-2">
+
+      <button type="button" onClick={() => onRemove(index)} className="hidden sm:block text-red-400 hover:text-red-600 shrink-0 mt-2 p-1 hover:bg-red-50 rounded">
         <Trash2 size={16} />
       </button>
     </div>
@@ -195,7 +202,7 @@ export default function OfferForm() {
           <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
             <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
           </FormField>
-          <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як червоний бейдж на картинці.">
+          <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як зелений бейдж на картинці.">
             <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
           </FormField>
           <FormField label="Перебування з" required tooltip="Початкова дата періоду, в який діє ця пропозиція на проживання.">

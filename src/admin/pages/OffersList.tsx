@@ -23,8 +23,8 @@ function SortableRow({ offer, onToggle, onDelete, onClick }: { offer: DBOffer; o
         <img src={offer.image} alt="" className="w-16 h-10 rounded object-cover" />
       </td>
       <td className="px-3 py-3 font-medium text-gray-800">{offer.hotel}</td>
-      <td className="px-3 py-3 text-gray-600">{offer.location}</td>
-      <td className="px-3 py-3 text-gray-600">{offer.discount}</td>
+      <td className="px-3 py-3 text-gray-600 hidden md:table-cell">{offer.location}</td>
+      <td className="px-3 py-3 text-gray-600 truncate max-w-[80px] sm:max-w-none">{offer.discount}</td>
       <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
         <button onClick={onToggle} className={`${offer.is_published ? 'text-green-600' : 'text-gray-400'}`}>
           {offer.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -98,14 +98,14 @@ export default function OffersList() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50 text-left text-gray-500">
               <th className="px-3 py-2 w-10"></th>
               <th className="px-3 py-2 w-20">Фото</th>
               <th className="px-3 py-2">Готель</th>
-              <th className="px-3 py-2">Локація</th>
+              <th className="px-3 py-2 hidden md:table-cell">Локація</th>
               <th className="px-3 py-2">Знижка</th>
               <th className="px-3 py-2 w-16">Статус</th>
               <th className="px-3 py-2 w-12"></th>
