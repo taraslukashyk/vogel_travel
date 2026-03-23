@@ -25,7 +25,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
     <div ref={setNodeRef} style={style} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3 shadow-sm">
       <div className="flex items-center justify-between gap-2 border-b border-gray-100 pb-2 mb-2">
         <div className="flex items-center gap-2">
-          <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-1">
+          <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-2 -m-2 outline-none touch-none" style={{ touchAction: 'none' }}>
             <GripVertical size={18} />
           </button>
           <select
@@ -143,7 +143,11 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
 
 export default function SectionEditor({ sections, onChange }: SectionEditorProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 

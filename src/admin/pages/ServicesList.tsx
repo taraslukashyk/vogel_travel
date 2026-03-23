@@ -15,7 +15,7 @@ function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBServ
   return (
     <tr ref={setNodeRef} style={style} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={onClick}>
       <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
-        <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
+        <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-2 -m-2 outline-none touch-none" style={{ touchAction: 'none' }}>
           <GripVertical size={16} />
         </button>
       </td>
@@ -36,7 +36,13 @@ function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBServ
 export default function ServicesList() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['admin_services'],

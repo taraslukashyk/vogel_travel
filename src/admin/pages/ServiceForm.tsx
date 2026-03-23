@@ -67,6 +67,24 @@ export default function ServiceForm() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from('services').delete().eq('id', Number(id));
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin_services'] });
+      qc.invalidateQueries({ queryKey: ['services'] });
+      navigate('/admin/services');
+    },
+  });
+
+  const handleDelete = () => {
+    if (confirm('Видалити цей сервіс?')) {
+      deleteMutation.mutate();
+    }
+  };
+
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
   const updateItem = (index: number, field: keyof DBServiceItem, value: string) => {
@@ -146,13 +164,23 @@ export default function ServiceForm() {
           </label>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
             {mutation.isPending ? 'Збереження...' : 'Зберегти'}
           </button>
           <button type="button" onClick={() => navigate('/admin/services')} className={btnSecondary}>
             Скасувати
           </button>
+          {!isNew && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+            >
+              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+            </button>
+          )}
         </div>
       </form>
     </div>

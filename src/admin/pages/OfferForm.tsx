@@ -30,7 +30,7 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
   return (
     <div ref={setNodeRef} style={style} className="flex flex-col sm:flex-row gap-3 items-start bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
       <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-3">
-        <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 shrink-0">
+        <button type="button" {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 shrink-0 p-2 -m-2 outline-none touch-none" style={{ touchAction: 'none' }}>
           <GripVertical size={16} />
         </button>
         <div className="shrink-0">
@@ -97,7 +97,13 @@ export default function OfferForm() {
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyOffer);
   const [gallery, setGallery] = useState<{ image: string; caption: string; alt: string }[]>([]);
-  const gallerySensors = useSensors(useSensor(PointerSensor));
+  const gallerySensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const { data: existing } = useQuery({
     queryKey: ['admin_offer', id],
@@ -168,6 +174,24 @@ export default function OfferForm() {
       navigate('/admin/offers');
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from('offers').delete().eq('id', Number(id));
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin_offers'] });
+      qc.invalidateQueries({ queryKey: ['offers'] });
+      navigate('/admin/offers');
+    },
+  });
+
+  const handleDelete = () => {
+    if (confirm('Видалити цю пропозицію?')) {
+      deleteMutation.mutate();
+    }
+  };
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
@@ -288,13 +312,23 @@ export default function OfferForm() {
           </label>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
             {mutation.isPending ? 'Збереження...' : 'Зберегти'}
           </button>
           <button type="button" onClick={() => navigate('/admin/offers')} className={btnSecondary}>
             Скасувати
           </button>
+          {!isNew && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+            >
+              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+            </button>
+          )}
         </div>
       </form>
     </div>

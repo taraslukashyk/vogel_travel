@@ -67,6 +67,24 @@ export default function SeoForm() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from('seo_meta').delete().eq('id', Number(id));
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin_seo'] });
+      qc.invalidateQueries({ queryKey: ['seo_meta'] });
+      navigate('/admin/seo');
+    },
+  });
+
+  const handleDelete = () => {
+    if (confirm('Видалити ці SEO налаштування?')) {
+      deleteMutation.mutate();
+    }
+  };
+
   const set = (key: string, value: string) => setForm(prev => ({ ...prev, [key]: value }));
 
   return (
@@ -115,12 +133,20 @@ export default function SeoForm() {
           <ImageUploader value={form.og_image} onChange={(url) => set('og_image', url)} folder="seo" />
         </FormField>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
             {mutation.isPending ? 'Збереження...' : 'Зберегти'}
           </button>
           <button type="button" onClick={() => navigate('/admin/seo')} className={btnSecondary}>
             Скасувати
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+            className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+          >
+            {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
           </button>
         </div>
       </form>
