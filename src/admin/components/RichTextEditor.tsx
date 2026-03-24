@@ -3,8 +3,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import ImageExtension from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link as LinkIcon, ImageIcon, Undo, Redo } from 'lucide-react';
-import { useEffect } from 'react';
+import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link as LinkIcon, Undo, Redo } from 'lucide-react';
+import { useMemo, useEffect } from 'react';
 
 interface RichTextEditorProps {
   value: string;
@@ -13,13 +13,20 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ value, onChange, placeholder = 'Почніть писати...' }: RichTextEditorProps) {
+  const extensions = useMemo(() => [
+    StarterKit,
+    ImageExtension,
+    Link.configure({ 
+      openOnClick: false,
+      HTMLAttributes: {
+        class: 'text-[#5cc8bd] underline cursor-pointer',
+      },
+    }),
+    Placeholder.configure({ placeholder }),
+  ], [placeholder]);
+
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link.configure({ openOnClick: false }),
-      ImageExtension,
-      Placeholder.configure({ placeholder }),
-    ],
+    extensions,
     content: value,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
@@ -46,13 +53,24 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
   );
 
   const addLink = () => {
-    const url = window.prompt('URL посилання:');
-    if (url) editor.chain().focus().setLink({ href: url }).run();
-  };
+    const { from, to } = editor.state.selection;
+    const isSelectionEmpty = from === to;
+    
+    if (isSelectionEmpty && !editor.isActive('link')) {
+      alert('Будь ласка, виділіть текст, щоб зробити його посиланням.');
+      return;
+    }
 
-  const addImage = () => {
-    const url = window.prompt('URL зображення:');
-    if (url) editor.chain().focus().setImage({ src: url }).run();
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('URL посилання:', previousUrl || 'https://');
+    
+    if (url === null) return;
+
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    } else {
+      editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    }
   };
 
   return (
@@ -76,11 +94,16 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
         <ToolBtn active={editor.isActive('orderedList')} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
           <ListOrdered size={16} />
         </ToolBtn>
-        <ToolBtn onClick={addLink}><LinkIcon size={16} /></ToolBtn>
-        <ToolBtn onClick={addImage}><ImageIcon size={16} /></ToolBtn>
+        <ToolBtn active={editor.isActive('link')} onClick={addLink}>
+          <LinkIcon size={16} />
+        </ToolBtn>
         <div className="flex-1" />
-        <ToolBtn onClick={() => editor.chain().focus().undo().run()}><Undo size={16} /></ToolBtn>
-        <ToolBtn onClick={() => editor.chain().focus().redo().run()}><Redo size={16} /></ToolBtn>
+        <ToolBtn onClick={() => editor.chain().focus().undo().run()} active={false}>
+          <Undo size={16} />
+        </ToolBtn>
+        <ToolBtn onClick={() => editor.chain().focus().redo().run()} active={false}>
+          <Redo size={16} />
+        </ToolBtn>
       </div>
       <EditorContent editor={editor} className="prose prose-sm max-w-none p-3 min-h-[120px] [&_.ProseMirror]:outline-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none" />
     </div>
