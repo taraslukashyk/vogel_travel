@@ -225,9 +225,10 @@ const OfferDetailPage = () => {
                 </h2>
               )}
               {section.type === 'text' && (
-                <p className="font-inter text-xl text-gray-700 leading-relaxed font-light italic">
-                  {section.content as string}
-                </p>
+                <div 
+                  className="prose prose-xl prose-gray max-w-none font-inter text-gray-700 leading-relaxed font-light italic [&_a]:text-[#5cc8bd] [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: section.content as string }}
+                />
               )}
               {section.type === 'list' && (
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">

@@ -186,9 +186,10 @@ const ArticlePage = () => {
                         {section.title}
                       </h2>
                     )}
-                    <p className="text-lg text-gray-700 leading-relaxed font-inter mb-6">
-                      {section.content}
-                    </p>
+                    <div 
+                      className="text-lg text-gray-700 leading-relaxed font-inter mb-6 [&_a]:text-[#5cc8bd] [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: section.content as string }} 
+                    />
                   </div>
                 );
               }

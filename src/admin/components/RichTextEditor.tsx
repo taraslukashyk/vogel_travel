@@ -37,6 +37,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
   const ToolBtn = ({ active, onClick, children }: { active?: boolean; onClick: () => void; children: React.ReactNode }) => (
     <button
       type="button"
+      onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
       className={`p-1.5 rounded transition-colors ${active ? 'bg-teal-100 text-teal-700' : 'text-gray-500 hover:bg-gray-100'}`}
     >
