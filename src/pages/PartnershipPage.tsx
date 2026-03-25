@@ -19,6 +19,7 @@ const PartnershipPage = () => {
     .map(p => ({
       id: p.id,
       name: p.name,
+      slug: p.slug,
       lng: p.lng!,
       lat: p.lat!,
       tag: p.tag || p.name.slice(0, 2).toUpperCase(),
@@ -28,7 +29,7 @@ const PartnershipPage = () => {
 
   return (
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
-      <SEOHead pagePath="/partners" fallbackTitle="Партнерство — Vogel Family Travel" />
+      <SEOHead pagePath="/ua/partners" fallbackTitle="Партнерство — Vogel Family Travel" />
 
       {/* ── Map ── */}
       <section className="relative w-full z-10 border-b border-white/5">
@@ -51,7 +52,7 @@ const PartnershipPage = () => {
             {partners.map(partner => (
               <Link
                 key={partner.id}
-                to={`/partners/${partner.id}`}
+                to={`/ua/partners/${partner.slug}`}
                 className="group bg-white/5 border border-white/10 p-6 hover:bg-white/10 hover:border-[#5cc8bd]/40 transition-all duration-500 flex flex-col gap-4"
               >
                 {/* Logo */}

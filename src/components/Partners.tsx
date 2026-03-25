@@ -12,7 +12,7 @@ const Partners = () => {
   return (
     <section className="w-full py-20 bg-transparent border-t border-white/5 overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 mb-12 flex flex-col items-center text-center">
-        <Link to="/partners" className="group flex items-center gap-3 text-white/40 hover:text-[#5cc8bd] transition-colors cursor-pointer">
+        <Link to="/ua/partners" className="group flex items-center gap-3 text-white/40 hover:text-[#5cc8bd] transition-colors cursor-pointer">
           <h3 className="font-montserrat uppercase tracking-[0.2em] text-sm md:text-base font-black italic drop-shadow-sm transition-colors cursor-pointer">
             Наші партнери на карті світу
           </h3>
@@ -39,7 +39,7 @@ const Partners = () => {
               {displayPartners.map((partner) => (
                 <Link
                   key={`p1-${partner.id}`}
-                  to={`/partners/${partner.id}`}
+                  to={`/ua/partners/${partner.slug}`}
                   className="flex-shrink-0 select-none group"
                   title={partner.name}
                 >
@@ -70,7 +70,7 @@ const Partners = () => {
               {displayPartners.map((partner) => (
                 <Link
                   key={`p2-${partner.id}`}
-                  to={`/partners/${partner.id}`}
+                  to={`/ua/partners/${partner.slug}`}
                   className="flex-shrink-0 select-none group"
                   title={partner.name}
                 >

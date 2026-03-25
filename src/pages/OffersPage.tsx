@@ -33,7 +33,7 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
   return (
     <div
       ref={ref}
-      id={`offer-${offer.id}`}
+      id={`offer-${offer.slug}`}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
@@ -102,7 +102,7 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
 
           {/* CTA button */}
           <Link 
-            to={`/offers/${offer.id}`}
+            to={`/ua/offers/${offer.slug}`}
             className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 hover:bg-white hover:text-black transition-all duration-500 rounded-sm text-center block"
           >
             Дізнатися більше
@@ -141,7 +141,7 @@ const OffersPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/offers" fallbackTitle="Пропозиції — Vogel Family Travel" fallbackDescription="Ексклюзивні пропозиції від наших партнерів — перевірених готелів преміального рівня по всьому світу." />
+      <SEOHead pagePath="/ua/offers" fallbackTitle="Пропозиції — Vogel Family Travel" fallbackDescription="Ексклюзивні пропозиції від наших партнерів — перевірених готелів преміального рівня по всьому світу." />
 
       {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

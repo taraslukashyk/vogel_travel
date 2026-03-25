@@ -11,7 +11,7 @@ import bgImage from '../assets/about-bg.png'
 const Home = () => {
   return (
     <>
-      <SEOHead pagePath="/" fallbackTitle="Vogel Family Travel — Преміальні подорожі" />
+      <SEOHead pagePath="/ua" fallbackTitle="Vogel Family Travel — Преміальні подорожі" />
       <Hero />
       
       {/* ── Text Banner (Glass Strip) ── */}

@@ -79,7 +79,7 @@ const ContactsPage = () => {
     }
     if (!selectedServiceId) return 0;
 
-    const isOffer = offers.find(o => `offer-${o.id}` === selectedServiceId);
+    const isOffer = offers.find(o => `offer-${o.slug}` === selectedServiceId);
     const basePrice = isOffer ? 5000 : 2000; // Mock base prices
 
     const personsCount = persons === '5+' ? 5 : parseInt(persons);
@@ -112,7 +112,7 @@ const ContactsPage = () => {
 
   return (
     <main className="w-full bg-zinc-950 text-white min-h-screen overflow-hidden relative selection:bg-[#5cc8bd]/30">
-      <SEOHead pagePath="/contacts" fallbackTitle="Контакти — Vogel Family Travel" fallbackDescription="Зв'яжіться з нами для консультації та бронювання преміальних подорожей." />
+      <SEOHead pagePath="/ua/contacts" fallbackTitle="Контакти — Vogel Family Travel" fallbackDescription="Зв'яжіться з нами для консультації та бронювання преміальних подорожей." />
 
       {/* Background Video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -216,14 +216,14 @@ const ContactsPage = () => {
                             className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
                             <option value="" className="bg-zinc-900 text-white">Оберіть послугу...</option>
-                            <optgroup label="Пропозиції (Tours)" className="bg-zinc-900 text-white">
+                            <optgroup label="Пропозиції (Tours)" className="bg-zinc-950 text-white">
                               {offers.map(offer => (
-                                <option key={`offer-${offer.id}`} value={`offer-${offer.id}`} className="bg-zinc-900 text-white">{offer.hotel}</option>
+                                <option key={`offer-${offer.id}`} value={`offer-${offer.slug}`} className="bg-zinc-950 text-white">{offer.hotel}</option>
                               ))}
                             </optgroup>
-                            <optgroup label="Сервіси (Services)" className="bg-zinc-900 text-white">
+                            <optgroup label="Сервіси (Services)" className="bg-zinc-950 text-white">
                               {services.map(service => (
-                                <option key={`service-${service.id}`} value={`service-${service.id}`} className="bg-zinc-900 text-white">{service.title}</option>
+                                <option key={`service-${service.id}`} value={`service-${service.slug}`} className="bg-zinc-950 text-white">{service.title}</option>
                               ))}
                             </optgroup>
                             <option value="custom" className="bg-zinc-900 text-white">Індивідуальний розрахунок</option>

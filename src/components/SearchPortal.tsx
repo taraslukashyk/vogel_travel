@@ -73,9 +73,9 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                   <span className="text-white/30 text-sm">Але ви завжди можете перейти на відповідну вкладку та обрати саме те, що вас цікавить:</span>
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Link to="/offers" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Пропозиції</Link>
-                  <Link to="/services" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Сервіси</Link>
-                  <Link to="/blog" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Блог</Link>
+                  <Link to="/ua/offers" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Пропозиції</Link>
+                  <Link to="/ua/services" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Сервіси</Link>
+                  <Link to="/ua/blog" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Блог</Link>
                 </div>
               </div>
             ) : (
@@ -90,7 +90,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredResults.offers.map(offer => (
-                        <Link key={offer.id} to={`/offers/${offer.id}`} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
+                        <Link key={offer.id} to={`/ua/offers/${offer.slug}`} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
                           <div className="w-20 h-20 shrink-0 rounded-sm overflow-hidden">
                             <img src={offer.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={offer.hotel} />
                           </div>
@@ -114,7 +114,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                     </div>
                     <div className="space-y-4">
                       {filteredResults.services.map(service => (
-                        <Link key={service.id} to={`/services#service-${service.id}`} onClick={onClose} className="group block p-5 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all">
+                        <Link key={service.id} to={`/ua/services/${service.slug}`} onClick={onClose} className="group block p-5 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all">
                           <div className="flex justify-between items-center">
                             <div>
                               <h4 className="text-white font-bold text-base mb-2 group-hover:text-[#5cc8bd] transition-colors">{service.title}</h4>
@@ -137,7 +137,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {filteredResults.blog.map(post => (
-                        <Link key={post.id} to={`/blog/${post.id}`} onClick={onClose} className="group flex flex-col gap-4">
+                        <Link key={post.id} to={`/ua/blog/${post.slug}`} onClick={onClose} className="group flex flex-col gap-4">
                           <div className="aspect-video w-full rounded-sm overflow-hidden bg-white/5">
                             <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={post.title} />
                           </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
+import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
@@ -21,6 +22,7 @@ const emptyPartner = {
   lng: '',
   lat: '',
   sections: [] as DBSection[],
+  slug: '',
   seo_title: '',
   seo_description: '',
   is_published: true,
@@ -60,6 +62,7 @@ export default function PartnerForm() {
         lng: existing.lng != null ? String(existing.lng) : '',
         lat: existing.lat != null ? String(existing.lat) : '',
         sections: existing.sections || [],
+        slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
         is_published: existing.is_published,
@@ -86,6 +89,7 @@ export default function PartnerForm() {
         lng: form.lng !== '' ? Number(form.lng) : null,
         lat: form.lat !== '' ? Number(form.lat) : null,
         sections: form.sections,
+        slug: form.slug || null,
         seo_title: form.seo_title || null,
         seo_description: form.seo_description || null,
         is_published: form.is_published,
@@ -131,7 +135,28 @@ export default function PartnerForm() {
 
         {/* Basic Info */}
         <FormField label="Назва партнера" required>
-          <input className={inputClass} value={form.name} onChange={(e) => set('name', e.target.value)} required placeholder="Four Seasons Hotels & Resorts" />
+          <input 
+            className={inputClass} 
+            value={form.name} 
+            onChange={(e) => {
+              const name = e.target.value;
+              set('name', name);
+              if (isNew) set('slug', slugify(name));
+            }} 
+            required 
+            placeholder="Four Seasons Hotels & Resorts" 
+          />
+        </FormField>
+
+        <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично з назви.">
+          <input
+            className={inputClass}
+            value={form.slug}
+            onChange={(e) => set('slug', slugify(e.target.value))}
+            placeholder="four-seasons"
+            required
+          />
+          <p className="text-xs text-gray-400 mt-1">vogel_travel/partners/<strong>{form.slug || 'slug'}</strong></p>
         </FormField>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

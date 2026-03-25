@@ -8,6 +8,7 @@ export const services = [
     image:
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1000',
     type: 'Сервіс',
+    slug: 'premium-rentals',
     items: [
       { label: 'Вілли та шато', text: 'Приватні об\'єкти від Тоскани до Балі з особистим персоналом, шеф-кухарем та дворецьким.' },
       { label: 'Гірські шале', text: 'Ексклюзивні шале у Куршевелі, Церматті та Санкт-Моріці з прямим виходом на гірськолижні схили.' },
@@ -56,6 +57,7 @@ export const services = [
     image:
       'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?auto=format&fit=crop&q=80&w=1000',
     type: 'Сервіс',
+    slug: 'individual-itineraries',
     items: [
       { label: 'Сімейні тури', text: 'Маршрути з урахуванням інтересів дітей різного віку, з аніматорами та безпечними активностями.' },
       { label: 'Романтичні подорожі', text: 'Ексклюзивні пропозиції для пар: пропозиція руки на вершині Ейфелевої вежі, приватна вечеря під зорями в пустелі Намібіє.' },
@@ -99,6 +101,7 @@ export const services = [
     image:
       'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1000',
     type: 'Сервіс',
+    slug: 'travel-support',
     items: [
       { label: 'Travel Audit', text: 'Ретельний аналіз вашого поточного маршруту та виявлення можливостей для покращення якості чи оптимізації витрат.' },
       { label: '24/7 підтримка', text: 'Персональний менеджер доступний цілодобово через WhatsApp, Telegram або телефон під час усієї подорожі.' },
@@ -135,6 +138,7 @@ export const services = [
     image:
       'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000',
     type: 'Сервіс',
+    slug: 'mice-corporate',
     items: [
       { label: 'Incentive Travel', text: 'Мотиваційні тури для найкращих співробітників або партнерів компанії — від Монако до Японії.' },
       { label: 'Корпоративні ретрити', text: 'Командоутворюючі програми на преміальних курортах із фасилітацією та розвитком лідерства.' },
@@ -178,6 +182,7 @@ export const services = [
     image:
       'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
     type: 'Сервіс',
+    slug: 'exclusive-privileges',
     items: [
       { label: 'Готельні привілеї', text: 'Апгрейди, ранній заїзд, пізній виїзд, кредити на спа та харчування через програму Virtuoso та Preferred Partner.' },
       { label: 'Закриті досвіди', text: 'Приватні екскурсії Ватиканом після закриття, перегляд колекцій аукціонних будинків, зустрічі з Michelin-шеф-кухарями.' },

@@ -13,10 +13,11 @@ function mapPost(db: DBBlogPost): BlogPost {
     image: db.image,
     imageAlt: db.image_alt ?? undefined,
     category: db.category,
-    audio: db.audio ?? undefined,
+    audio: db.audio || undefined,
     sections: db.sections,
-    seoTitle: db.seo_title ?? undefined,
-    seoDescription: db.seo_description ?? undefined,
+    slug: db.slug || String(db.id),
+    seoTitle: db.seo_title || undefined,
+    seoDescription: db.seo_description || undefined,
   };
 }
 
@@ -37,19 +38,28 @@ export function useBlogPosts() {
   });
 }
 
-export function useBlogPost(id: number) {
+export function useBlogPost(idOrSlug: number | string) {
+  const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
-    queryKey: ['blog_posts', id],
+    queryKey: ['blog_posts', idOrSlug],
     queryFn: async (): Promise<BlogPost | null> => {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('id', id)
-        .single();
-      if (error) throw error;
+      const query = supabase.from('blog_posts').select('*');
+      
+      if (isId) {
+        query.eq('id', Number(idOrSlug));
+      } else {
+        query.eq('slug', idOrSlug);
+      }
+      
+      const { data, error } = await query.single();
+      if (error) {
+        // Якщо за slug не знайдено, спробуємо знайти старі записи за ID, якщо idOrSlug це число у форматі рядка
+        if (!isId) return null;
+        throw error;
+      };
       return data ? mapPost(data as DBBlogPost) : null;
     },
-    placeholderData: () => staticPosts.find(p => p.id === id),
+    placeholderData: () => staticPosts.find(p => isId ? p.id === Number(idOrSlug) : p.slug === idOrSlug),
     staleTime: 5 * 60 * 1000,
   });
 }

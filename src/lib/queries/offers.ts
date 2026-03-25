@@ -17,6 +17,7 @@ function mapOffer(db: DBOffer): Offer {
     discount: db.discount,
     description: db.description ?? undefined,
     sections: db.sections,
+    slug: db.slug || String(db.id),
     seoTitle: db.seo_title ?? undefined,
     seoDescription: db.seo_description ?? undefined,
   };
@@ -39,19 +40,25 @@ export function useOffers() {
   });
 }
 
-export function useOffer(id: number) {
+export function useOffer(idOrSlug: number | string) {
+  const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
-    queryKey: ['offers', id],
+    queryKey: ['offers', idOrSlug],
     queryFn: async (): Promise<Offer | null> => {
-      const { data, error } = await supabase
-        .from('offers')
-        .select('*')
-        .eq('id', id)
-        .single();
-      if (error) throw error;
+      const query = supabase.from('offers').select('*');
+      if (isId) {
+        query.eq('id', Number(idOrSlug));
+      } else {
+        query.eq('slug', idOrSlug);
+      }
+      const { data, error } = await query.single();
+      // Table may not exist yet or record not found — fall back to static data
+      if (error) {
+        return (staticOffers.find(o => isId ? o.id === Number(idOrSlug) : (o as any).slug === idOrSlug) ?? null);
+      }
       return data ? mapOffer(data as DBOffer) : null;
     },
-    placeholderData: () => staticOffers.find(o => o.id === id),
+    placeholderData: () => staticOffers.find(o => isId ? o.id === Number(idOrSlug) : (o as any).slug === idOrSlug) ?? null,
     staleTime: 5 * 60 * 1000,
   });
 }

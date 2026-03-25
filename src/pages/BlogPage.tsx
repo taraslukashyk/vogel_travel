@@ -32,7 +32,7 @@ const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
   const ref = useScrollReveal<HTMLAnchorElement>();
   return (
     <Link
-      to={`/blog/${post.id}`}
+      to={`/ua/blog/${post.slug}`}
       ref={ref}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out group"
       style={{ transitionDelay: `${idx * 100}ms` }}
@@ -98,7 +98,7 @@ const BlogPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/blog" fallbackTitle="Блог — Vogel Family Travel" fallbackDescription="Натхнення, практичні поради та ексклюзивні огляди найкращих місць планети." />
+      <SEOHead pagePath="/ua/blog" fallbackTitle="Блог — Vogel Family Travel" fallbackDescription="Натхнення, практичні поради та ексклюзивні огляди найкращих місць планети." />
 
       {/* Background video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

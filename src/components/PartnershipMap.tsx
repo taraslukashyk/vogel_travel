@@ -7,6 +7,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 interface MapPartner {
   id: number;
   name: string;
+  slug?: string | null;
   lng: number;
   lat: number;
   tag: string;
@@ -84,7 +85,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
       `;
 
       el.addEventListener('click', () => {
-        navigate(`/partners/${p.id}`);
+        navigate(`/ua/partners/${p.slug || p.id}`);
       });
 
       new maplibregl.Marker({ element: el })

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, FileText } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import AudioUploader from '../components/AudioUploader';
@@ -18,6 +19,7 @@ const emptyPost = {
   category: '',
   audio: '',
   sections: [] as DBSection[],
+  slug: '',
   seo_title: '',
   seo_description: '',
   is_published: true,
@@ -51,6 +53,7 @@ export default function BlogForm() {
         category: existing.category,
         audio: existing.audio || '',
         sections: existing.sections || [],
+        slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
         is_published: existing.is_published,
@@ -112,7 +115,27 @@ export default function BlogForm() {
           </div>
           <div className="p-5 space-y-6">
             <FormField label="Заголовок" required tooltip="Головний заголовок сторінки статті (H1).">
-              <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} required />
+              <input 
+                className={inputClass} 
+                value={form.title} 
+                onChange={(e) => {
+                  const title = e.target.value;
+                  set('title', title);
+                  if (isNew) set('slug', slugify(title));
+                }} 
+                required 
+              />
+            </FormField>
+
+            <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично з заголовка.">
+              <input
+                className={inputClass}
+                value={form.slug}
+                onChange={(e) => set('slug', slugify(e.target.value))}
+                placeholder="yak-vibrati-tur"
+                required
+              />
+              <p className="text-xs text-gray-400 mt-1">vogel_travel/blog/<strong>{form.slug || 'slug'}</strong></p>
             </FormField>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

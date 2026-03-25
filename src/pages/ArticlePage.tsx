@@ -6,9 +6,9 @@ import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
 
 const ArticlePage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const location = useLocation();
-  const { data: post, isLoading } = useBlogPost(Number(id));
+  const { data: post, isLoading } = useBlogPost(slug!);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
@@ -61,7 +61,7 @@ const ArticlePage = () => {
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-serif text-gray-900 mb-4">Статтю не знайдено</h1>
-          <Link to="/blog" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
+          <Link to="/ua/blog" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
             Повернутися до блогу
           </Link>
         </div>
@@ -72,7 +72,7 @@ const ArticlePage = () => {
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
       <SEOHead
-        pagePath={`/blog/${id}`}
+        pagePath={`/ua/blog/${slug}`}
         title={post.seoTitle || `${post.title} — Vogel Family Travel`}
         description={post.seoDescription || post.excerpt}
         ogImage={post.image}
@@ -96,7 +96,7 @@ const ArticlePage = () => {
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <div className="max-w-4xl">
             <Link
-              to="/blog"
+              to="/ua/blog"
               className="inline-flex items-center gap-2 text-white/70 hover:text-[#5cc8bd] transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -241,7 +241,7 @@ const ArticlePage = () => {
           <div className="mt-24 pt-16 border-t border-gray-100 flex flex-col items-center">
             <p className="text-gray-400 font-serif italic text-xl mb-8">Плануєте свою наступну подорож?</p>
             <Link
-              to="/services"
+              to="/ua/services"
               className="bg-black text-white font-montserrat font-bold uppercase tracking-[0.2em] text-xs px-10 py-5 hover:bg-[#5cc8bd] transition-all duration-300 rounded-[2px]"
             >
               Переглянути наші сервіси

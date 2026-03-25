@@ -15,6 +15,7 @@ export interface BlogPost {
   category: string;
   audio?: string;
   sections: BlogSection[];
+  slug: string;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -28,6 +29,7 @@ export const blogPosts: BlogPost[] = [
     image: 'https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?auto=format&fit=crop&w=1200&q=80',
     category: 'Фіджі',
     audio: '/audio/fiji_review.wav',
+    slug: 'fiji-islands',
     sections: [
       {
         type: 'text',
@@ -103,6 +105,7 @@ export const blogPosts: BlogPost[] = [
     image: 'https://images.unsplash.com/photo-1468581264429-2548ef9eb732?auto=format&fit=crop&w=1200&q=80',
     category: 'Домінікана',
     audio: '/audio/dominicana_review.wav',
+    slug: 'dominican-republic',
     sections: [
       {
         type: 'text',
@@ -175,6 +178,7 @@ export const blogPosts: BlogPost[] = [
     image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80',
     category: 'Маврикій',
     audio: '/audio/mauritius_review.wav',
+    slug: 'mauritius',
     sections: [
       {
         type: 'text',
@@ -231,6 +235,7 @@ export const blogPosts: BlogPost[] = [
     image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
     category: 'Мексика',
     audio: '/audio/mexico_review.wav',
+    slug: 'mexico',
     sections: [
       {
         type: 'text',
@@ -286,6 +291,7 @@ export const blogPosts: BlogPost[] = [
     image: 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=1200&q=80',
     category: 'Куба',
     audio: '/audio/cuba_review.wav',
+    slug: 'cuba',
     sections: [
       {
         type: 'text',
@@ -344,6 +350,7 @@ export const blogPosts: BlogPost[] = [
     date: '01.03.2026',
     image: 'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=1200&q=80',
     category: 'Мальдіви',
+    slug: 'maldives',
     sections: [
       {
         type: 'text',
@@ -399,6 +406,7 @@ export const blogPosts: BlogPost[] = [
     date: '28.02.2026',
     image: 'https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1200&q=80',
     category: 'Сейшели',
+    slug: 'seychelles',
     sections: [
       {
         type: 'text',

@@ -43,7 +43,7 @@ const AboutPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-primary/30 min-h-screen pt-40 pb-24 overflow-hidden relative">
-      <SEOHead pagePath="/about" fallbackTitle="Про нас — Vogel Family Travel" />
+      <SEOHead pagePath="/ua/about" fallbackTitle="Про нас — Vogel Family Travel" />
 
       {/* Background Video Decor */}
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
+import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
@@ -85,6 +86,7 @@ const emptyOffer = {
   discount: '',
   description: '',
   sections: [] as DBSection[],
+  slug: '',
   seo_title: '',
   seo_description: '',
   is_published: true,
@@ -133,6 +135,7 @@ export default function OfferForm() {
         discount: existing.discount,
         description: existing.description || '',
         sections: textSections,
+        slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
         is_published: existing.is_published,
@@ -226,10 +229,41 @@ export default function OfferForm() {
           <div className="p-5 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField label="Готель" required tooltip="Назва готелю. Це буде головним заголовком на картці пропозиції.">
-                <input className={inputClass} value={form.hotel} onChange={(e) => set('hotel', e.target.value)} required />
+                <input
+                  className={inputClass}
+                  value={form.hotel}
+                  onChange={(e) => {
+                    const hotel = e.target.value;
+                    set('hotel', hotel);
+                    if (isNew) set('slug', slugify(`${hotel} ${form.location}`));
+                  }}
+                  required
+                  placeholder="Dusit Thani Maldives"
+                />
               </FormField>
+
+              <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично.">
+                <input
+                  className={inputClass}
+                  value={form.slug}
+                  onChange={(e) => set('slug', slugify(e.target.value))}
+                  placeholder="dusit-thani-maldives"
+                  required
+                />
+                <p className="text-xs text-gray-400 mt-1">vogel_travel/offers/<strong>{form.slug || 'slug'}</strong></p>
+              </FormField>
+
               <FormField label="Локація" required tooltip="Місто, курорт або країна.">
-                <input className={inputClass} value={form.location} onChange={(e) => set('location', e.target.value)} required />
+                <input
+                  className={inputClass}
+                  value={form.location}
+                  onChange={(e) => {
+                    const location = e.target.value;
+                    set('location', location);
+                    if (isNew) set('slug', slugify(`${form.hotel} ${location}`));
+                  }}
+                  required
+                />
               </FormField>
               <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
                 <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />

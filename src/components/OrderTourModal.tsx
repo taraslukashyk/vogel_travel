@@ -94,7 +94,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
               {offers.map((offer) => (
                 <Link
                   key={offer.id}
-                  to={`/offers/${offer.id}`}
+                  to={`/ua/offers/${offer.slug}`}
                   onClick={onClose}
                   className="group relative min-w-[240px] md:min-w-[320px] h-[160px] md:h-[280px] overflow-hidden rounded-[2px] border border-white/10 hover:border-[#5cc8bd]/50 transition-all duration-500 bg-white/5 snap-start"
                 >
@@ -175,7 +175,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 
             <div className="mt-6 text-center md:text-right flex-shrink-0">
               <Link
-                to="/offers"
+                to="/ua/offers"
                 onClick={onClose}
                 className="inline-flex items-center gap-4 text-white hover:text-[#5cc8bd] transition-colors text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] group"
               >

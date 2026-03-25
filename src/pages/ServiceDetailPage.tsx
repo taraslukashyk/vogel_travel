@@ -5,9 +5,9 @@ import { useService } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 
 const ServiceDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const location = useLocation();
-  const { data: service, isLoading } = useService(Number(id));
+  const { data: service, isLoading } = useService(slug!);
 
   const [currentImg, setCurrentImg] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -69,7 +69,7 @@ const ServiceDetailPage = () => {
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4 italic font-serif">Сервіс не знайдено</h2>
-          <Link to="/services" className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
+          <Link to="/ua/services" className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
             Повернутися до сервісів
           </Link>
         </div>
@@ -86,7 +86,7 @@ const ServiceDetailPage = () => {
   return (
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
       <SEOHead
-        pagePath={`/services/${id}`}
+        pagePath={`/ua/services/${slug}`}
         title={service.seoTitle || `${service.title} — Vogel Family Travel`}
         description={service.seoDescription || service.description || ''}
         ogImage={service.image}
@@ -125,7 +125,7 @@ const ServiceDetailPage = () => {
 
           <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
             <Link
-              to="/services"
+              to="/ua/services"
               className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />

@@ -18,6 +18,7 @@ export interface Offer {
   discount: string;
   description?: string;
   sections?: OfferSection[];
+  slug: string;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -32,6 +33,7 @@ export const offers: Offer[] = [
     stayFrom: '05/05',
     stayTo: '30/09',
     discount: '-60%',
+    slug: 'dusit-thani-maldives',
     description: 'Втеча до раю, де бірюзові води атолу Баа зустрічаються з легендарною тайською гостинністю. Dusit Thani Maldives поєднує в собі вишукану розкіш та незайману природу біосферного заповідника ЮНЕСКО.',
     sections: [
       {
@@ -75,6 +77,7 @@ export const offers: Offer[] = [
     stayFrom: '01/06',
     stayTo: '15/10',
     discount: '-45%',
+    slug: 'canaves-oia-suites',
     description: 'Відкрийте для себе втілення кікладської розкоші на мальовничих схилах Ії. Canaves Oia Suites поєднує білосніжну архітектуру, панорамні басейни та захоплюючий вид на Кальдеру, створюючи ідеальну атмосферу для романтичної втечі.',
     sections: [
       {
@@ -113,6 +116,7 @@ export const offers: Offer[] = [
     stayFrom: '10/06',
     stayTo: '31/08',
     discount: '-35%',
+    slug: 'atlantis-the-royal',
     description: 'Нова легенда Дубая на Пальмі Джумейра. Atlantis The Royal — це архітектурний шедевр, що пропонує ультра-розкішний відпочинок, 17 ресторанів від зіркових шеф-кухарів та басейни, що немов левітують у повітрі.',
     sections: [
       {
@@ -151,6 +155,7 @@ export const offers: Offer[] = [
     stayFrom: '01/05',
     stayTo: '30/07',
     discount: '',
+    slug: 'four-seasons-bali',
     description: 'Відчуйте гармонію балійських традицій та бездоганного сервісу в затоці Джимбаран. Four Seasons пропонує приватні вілли серед тропічних садів та унікальні культурні враження на березі океану.',
     sections: [
       {
@@ -189,6 +194,7 @@ export const offers: Offer[] = [
     stayFrom: '15/06',
     stayTo: '20/09',
     discount: '',
+    slug: 'four-seasons-seychelles',
     description: 'Ваш приватний притулок серед гранітних скель та пишних джунглів острова Мае. Four Seasons Seychelles — це вілли-будиночки на деревах з панорамним видом на Petit Anse, одну з найкрасивіших бухт світу.',
     sections: [
       {
@@ -227,6 +233,7 @@ export const offers: Offer[] = [
     stayFrom: '01/12',
     stayTo: '15/03',
     discount: '',
+    slug: 'the-chedi-andermatt',
     description: 'Альпійський затишок і вишукана азійська естетика в серці Швейцарії. The Chedi Andermatt пропонує розкішний досвід відпочинку в Альпах з власними камінами, вишуканим SPA та гастрономією Michelin.',
     sections: [
       {

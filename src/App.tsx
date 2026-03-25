@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -50,19 +50,20 @@ function App() {
     <Router basename={import.meta.env.BASE_URL}>
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* Public routes with Header/Footer */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/services/:id" element={<ServiceDetailPage />} />
-            <Route path="/offers" element={<OffersPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:id" element={<ArticlePage />} />
-            <Route path="/offers/:id" element={<OfferDetailPage />} />
-            <Route path="/partners" element={<PartnershipPage />} />
-            <Route path="/partners/:id" element={<PartnerDetailPage />} />
-            <Route path="/contacts" element={<ContactsPage />} />
+          {/* Public routes with Header/Footer and /ua prefix */}
+          <Route path="/" element={<Navigate to="/ua" replace />} />
+          <Route path="/ua" element={<PublicLayout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="services/:slug" element={<ServiceDetailPage />} />
+            <Route path="offers" element={<OffersPage />} />
+            <Route path="blog" element={<BlogPage />} />
+            <Route path="blog/:slug" element={<ArticlePage />} />
+            <Route path="offers/:slug" element={<OfferDetailPage />} />
+            <Route path="partners" element={<PartnershipPage />} />
+            <Route path="partners/:slug" element={<PartnerDetailPage />} />
+            <Route path="contacts" element={<ContactsPage />} />
           </Route>
 
           {/* Admin routes without Header/Footer */}

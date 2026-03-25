@@ -6,9 +6,9 @@ import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
 
 const PartnerDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const location = useLocation();
-  const { data: partner, isLoading } = usePartner(Number(id));
+  const { data: partner, isLoading } = usePartner(slug!);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -44,7 +44,7 @@ const PartnerDetailPage = () => {
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-serif text-gray-900 mb-4">Партнера не знайдено</h1>
-          <Link to="/partners" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
+          <Link to="/ua/partners" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
             Повернутися до партнерів
           </Link>
         </div>
@@ -55,7 +55,7 @@ const PartnerDetailPage = () => {
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
       <SEOHead
-        pagePath={`/partners/${id}`}
+        pagePath={`/ua/partners/${slug}`}
         title={partner.seoTitle || `${partner.name} — Vogel Family Travel`}
         description={partner.seoDescription || partner.description || ''}
         ogImage={partner.image}
@@ -78,7 +78,7 @@ const PartnerDetailPage = () => {
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <div className="max-w-4xl">
             <Link
-              to="/partners"
+              to="/ua/partners"
               className="inline-flex items-center gap-2 text-white/70 hover:text-[#5cc8bd] transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -210,7 +210,7 @@ const PartnerDetailPage = () => {
           <div className="mt-24 pt-16 border-t border-gray-100 flex flex-col items-center">
             <p className="text-gray-400 font-serif italic text-xl mb-8">Хочете скористатися перевагами цього партнерства?</p>
             <Link
-              to="/partners"
+              to="/ua/partners"
               className="bg-black text-white font-montserrat font-bold uppercase tracking-[0.2em] text-xs px-10 py-5 hover:bg-[#5cc8bd] transition-all duration-300 rounded-[2px]"
             >
               Всі партнери

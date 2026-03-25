@@ -12,6 +12,7 @@ export interface DBOffer {
   sections: DBSection[];
   seo_title: string | null;
   seo_description: string | null;
+  slug: string | null;
   sort_order: number;
   is_published: boolean;
   created_at: string;
@@ -29,6 +30,7 @@ export interface DBService {
   sections: DBSection[];
   seo_title: string | null;
   seo_description: string | null;
+  slug: string | null;
   sort_order: number;
   is_published: boolean;
   created_at: string;
@@ -52,6 +54,7 @@ export interface DBPartner {
   sections: DBSection[];
   seo_title: string | null;
   seo_description: string | null;
+  slug: string | null;
   sort_order: number;
   is_published: boolean;
   created_at: string;
@@ -70,6 +73,7 @@ export interface DBBlogPost {
   sections: DBSection[];
   seo_title: string | null;
   seo_description: string | null;
+  slug: string | null;
   is_published: boolean;
   sort_order: number;
   created_at: string;

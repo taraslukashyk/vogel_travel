@@ -102,7 +102,7 @@ const BlogCarousel = () => {
               className={`shrink-0 transition-all duration-700 select-none ${current === index ? 'opacity-100 scale-100' : 'opacity-30 scale-95'}`}
               style={{ width: 'var(--card-width)', marginRight: 'var(--gap)' }}
             >
-              <Link to={`/blog/${post.id}`} className="block group">
+              <Link to={`/ua/blog/${post.slug}`} className="block group">
                 <article className={`relative rounded-sm overflow-hidden transition-shadow duration-500 ${current === index ? 'shadow-2xl shadow-black/60' : ''}`}>
                   {/* Image */}
                   <div className="relative h-[320px] md:h-[480px] overflow-hidden">
@@ -164,7 +164,7 @@ const BlogCarousel = () => {
       {/* CTA */}
       <div className="text-center mt-16">
         <Link
-          to="/blog"
+          to="/ua/blog"
           className="inline-flex items-center gap-4 font-montserrat font-bold uppercase tracking-[0.2em] text-[10px] text-white/40 hover:text-[#5cc8bd] transition-all duration-300 group"
         >
           <span>Всі матеріали блогу</span>

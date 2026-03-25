@@ -18,6 +18,7 @@ export interface Partner {
   lng?: number;
   lat?: number;
   sections?: DBSection[];
+  slug: string;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -38,6 +39,7 @@ function mapPartner(db: DBPartner): Partner {
     lng: db.lng ?? undefined,
     lat: db.lat ?? undefined,
     sections: db.sections && db.sections.length > 0 ? db.sections : undefined,
+    slug: db.slug || String(db.id),
     seoTitle: db.seo_title ?? undefined,
     seoDescription: db.seo_description ?? undefined,
   };
@@ -62,21 +64,27 @@ export function usePartners() {
   });
 }
 
-export function usePartner(id: number) {
+export function usePartner(idOrSlug: number | string) {
+  const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
-    queryKey: ['partner', id],
+    queryKey: ['partner', idOrSlug],
     queryFn: async (): Promise<Partner | null> => {
-      const { data, error } = await supabase
-        .from('partners')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const query = supabase.from('partners').select('*');
+      if (isId) {
+        query.eq('id', Number(idOrSlug));
+      } else {
+        query.eq('slug', idOrSlug);
+      }
+      const { data, error } = await query.single();
       // Table may not exist yet or record not found — fall back to static data
-      if (error) return (staticPartners.find(p => p.id === id) as Partner) ?? null;
+      if (error) {
+        const found = staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as Partner;
+        return found ?? null;
+      }
       const mapped = mapPartner(data as DBPartner);
       // Use static sections as fallback when DB has none yet
       if (!mapped.sections || mapped.sections.length === 0) {
-        const staticP = staticPartners.find(p => p.id === id);
+        const staticP = staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as any;
         if (staticP?.sections) mapped.sections = staticP.sections as DBSection[];
         if (!mapped.description && staticP?.description) mapped.description = staticP.description;
         if (staticP?.seo_title) mapped.seoTitle = staticP.seo_title;
@@ -84,7 +92,7 @@ export function usePartner(id: number) {
       }
       return mapped;
     },
-    placeholderData: (staticPartners.find(p => p.id === id) as Partner) ?? null,
+    placeholderData: (staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as Partner) ?? null,
     staleTime: 5 * 60 * 1000,
     retry: false,
   });

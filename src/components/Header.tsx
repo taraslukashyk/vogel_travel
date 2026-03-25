@@ -82,19 +82,19 @@ const Header = () => {
 
             {/* Left: Logo */}
             <div className="flex items-center shrink-0">
-              <Link to="/" className="flex items-center cursor-pointer group">
+              <Link to="/ua" className="flex items-center cursor-pointer group">
                 <img src={logo} alt="Vogel Logo" className="w-[85px] xl:w-[95px] h-[85px] xl:h-[95px] object-contain transition-transform group-hover:scale-105" />
               </Link>
             </div>
 
             {/* Center: Horizontal Navigation (Desktop Only) */}
             <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-24 h-full">
-              <Link to="/about" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРО НАС</Link>
-              <Link to="/offers" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРОПОЗИЦІЇ</Link>
-              <Link to="/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
-              <Link to="/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРИ</Link>
-              <Link to="/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
-              <Link to="/contacts" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</Link>
+              <Link to="/ua/about" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРО НАС</Link>
+              <Link to="/ua/offers" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПРОПОЗИЦІЇ</Link>
+              <Link to="/ua/services" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">СЕРВІСИ</Link>
+              <Link to="/ua/partners" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">ПАРТНЕРИ</Link>
+              <Link to="/ua/blog" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">БЛОГ</Link>
+              <Link to="/ua/contacts" className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">КОНТАКТИ</Link>
             </nav>
 
             <div className="flex-grow hidden xl:block"></div>
@@ -167,12 +167,12 @@ const Header = () => {
             </div>
 
             <div className="flex flex-col gap-6 text-lg items-end">
-              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
-              <Link to="/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
-              <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
-              <Link to="/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРИ</Link>
-              <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
-              <Link to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
+              <Link to="/ua/about" onClick={() => setIsMobileMenuOpen(false)}>ПРО НАС</Link>
+              <Link to="/ua/offers" onClick={() => setIsMobileMenuOpen(false)}>ПРОПОЗИЦІЇ</Link>
+              <Link to="/ua/services" onClick={() => setIsMobileMenuOpen(false)}>СЕРВІСИ</Link>
+              <Link to="/ua/partners" className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>ПАРТНЕРИ</Link>
+              <Link to="/ua/blog" onClick={() => setIsMobileMenuOpen(false)}>БЛОГ</Link>
+              <Link to="/ua/contacts" onClick={() => setIsMobileMenuOpen(false)}>КОНТАКТИ</Link>
             </div>
 
             <div className="h-px bg-white/10 w-full my-2"></div>

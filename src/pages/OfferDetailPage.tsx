@@ -5,9 +5,9 @@ import { useOffer } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
 
 const OfferDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const location = useLocation();
-  const { data: offer, isLoading } = useOffer(Number(id));
+  const { data: offer, isLoading } = useOffer(slug!);
 
   const [currentImg, setCurrentImg] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -55,7 +55,7 @@ const OfferDetailPage = () => {
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4 italic font-serif">Пропозицію не знайдено</h2>
-          <Link to="/offers" className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
+          <Link to="/ua/offers" className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
             Повернутися до списку пропозицій
           </Link>
         </div>
@@ -100,7 +100,7 @@ const OfferDetailPage = () => {
   return (
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
       <SEOHead
-        pagePath={`/offers/${id}`}
+        pagePath={`/ua/offers/${slug}`}
         title={offer.seoTitle || `${offer.hotel} — ${offer.location} | Vogel Travel`}
         description={offer.seoDescription || offer.description || ''}
         ogImage={offer.image}
@@ -141,7 +141,7 @@ const OfferDetailPage = () => {
           <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
             {/* Back button */}
             <Link
-              to="/offers"
+              to="/ua/offers"
               className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />

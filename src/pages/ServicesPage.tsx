@@ -42,11 +42,11 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
   return (
     <div
       ref={ref}
-      id={`service-${service.id}`}
+      id={`service-${service.slug}`}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 80}ms` }}
     >
-      <Link to={`/services/${service.id}`} className="block">
+      <Link to={`/ua/services/${service.slug}`} className="block">
         <article
           className={`group flex flex-col ${
             isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
@@ -133,7 +133,7 @@ const ServicesPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/services" fallbackTitle="Сервіси — Vogel Family Travel" fallbackDescription="Повний спектр послуг для преміальних подорожей — від оренди вілл до професійного супроводу." />
+      <SEOHead pagePath="/ua/services" fallbackTitle="Сервіси — Vogel Family Travel" fallbackDescription="Повний спектр послуг для преміальних подорожей — від оренди вілл до професійного супроводу." />
 
       {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">

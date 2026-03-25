@@ -9,10 +9,11 @@ const FeaturedTours = () => {
   const [activeIndex, setActiveIndex] = useState(2);
   const navigate = useNavigate();
 
-  const handleTourClick = (index: number, id: number) => {
+  const handleTourClick = (index: number) => {
+    const tour = TOURS[index];
     if (activeIndex === index) {
       // Second click: Navigate to the detail page
-      navigate(`/offers/${id}`);
+      navigate(`/ua/offers/${tour.slug}`);
     } else {
       // First click: Just expand the card
       setActiveIndex(index);
@@ -37,7 +38,7 @@ const FeaturedTours = () => {
               Довірте нам створення вашого ідеального маршруту. Від оренди приватних вілл до закритих екскурсій — ми беремо на себе кожну деталь, залишаючи вам лише чисті емоції та бездоганний сервіс.
             </p>
             <Link
-              to="/offers"
+              to="/ua/offers"
               className="border border-white/40 text-white font-montserrat uppercase tracking-[0.15em] text-xs md:text-sm font-bold py-4 px-8 hover:bg-white hover:text-black transition-all duration-500 rounded-[2px] shadow-sm"
             >
               БІЛЬШЕ ПРОПОЗИЦІЇ
@@ -53,7 +54,7 @@ const FeaturedTours = () => {
             return (
               <div
                 key={tour.id}
-                onClick={() => handleTourClick(index, tour.id)}
+                onClick={() => handleTourClick(index)}
                 className={`relative overflow-hidden cursor-pointer transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] flex-shrink-0 group rounded-sm ${isActive
                   ? 'flex-[5] lg:flex-[8] min-h-[300px] lg:min-h-0'
                   : 'flex-1 min-h-[80px] lg:min-h-0 opacity-70 hover:opacity-100'
