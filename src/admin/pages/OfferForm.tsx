@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { Plus, FileText, Trash2, GripVertical } from 'lucide-react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -216,76 +216,96 @@ export default function OfferForm() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Нова пропозиція' : 'Редагувати пропозицію'}</h1>
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Готель" required tooltip="Назва готелю. Це буде головним заголовком на картці пропозиції.">
-            <input className={inputClass} value={form.hotel} onChange={(e) => set('hotel', e.target.value)} required />
-          </FormField>
-          <FormField label="Локація" required tooltip="Місто, курорт або країна.">
-            <input className={inputClass} value={form.location} onChange={(e) => set('location', e.target.value)} required />
-          </FormField>
-          <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
-            <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
-          </FormField>
-          <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як зелений бейдж на картинці.">
-            <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
-          </FormField>
-          <FormField label="Перебування з" required tooltip="Початкова дата періоду, в який діє ця пропозиція на проживання.">
-            <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
-          </FormField>
-          <FormField label="Перебування до" required tooltip="Кінцева дата періоду, в який діє ця пропозиція на проживання.">
-            <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
-          </FormField>
+        {/* Секція 1: Картка (Прев'ю) */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
+            <Plus className="text-teal-600" size={18} />
+            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки (прев'ю)</h2>
+            <span className="text-xs text-gray-400 font-normal ml-auto">Побачать у каталозі</span>
+          </div>
+          <div className="p-5 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField label="Готель" required tooltip="Назва готелю. Це буде головним заголовком на картці пропозиції.">
+                <input className={inputClass} value={form.hotel} onChange={(e) => set('hotel', e.target.value)} required />
+              </FormField>
+              <FormField label="Локація" required tooltip="Місто, курорт або країна.">
+                <input className={inputClass} value={form.location} onChange={(e) => set('location', e.target.value)} required />
+              </FormField>
+              <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
+                <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
+              </FormField>
+              <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як зелений бейдж на картинці.">
+                <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
+              </FormField>
+              <FormField label="Перебування з" required tooltip="Початкова дата періоду, в який діє ця пропозиція на проживання.">
+                <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
+              </FormField>
+              <FormField label="Перебування до" required tooltip="Кінцева дата періоду, в який діє ця пропозиція на проживання.">
+                <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
+              </FormField>
+            </div>
+
+            <FormField label="Зображення" required tooltip="Головне фото пропозиції, яке виводиться на картці. Рекомендований розмір 800x600 px.">
+              <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
+            </FormField>
+            <FormField label="Alt текст фото" tooltip="Опишіть, що зображено на головному фото. Це допомагає пошуковим системам та людям з порушенням зору.">
+              <input
+                type="text"
+                value={form.image_alt}
+                onChange={(e) => set('image_alt', e.target.value)}
+                placeholder="Наприклад: Вигляд на сучасний готельний комплекс біля моря"
+                className={inputClass}
+              />
+            </FormField>
+
+            <FormField label="Короткий опис" tooltip="Текст-анонс, який описує головні переваги. До 150 символів.">
+              <textarea className={inputClass} rows={2} value={form.description} onChange={(e) => set('description', e.target.value)} />
+            </FormField>
+          </div>
         </div>
 
-        <FormField label="Зображення" required tooltip="Головне фото пропозиції, яке виводиться на картці. Рекомендований розмір 800x600 px.">
-          <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
-        </FormField>
-        <FormField label="Alt текст фото" tooltip="Опишіть, що зображено на головному фото. Це допомагає пошуковим системам та людям з порушенням зору.">
-          <input
-            type="text"
-            value={form.image_alt}
-            onChange={(e) => set('image_alt', e.target.value)}
-            placeholder="Наприклад: Вигляд на сучасний готельний комплекс біля моря"
-            className={inputClass}
-          />
-        </FormField>
+        {/* Секція 2: Внутрішня сторінка */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
+            <FileText className="text-blue-600" size={18} />
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення сторінки (всередині)</h2>
+            <span className="text-xs text-gray-400 font-normal ml-auto">Детальний опис та галерея</span>
+          </div>
+          <div className="p-5 space-y-8">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">Контент-секції (текст, списки)</label>
+              <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+            </div>
 
-        <FormField label="Короткий опис" tooltip="Текст-анонс, який описує головні переваги. До 150 символів.">
-          <textarea className={inputClass} rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} />
-        </FormField>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Контент-секції (текст, списки)</label>
-          <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Галерея фото ({gallery.length} {gallery.length === 1 ? 'фото' : 'фото'})
-          </label>
-          <p className="text-xs text-gray-400 mb-3">Ці фото відображатимуться в каруселі на сторінці пропозиції</p>
-          <div className="space-y-3">
-            <DndContext sensors={gallerySensors} collisionDetection={closestCenter} onDragEnd={handleGalleryDragEnd}>
-              <SortableContext items={gallery.map((_, i) => `gal-${i}`)} strategy={verticalListSortingStrategy}>
-                {gallery.map((item, index) => (
-                  <SortableGalleryItem
-                    key={`gal-${index}`}
-                    item={{ ...item, _id: `gal-${index}` }}
-                    index={index}
-                    onUpdate={updateGalleryImage}
-                    onRemove={removeGalleryImage}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-            <button
-              type="button"
-              onClick={addGalleryImage}
-              className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-teal-500 hover:text-teal-600 w-full justify-center transition-colors"
-            >
-              <Plus size={16} />
-              Додати фото до галереї
-            </button>
+            <div className="pt-6 border-t border-gray-100">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Галерея фото ({gallery.length} {gallery.length === 1 ? 'фото' : 'фото'})
+              </label>
+              <p className="text-xs text-gray-400 mb-4">Ці фото відображатимуться в каруселі на сторінці пропозиції</p>
+              <div className="space-y-3">
+                <DndContext sensors={gallerySensors} collisionDetection={closestCenter} onDragEnd={handleGalleryDragEnd}>
+                  <SortableContext items={gallery.map((_, i) => `gal-${i}`)} strategy={verticalListSortingStrategy}>
+                    {gallery.map((item, index) => (
+                      <SortableGalleryItem
+                        key={`gal-${index}`}
+                        item={{ ...item, _id: `gal-${index}` }}
+                        index={index}
+                        onUpdate={updateGalleryImage}
+                        onRemove={removeGalleryImage}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+                <button
+                  type="button"
+                  onClick={addGalleryImage}
+                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-teal-500 hover:text-teal-600 w-full justify-center transition-all bg-gray-50/50 hover:bg-teal-50/30"
+                >
+                  <Plus size={16} />
+                  Додати фото до галереї
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

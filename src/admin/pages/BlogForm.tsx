@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, FileText } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
@@ -102,43 +103,63 @@ export default function BlogForm() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Новий пост' : 'Редагувати пост'}</h1>
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
-        <FormField label="Заголовок" required tooltip="Головний заголовок сторінки статті (H1).">
-          <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} required />
-        </FormField>
+        {/* Секція 1: Картка (Прев'ю) */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
+            <Plus className="text-teal-600" size={18} />
+            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки (прев'ю)</h2>
+            <span className="text-xs text-gray-400 font-normal ml-auto">Побачать у списку блогу</span>
+          </div>
+          <div className="p-5 space-y-6">
+            <FormField label="Заголовок" required tooltip="Головний заголовок сторінки статті (H1).">
+              <input className={inputClass} value={form.title} onChange={(e) => set('title', e.target.value)} required />
+            </FormField>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Категорія" required tooltip="До якої категорії належить стаття, наприклад: Новини, Поради, Гіди.">
-            <input className={inputClass} value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Фіджі" required />
-          </FormField>
-          <FormField label="Дата" required>
-            <input className={inputClass} value={form.date} onChange={(e) => set('date', e.target.value)} placeholder="12.03.2026" required />
-          </FormField>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField label="Категорія" required tooltip="До якої категорії належить стаття, наприклад: Новини, Поради, Гіди.">
+                <input className={inputClass} value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Фіджі" required />
+              </FormField>
+              <FormField label="Дата" required>
+                <input className={inputClass} value={form.date} onChange={(e) => set('date', e.target.value)} placeholder="12.03.2026" required />
+              </FormField>
+            </div>
+
+            <FormField label="Зображення" required tooltip="Обкладинка статті. Оптимальний розмір від 800x600 пикселів.">
+              <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
+            </FormField>
+            <FormField label="Alt текст фото" tooltip="Альтернативний текст фото. Важливо для SEO та людей з порушенням зору.">
+              <input
+                type="text"
+                value={form.image_alt}
+                onChange={(e) => set('image_alt', e.target.value)}
+                placeholder="Опишіть, що на фото..."
+                className={inputClass}
+              />
+            </FormField>
+
+            <FormField label="Короткий опис (excerpt)" required tooltip="Цей текст буде відображатися в списку статей, як прев'ю (до 2-3 речень).">
+              <textarea className={inputClass} rows={2} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} required />
+            </FormField>
+          </div>
         </div>
 
-        <FormField label="Зображення" required tooltip="Обкладинка статті. Оптимальний розмір від 800x600 пикселів.">
-          <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
-        </FormField>
-        <FormField label="Alt текст фото" tooltip="Альтернативний текст фото. Важливо для SEO та людей з порушенням зору.">
-          <input
-            type="text"
-            value={form.image_alt}
-            onChange={(e) => set('image_alt', e.target.value)}
-            placeholder="Опишіть, що на фото..."
-            className={inputClass}
-          />
-        </FormField>
+        {/* Секція 2: Внутрішня сторінка */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
+            <FileText className="text-blue-600" size={18} />
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення статті (всередині)</h2>
+            <span className="text-xs text-gray-400 font-normal ml-auto">Основний текст та аудіо</span>
+          </div>
+          <div className="p-5 space-y-8">
+            <FormField label="Аудіофайл (опціонально)" tooltip="Завантажте або вкажіть посилання на аудіоверсію.">
+              <AudioUploader value={form.audio} onChange={(url) => set('audio', url)} />
+            </FormField>
 
-        <FormField label="Короткий опис (excerpt)" required tooltip="Цей текст буде відображатися в списку статей, як прев'ю (до 2-3 речень).">
-          <textarea className={inputClass} rows={3} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} required />
-        </FormField>
-
-        <FormField label="Аудіофайл (опціонально)" tooltip="Завантажте або вкажіть посилання на аудіоверсію.">
-          <AudioUploader value={form.audio} onChange={(url) => set('audio', url)} />
-        </FormField>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Секції статті</label>
-          <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">Секції статті (текст, фото, списки)</label>
+              <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+            </div>
+          </div>
         </div>
 
         {/* SEO */}
