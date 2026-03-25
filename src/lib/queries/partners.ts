@@ -79,8 +79,8 @@ export function usePartner(id: number) {
         const staticP = staticPartners.find(p => p.id === id);
         if (staticP?.sections) mapped.sections = staticP.sections as DBSection[];
         if (!mapped.description && staticP?.description) mapped.description = staticP.description;
-        if (!mapped.seoTitle && staticP?.seoTitle) mapped.seoTitle = staticP.seoTitle;
-        if (!mapped.seoDescription && staticP?.seoDescription) mapped.seoDescription = staticP.seoDescription;
+        if (staticP?.seo_title) mapped.seoTitle = staticP.seo_title;
+        if (staticP?.seo_description) mapped.seoDescription = staticP.seo_description;
       }
       return mapped;
     },
