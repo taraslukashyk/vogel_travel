@@ -268,7 +268,7 @@ export default function OfferForm() {
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <FileText className="text-blue-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Наповнення сторінки (всередині)</h2>
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення сторінки </h2>
             <span className="text-xs text-gray-400 font-normal ml-auto">Детальний опис та галерея</span>
           </div>
           <div className="p-5 space-y-8">

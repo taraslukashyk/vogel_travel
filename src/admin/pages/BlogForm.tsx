@@ -77,7 +77,7 @@ export default function BlogForm() {
       navigate('/admin/blog');
     },
   });
-  
+
   const deleteMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from('blog_posts').delete().eq('id', Number(id));
@@ -147,7 +147,7 @@ export default function BlogForm() {
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <FileText className="text-blue-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Наповнення статті (всередині)</h2>
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення статті</h2>
             <span className="text-xs text-gray-400 font-normal ml-auto">Основний текст та аудіо</span>
           </div>
           <div className="p-5 space-y-8">
