@@ -23,6 +23,7 @@ const PartnershipPage = () => {
       lat: p.lat!,
       tag: p.tag || p.name.slice(0, 2).toUpperCase(),
       color: p.color || '#5cc8bd',
+      logo: p.logo || '',
     }));
 
   return (
