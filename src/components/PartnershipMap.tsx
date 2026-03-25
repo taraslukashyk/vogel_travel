@@ -71,7 +71,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
 
       el.innerHTML = `
         <div class="marker-dot w-4 h-4 rounded-full bg-[#5cc8bd] shadow-[0_0_15px_rgba(92,200,189,0.5)] transition-all duration-500 ease-out z-10 relative group-hover:scale-0 group-[.is-active]:scale-0"></div>
-        <div class="marker-card absolute bottom-full left-1/2 -translate-x-1/2 mb-3 scale-75 opacity-0 pointer-events-none transition-all duration-500 delay-75 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-20 group-hover:scale-100 group-hover:opacity-100 group-[.is-active]:scale-100 group-[.is-active]:opacity-100 flex items-center justify-center bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl min-w-[140px]">
+        <div class="marker-card absolute bottom-full left-1/2 -translate-x-1/2 mb-3 scale-75 opacity-0 pointer-events-none transition-all duration-500 delay-75 ease-[cubic-bezier(0.34,1.56,0.64,1)] z-20 group-hover:scale-100 group-hover:opacity-100 group-hover:pointer-events-auto group-[.is-active]:scale-100 group-[.is-active]:opacity-100 group-[.is-active]:pointer-events-auto flex items-center justify-center bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl min-w-[140px] cursor-pointer">
           <div class="flex flex-col items-center gap-2">
             ${p.logo
               ? `<div class="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden bg-white p-1.5 shadow-inner"><img src="${p.logo}" alt="${p.name}" class="w-full h-full object-contain" /></div>`
