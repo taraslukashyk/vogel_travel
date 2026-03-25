@@ -26,6 +26,32 @@ export interface DBService {
   image: string;
   type: string;
   items: DBServiceItem[];
+  sections: DBSection[];
+  seo_title: string | null;
+  seo_description: string | null;
+  sort_order: number;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DBPartner {
+  id: number;
+  name: string;
+  category: string;
+  location: string;
+  logo: string;
+  image: string;
+  image_alt: string | null;
+  description: string | null;
+  website: string | null;
+  tag: string | null;
+  color: string | null;
+  lng: number | null;
+  lat: number | null;
+  sections: DBSection[];
+  seo_title: string | null;
+  seo_description: string | null;
   sort_order: number;
   is_published: boolean;
   created_at: string;

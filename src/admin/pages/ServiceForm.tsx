@@ -4,8 +4,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
+import SectionEditor from '../components/SectionEditor';
 import { Plus, Trash2 } from 'lucide-react';
-import type { DBService, DBServiceItem } from '../../lib/types';
+import type { DBService, DBServiceItem, DBSection } from '../../lib/types';
 
 const emptyService = {
   num: '',
@@ -14,6 +15,9 @@ const emptyService = {
   image: '',
   type: 'Сервіс',
   items: [] as DBServiceItem[],
+  sections: [] as DBSection[],
+  seo_title: '',
+  seo_description: '',
   is_published: true,
 };
 
@@ -43,6 +47,9 @@ export default function ServiceForm() {
         image: existing.image,
         type: existing.type,
         items: existing.items || [],
+        sections: existing.sections || [],
+        seo_title: existing.seo_title || '',
+        seo_description: existing.seo_description || '',
         is_published: existing.is_published,
       });
     }
@@ -50,13 +57,18 @@ export default function ServiceForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
+      const payload = {
+        ...form,
+        seo_title: form.seo_title || null,
+        seo_description: form.seo_description || null,
+      };
       if (isNew) {
         const { data: maxOrder } = await supabase.from('services').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('services').insert({ ...form, sort_order });
+        const { error } = await supabase.from('services').insert({ ...payload, sort_order });
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('services').update({ ...form, updated_at: new Date().toISOString() }).eq('id', Number(id));
+        const { error } = await supabase.from('services').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', Number(id));
         if (error) throw error;
       }
     },
@@ -102,7 +114,7 @@ export default function ServiceForm() {
           <FormField label="Номер" required tooltip="Порядковий номер для сортування (наприклад: 01, 02).">
             <input className={inputClass} value={form.num} onChange={(e) => set('num', e.target.value)} placeholder="01" required />
           </FormField>
-          <FormField label="Тип" tooltip="Тип іконки/сервісу. Допускаються значення: plane, hotel, umbrella (впливає на візуальне оформлення).">
+          <FormField label="Тип" tooltip="Тип сервісу. Допускаються значення: Сервіс тощо.">
             <input className={inputClass} value={form.type} onChange={(e) => set('type', e.target.value)} placeholder="Сервіс" />
           </FormField>
         </div>
@@ -119,6 +131,7 @@ export default function ServiceForm() {
           <textarea className={inputClass} rows={4} value={form.description} onChange={(e) => set('description', e.target.value)} required />
         </FormField>
 
+        {/* Service Items */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Деталі (підпункти)</label>
           <div className="space-y-2">
@@ -157,6 +170,41 @@ export default function ServiceForm() {
           </div>
         </div>
 
+        {/* Sections */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Розділи сторінки деталей
+            <span className="ml-2 text-xs text-gray-400">(текст, список або зображення для сторінки /services/:id)</span>
+          </label>
+          <SectionEditor
+            sections={form.sections}
+            onChange={(sections) => set('sections', sections)}
+          />
+        </div>
+
+        {/* SEO */}
+        <div className="border-t border-gray-100 pt-6 space-y-4">
+          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO</h2>
+          <FormField label="SEO Заголовок" tooltip="Заголовок для пошукових систем (рекомендовано до 60 символів).">
+            <input
+              className={inputClass}
+              value={form.seo_title}
+              onChange={(e) => set('seo_title', e.target.value)}
+              placeholder="Назва сервісу — Vogel Family Travel"
+            />
+          </FormField>
+          <FormField label="SEO Опис" tooltip="Мета-опис для пошукових систем (рекомендовано до 160 символів).">
+            <textarea
+              className={inputClass}
+              rows={3}
+              value={form.seo_description}
+              onChange={(e) => set('seo_description', e.target.value)}
+              placeholder="Короткий опис сервісу для Google..."
+            />
+          </FormField>
+        </div>
+
+        {/* Publish toggle */}
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.is_published} onChange={(e) => set('is_published', e.target.checked)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500" />

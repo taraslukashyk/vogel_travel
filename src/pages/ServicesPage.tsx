@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Building2, Compass, PhoneCall, Users, Gem } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight } from 'lucide-react';
 import { useServices } from '../lib/queries/services';
 import type { Service } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
@@ -46,54 +46,60 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 80}ms` }}
     >
-      <article
-        className={`group flex flex-col ${
-          isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
-        } bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-1 transition-all duration-500`}
-      >
-        {/* Image */}
-        <div className="md:w-[45%] h-64 md:h-auto min-h-[300px] overflow-hidden relative">
-          {/* Large faded service number */}
-          <span className="absolute top-4 left-5 font-montserrat text-8xl font-extrabold text-white/10 select-none z-10 leading-none">
-            {service.num}
-          </span>
-          <img
-            src={service.image}
-            alt={service.title}
-            className="w-full h-full object-cover opacity-60 group-hover:opacity-75 transition-all duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-        </div>
-
-        {/* Text */}
-        <div className="flex-1 p-8 md:p-10 lg:p-14 flex flex-col justify-center">
-          <h2 className="font-montserrat font-bold text-2xl lg:text-[26px] text-white leading-tight tracking-tight mb-5 group-hover:text-[#5cc8bd] transition-colors duration-300 flex items-center gap-4">
-            <span className="shrink-0 text-white/80 group-hover:text-[#5cc8bd] transition-colors duration-300">
-              {service.icon}
+      <Link to={`/services/${service.id}`} className="block">
+        <article
+          className={`group flex flex-col ${
+            isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
+          } bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-1 transition-all duration-500 cursor-pointer`}
+        >
+          {/* Image */}
+          <div className="md:w-[45%] h-64 md:h-auto min-h-[300px] overflow-hidden relative">
+            <span className="absolute top-4 left-5 font-montserrat text-8xl font-extrabold text-white/10 select-none z-10 leading-none">
+              {service.num}
             </span>
-            {service.title}
-          </h2>
+            <img
+              src={service.image}
+              alt={service.title}
+              className="w-full h-full object-cover opacity-60 group-hover:opacity-75 transition-all duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+          </div>
 
-          {service.description && (
-            <p className="font-inter text-white/60 text-[15px] leading-relaxed">
-              {service.description}
-            </p>
-          )}
+          {/* Text */}
+          <div className="flex-1 p-8 md:p-10 lg:p-14 flex flex-col justify-center">
+            <h2 className="font-montserrat font-bold text-2xl lg:text-[26px] text-white leading-tight tracking-tight mb-5 group-hover:text-[#5cc8bd] transition-colors duration-300 flex items-center gap-4">
+              <span className="shrink-0 text-white/80 group-hover:text-[#5cc8bd] transition-colors duration-300">
+                {service.icon}
+              </span>
+              {service.title}
+            </h2>
 
-          {service.items && (
-            <ul className="space-y-4 mt-1">
-              {service.items.map((item, i) => (
-                <li key={i} className="flex items-start gap-4">
-                  <span className="mt-[7px] w-4 h-px bg-[#5cc8bd]/60 shrink-0" />
-                  <p className="font-inter text-[15px] text-white/60 leading-relaxed">
-                    <strong className="text-white/90 font-medium">{item.label}:</strong> {item.text}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </article>
+            {service.description && (
+              <p className="font-inter text-white/60 text-[15px] leading-relaxed">
+                {service.description}
+              </p>
+            )}
+
+            {service.items && (
+              <ul className="space-y-4 mt-1">
+                {service.items.map((item, i) => (
+                  <li key={i} className="flex items-start gap-4">
+                    <span className="mt-[7px] w-4 h-px bg-[#5cc8bd]/60 shrink-0" />
+                    <p className="font-inter text-[15px] text-white/60 leading-relaxed">
+                      <strong className="text-white/90 font-medium">{item.label}:</strong> {item.text}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-8 flex items-center gap-2 text-[#5cc8bd] text-xs font-bold uppercase tracking-[0.3em] font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span>Детальніше</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </div>
+          </div>
+        </article>
+      </Link>
     </div>
   );
 };

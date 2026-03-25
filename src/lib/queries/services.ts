@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
-import type { DBService } from '../types';
+import type { DBService, DBSection } from '../types';
 import { services as staticServices } from '../../data/services';
 
 export interface Service {
@@ -11,6 +11,9 @@ export interface Service {
   image: string;
   type: string;
   items?: Array<{ label: string; text: string }>;
+  sections?: DBSection[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 function mapService(db: DBService): Service {
@@ -21,7 +24,10 @@ function mapService(db: DBService): Service {
     description: db.description,
     image: db.image,
     type: db.type,
-    items: db.items.length > 0 ? db.items : undefined,
+    items: db.items && db.items.length > 0 ? db.items : undefined,
+    sections: db.sections && db.sections.length > 0 ? db.sections : undefined,
+    seoTitle: db.seo_title ?? undefined,
+    seoDescription: db.seo_description ?? undefined,
   };
 }
 
@@ -38,6 +44,31 @@ export function useServices() {
       return (data as DBService[]).map(mapService);
     },
     placeholderData: staticServices as Service[],
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useService(id: number) {
+  return useQuery({
+    queryKey: ['service', id],
+    queryFn: async (): Promise<Service | null> => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) throw error;
+      const mapped = mapService(data as DBService);
+      // Use static sections as fallback when DB has none yet
+      if (!mapped.sections || mapped.sections.length === 0) {
+        const staticSvc = staticServices.find(s => s.id === id);
+        if (staticSvc?.sections) mapped.sections = staticSvc.sections as DBSection[];
+        if (!mapped.seoTitle && staticSvc?.seoTitle) mapped.seoTitle = staticSvc.seoTitle;
+        if (!mapped.seoDescription && staticSvc?.seoDescription) mapped.seoDescription = staticSvc.seoDescription;
+      }
+      return mapped;
+    },
+    placeholderData: (staticServices.find(s => s.id === id) as Service) ?? null,
     staleTime: 5 * 60 * 1000,
   });
 }

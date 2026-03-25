@@ -1,19 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { usePartners } from '../lib/queries/partners';
 
 const Partners = () => {
   const [isPaused, setIsPaused] = useState(false);
+  const { data: partners = [] } = usePartners();
 
-  // Array of 6 placeholders as requested
-  const partnerNames = [
-    'Партнер 1',
-    'Партнер 2',
-    'Партнер 3',
-    'Партнер 4',
-    'Партнер 5',
-    'Партнер 6',
-  ];
+  const displayPartners = partners.length > 0 ? partners : [];
 
   return (
     <section className="w-full py-20 bg-transparent border-t border-white/5 overflow-hidden">
@@ -27,41 +21,95 @@ const Partners = () => {
         <div className="w-8 h-[1px] bg-white/10 mt-4"></div>
       </div>
 
-      <div 
-        className="relative w-full overflow-hidden flex"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
+      {displayPartners.length > 0 ? (
         <div
-          className="flex gap-24 md:gap-40 items-center shrink-0 w-max animate-infinite-scroll"
-          style={{ 
-            animationDuration: '60s',
-            animationPlayState: isPaused ? 'paused' : 'running'
-          }}
+          className="relative w-full overflow-hidden flex"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
-          {/* First set of names */}
-          <div className="flex gap-24 md:gap-40 items-center">
-            {partnerNames.map((name, index) => (
-              <div key={`partner-1-${index}`} className="flex-shrink-0 select-none">
-                <span className="font-montserrat font-extrabold text-2xl md:text-5xl uppercase tracking-[0.2em] text-white/10 hover:text-white/30 transition-all duration-1000 whitespace-nowrap">
-                  {name}
-                </span>
-              </div>
-            ))}
+          <div
+            className="flex gap-16 md:gap-28 items-center shrink-0 w-max animate-infinite-scroll"
+            style={{
+              animationDuration: '60s',
+              animationPlayState: isPaused ? 'paused' : 'running',
+            }}
+          >
+            {/* First set */}
+            <div className="flex gap-16 md:gap-28 items-center">
+              {displayPartners.map((partner) => (
+                <Link
+                  key={`p1-${partner.id}`}
+                  to={`/partners/${partner.id}`}
+                  className="flex-shrink-0 select-none group"
+                  title={partner.name}
+                >
+                  {partner.logo ? (
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="h-8 md:h-12 w-auto max-w-[120px] md:max-w-[160px] object-contain brightness-0 invert opacity-20 group-hover:opacity-60 transition-opacity duration-500"
+                      onError={(e) => {
+                        const el = e.target as HTMLImageElement;
+                        el.style.display = 'none';
+                        const fallback = el.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'block';
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className="font-montserrat font-extrabold text-2xl md:text-4xl uppercase tracking-[0.2em] text-white/10 group-hover:text-white/30 transition-all duration-500 whitespace-nowrap"
+                    style={{ display: partner.logo ? 'none' : 'block' }}
+                  >
+                    {partner.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+            {/* Second set for seamless loop */}
+            <div className="flex gap-16 md:gap-28 items-center">
+              {displayPartners.map((partner) => (
+                <Link
+                  key={`p2-${partner.id}`}
+                  to={`/partners/${partner.id}`}
+                  className="flex-shrink-0 select-none group"
+                  title={partner.name}
+                >
+                  {partner.logo ? (
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="h-8 md:h-12 w-auto max-w-[120px] md:max-w-[160px] object-contain brightness-0 invert opacity-20 group-hover:opacity-60 transition-opacity duration-500"
+                      onError={(e) => {
+                        const el = e.target as HTMLImageElement;
+                        el.style.display = 'none';
+                        const fallback = el.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'block';
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className="font-montserrat font-extrabold text-2xl md:text-4xl uppercase tracking-[0.2em] text-white/10 group-hover:text-white/30 transition-all duration-500 whitespace-nowrap"
+                    style={{ display: partner.logo ? 'none' : 'block' }}
+                  >
+                    {partner.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
-          
-          {/* Second identical set for seamless looping */}
-          <div className="flex gap-24 md:gap-40 items-center">
-            {partnerNames.map((name, index) => (
-              <div key={`partner-2-${index}`} className="flex-shrink-0 select-none">
-                <span className="font-montserrat font-extrabold text-2xl md:text-5xl uppercase tracking-[0.2em] text-white/10 hover:text-white/30 transition-all duration-1000 whitespace-nowrap">
-                  {name}
-                </span>
-              </div>
+        </div>
+      ) : (
+        /* Fallback while loading */
+        <div className="relative w-full overflow-hidden flex opacity-30">
+          <div className="flex gap-16 md:gap-28 items-center">
+            {['Four Seasons', 'Aman', 'Emirates', 'Belmond', 'Silversea', 'Six Senses'].map((name) => (
+              <span key={name} className="flex-shrink-0 font-montserrat font-extrabold text-2xl md:text-4xl uppercase tracking-[0.2em] text-white/10 whitespace-nowrap">
+                {name}
+              </span>
             ))}
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

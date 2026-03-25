@@ -1,6 +1,6 @@
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle } from 'lucide-react';
+import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle, Globe } from 'lucide-react';
 import { useState } from 'react';
 import logo from '../../assets/logo.svg';
 
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/admin/offers', label: 'Пропозиції', icon: Package },
   { to: '/admin/blog', label: 'Блог', icon: FileText },
   { to: '/admin/services', label: 'Сервіси', icon: Briefcase },
+  { to: '/admin/partners', label: 'Партнери', icon: Globe },
   { to: '/admin/seo', label: 'SEO', icon: Search },
   { to: '/admin/help', label: 'Довідка', icon: HelpCircle },
 ];

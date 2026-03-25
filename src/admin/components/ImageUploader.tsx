@@ -6,14 +6,16 @@ interface ImageUploaderProps {
   value: string;
   onChange: (url: string) => void;
   folder?: string;
+  accept?: string;
+  hint?: string;
 }
 
-export default function ImageUploader({ value, onChange, folder = 'general' }: ImageUploaderProps) {
+export default function ImageUploader({ value, onChange, folder = 'general', accept = 'image/*', hint }: ImageUploaderProps) {
   const { upload, uploading } = useImageUpload();
   const [dragActive, setDragActive] = useState(false);
 
   const handleFile = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) return;
+    if (!file.type.startsWith('image/') && file.type !== 'image/svg+xml') return;
     const url = await upload(file, folder);
     onChange(url);
   }, [upload, folder, onChange]);
@@ -58,7 +60,8 @@ export default function ImageUploader({ value, onChange, folder = 'general' }: I
           <span className="text-sm text-gray-500">
             {uploading ? 'Завантаження...' : 'Перетягніть або натисніть'}
           </span>
-          <input type="file" accept="image/*" onChange={handleChange} className="hidden" disabled={uploading} />
+          {hint && <span className="text-xs text-gray-400">{hint}</span>}
+          <input type="file" accept={accept} onChange={handleChange} className="hidden" disabled={uploading} />
         </label>
       </div>
 

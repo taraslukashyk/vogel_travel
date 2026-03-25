@@ -7,11 +7,13 @@ import Footer from './components/Footer';
 const Home = lazy(() => import('./pages/Home'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
 const OffersPage = lazy(() => import('./pages/OffersPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 const OfferDetailPage = lazy(() => import('./pages/OfferDetailPage'));
 const PartnershipPage = lazy(() => import('./pages/PartnershipPage'));
+const PartnerDetailPage = lazy(() => import('./pages/PartnerDetailPage'));
 const ContactsPage = lazy(() => import('./pages/ContactsPage'));
 
 // Lazy load admin components
@@ -24,6 +26,8 @@ const BlogList = lazy(() => import('./admin/pages/BlogList'));
 const BlogForm = lazy(() => import('./admin/pages/BlogForm'));
 const ServicesList = lazy(() => import('./admin/pages/ServicesList'));
 const ServiceForm = lazy(() => import('./admin/pages/ServiceForm'));
+const PartnersList = lazy(() => import('./admin/pages/PartnersList'));
+const PartnerForm = lazy(() => import('./admin/pages/PartnerForm'));
 const SeoList = lazy(() => import('./admin/pages/SeoList'));
 const SeoForm = lazy(() => import('./admin/pages/SeoForm'));
 const AdminHelp = lazy(() => import('./admin/pages/AdminHelp'));
@@ -51,11 +55,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route path="/services/:id" element={<ServiceDetailPage />} />
             <Route path="/offers" element={<OffersPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:id" element={<ArticlePage />} />
             <Route path="/offers/:id" element={<OfferDetailPage />} />
             <Route path="/partners" element={<PartnershipPage />} />
+            <Route path="/partners/:id" element={<PartnerDetailPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
           </Route>
 
@@ -78,6 +84,9 @@ function App() {
             <Route path="services" element={<ServicesList />} />
             <Route path="services/new" element={<ServiceForm />} />
             <Route path="services/:id" element={<ServiceForm />} />
+            <Route path="partners" element={<PartnersList />} />
+            <Route path="partners/new" element={<PartnerForm />} />
+            <Route path="partners/:id" element={<PartnerForm />} />
             <Route path="seo" element={<SeoList />} />
             <Route path="seo/:id" element={<SeoForm />} />
             <Route path="help" element={<AdminHelp />} />
