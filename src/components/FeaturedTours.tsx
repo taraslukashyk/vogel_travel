@@ -2,18 +2,25 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useOffers } from '../lib/queries/offers';
 import OptimizedImage from './OptimizedImage';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const FeaturedTours = () => {
   const { data: offers = [] } = useOffers();
   const TOURS = offers.slice(0, 4);
   const [activeIndex, setActiveIndex] = useState(2);
   const navigate = useNavigate();
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
 
   const handleTourClick = (index: number) => {
     const tour = TOURS[index];
+    const slug = t(tour, 'slug');
     if (activeIndex === index) {
       // Second click: Navigate to the detail page
-      navigate(`/ua/offers/${tour.slug}`);
+      navigate(l(`/offers/${slug}`));
     } else {
       // First click: Just expand the card
       setActiveIndex(index);
@@ -26,30 +33,35 @@ const FeaturedTours = () => {
 
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-16 gap-8">
-          {/* ... existing header code ... */}
           <div>
-            <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">Мистецтво подорожувати</h2>
+            <h2 className="text-white/90 font-serif italic text-4xl mb-2 sm:text-5xl">{tr('offers.featured_title_top')}</h2>
             <h1 className="text-white font-serif text-4xl sm:text-5xl md:text-6xl uppercase tracking-[0.15em]">
-              БЕЗ КОМПРОМІСІВ           </h1>
+              {tr('offers.featured_title_bot')}
+            </h1>
           </div>
 
           <div className="max-w-[500px] flex flex-col items-start lg:items-start lg:ml-auto">
             <p className="text-white/90 font-inter text-sm md:text-[15px] leading-relaxed mb-6 font-normal">
-              Довірте нам створення вашого ідеального маршруту. Від оренди приватних вілл до закритих екскурсій — ми беремо на себе кожну деталь, залишаючи вам лише чисті емоції та бездоганний сервіс.
+              {tr('offers.featured_description')}
             </p>
             <Link
-              to="/ua/offers"
+              to={l('/offers')}
               className="border border-white/40 text-white font-montserrat uppercase tracking-[0.15em] text-xs md:text-sm font-bold py-4 px-8 hover:bg-white hover:text-black transition-all duration-500 rounded-[2px] shadow-sm"
             >
-              БІЛЬШЕ ПРОПОЗИЦІЇ
+              {tr('offers.featured_more_btn')}
             </Link>
           </div>
         </div>
 
         {/* Accordion Gallery Section */}
         <div className="flex flex-col lg:flex-row h-[70vh] min-h-[500px] max-h-[700px] gap-2 lg:gap-4 overflow-hidden">
-          {TOURS.map((tour, index) => {
+          {TOURS.map((tour: any, index: number) => {
             const isActive = activeIndex === index;
+            const hotel = t(tour, 'hotel');
+            const location = t(tour, 'location');
+            const bookBy = t(tour, 'bookBy');
+            const stayFrom = t(tour, 'stayFrom');
+            const stayTo = t(tour, 'stayTo');
 
             return (
               <div
@@ -64,7 +76,7 @@ const FeaturedTours = () => {
                 <div className="absolute inset-0 overflow-hidden">
                   <OptimizedImage
                     src={tour.image}
-                    alt={tour.hotel}
+                    alt={t(tour, 'image_alt') || hotel}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
                     style={{ transform: isActive ? 'scale(1)' : 'scale(1.15)' }}
                     sizes={isActive ? "100vw" : "25vw"}
@@ -85,14 +97,14 @@ const FeaturedTours = () => {
 
                 {/* Content (visible when active) */}
                 <div className={`absolute bottom-0 left-0 w-full p-8 md:p-10 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] transform ${isActive ? 'translate-y-0 opacity-100 delay-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
-                  <p className="text-white/60 font-montserrat text-xs uppercase tracking-widest mb-2">{tour.location}</p>
+                  <p className="text-white/60 font-montserrat text-xs uppercase tracking-widest mb-2">{location}</p>
                   <h3 className="text-white font-serif italic text-3xl md:text-4xl mb-3 leading-tight">
-                    {tour.hotel}
+                    {hotel}
                   </h3>
                   <div className="flex items-center gap-4 text-white/70 text-sm font-inter">
-                    <span>Бронюй до <strong className="text-white">{tour.bookBy}</strong></span>
+                    <span>{tr('offers.book_by')} <strong className="text-white">{bookBy}</strong></span>
                     <span className="w-px h-4 bg-white/20"></span>
-                    <span>Період проживання з <strong className="text-white">{tour.stayFrom} — {tour.stayTo}</strong></span>
+                    <span>{tr('offers.stay_period')} <strong className="text-white">{stayFrom} — {stayTo}</strong></span>
                   </div>
                 </div>
               </div>
@@ -106,4 +118,3 @@ const FeaturedTours = () => {
 };
 
 export default FeaturedTours;
-

@@ -8,20 +8,36 @@ import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/F
 import ImageUploader from '../components/ImageUploader';
 import AudioUploader from '../components/AudioUploader';
 import SectionEditor from '../components/SectionEditor';
+import { syncSections } from '../utils/sectionSync';
+import LanguageTabs from '../components/LanguageTabs';
 import type { DBBlogPost, DBSection } from '../../lib/types';
 
 const emptyPost = {
+  // UA
   title: '',
   excerpt: '',
-  date: new Date().toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.'),
-  image: '',
-  image_alt: '',
   category: '',
   audio: '',
   sections: [] as DBSection[],
-  slug: '',
   seo_title: '',
   seo_description: '',
+  slug: '',
+
+  // EN
+  title_en: '',
+  excerpt_en: '',
+  category_en: '',
+  audio_en: '',
+  sections_en: [] as DBSection[],
+  seo_title_en: '',
+  seo_description_en: '',
+  slug_en: '',
+
+  // Common
+  date: new Date().toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.'),
+  image: '',
+  image_alt: '',
+  image_alt_en: '',
   is_published: true,
 };
 
@@ -31,6 +47,7 @@ export default function BlogForm() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyPost);
+  const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
 
   const { data: existing } = useQuery({
     queryKey: ['admin_blog_post', id],
@@ -47,15 +64,26 @@ export default function BlogForm() {
       setForm({
         title: existing.title,
         excerpt: existing.excerpt,
-        date: existing.date,
-        image: existing.image,
-        image_alt: existing.image_alt || '',
         category: existing.category,
         audio: existing.audio || '',
         sections: existing.sections || [],
-        slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
+        slug: existing.slug || '',
+
+        title_en: existing.title_en || '',
+        excerpt_en: existing.excerpt_en || '',
+        category_en: existing.category_en || '',
+        audio_en: existing.audio_en || '',
+        sections_en: syncSections(existing.sections || [], existing.sections_en || []),
+        seo_title_en: existing.seo_title_en || '',
+        seo_description_en: existing.seo_description_en || '',
+        slug_en: existing.slug_en || '',
+
+        date: existing.date,
+        image: existing.image,
+        image_alt: existing.image_alt || '',
+        image_alt_en: existing.image_alt_en || '',
         is_published: existing.is_published,
       });
     }
@@ -63,14 +91,27 @@ export default function BlogForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = { ...form, audio: form.audio || null };
+      const payload = { 
+        ...form, 
+        audio: form.audio || null,
+        audio_en: form.audio_en || null
+      };
+      
       if (isNew) {
         const { data: maxOrder } = await supabase.from('blog_posts').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('blog_posts').insert({ ...payload, sort_order });
+        const { error } = await supabase.from('blog_posts').insert({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          sort_order 
+        });
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('blog_posts').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', Number(id));
+        const { error } = await supabase.from('blog_posts').update({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          updated_at: new Date().toISOString() 
+        }).eq('id', Number(id));
         if (error) throw error;
       }
     },
@@ -101,67 +142,87 @@ export default function BlogForm() {
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
+  const isUA = activeTab === 'ua';
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Новий пост' : 'Редагувати пост'}</h1>
+
+      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         {/* Секція 1: Картка (Прев'ю) */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <Plus className="text-teal-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки (прев'ю)</h2>
-            <span className="text-xs text-gray-400 font-normal ml-auto">Побачать у списку блогу</span>
+            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки ({isUA ? 'UA' : 'EN'})</h2>
           </div>
           <div className="p-5 space-y-6">
-            <FormField label="Заголовок" required tooltip="Головний заголовок сторінки статті (H1).">
+            <FormField label={isUA ? "Заголовок" : "Title"} required={isUA}>
               <input 
                 className={inputClass} 
-                value={form.title} 
+                value={isUA ? form.title : form.title_en} 
                 onChange={(e) => {
-                  const title = e.target.value;
-                  set('title', title);
-                  if (isNew) set('slug', slugify(title));
+                  const val = e.target.value;
+                  if (isUA) {
+                    set('title', val);
+                    if (isNew) set('slug', slugify(val));
+                  } else {
+                    set('title_en', val);
+                  }
                 }} 
-                required 
+                required={isUA} 
+                placeholder={isUA ? form.title_en : form.title}
               />
             </FormField>
 
-            <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично з заголовка.">
+            <FormField label="URL-адреса (спільна для обох мов)">
               <input
                 className={inputClass}
                 value={form.slug}
                 onChange={(e) => set('slug', slugify(e.target.value))}
-                placeholder="yak-vibrati-tur"
-                required
               />
               <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/blog/<strong>{form.slug || 'slug'}</strong></p>
             </FormField>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField label="Категорія" required tooltip="До якої категорії належить стаття, наприклад: Новини, Поради, Гіди.">
-                <input className={inputClass} value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Фіджі" required />
+              <FormField label={isUA ? "Категорія" : "Category"} required={isUA}>
+                <input 
+                  className={inputClass} 
+                  value={isUA ? form.category : form.category_en} 
+                  onChange={(e) => set(isUA ? 'category' : 'category_en', e.target.value)} 
+                  required={isUA} 
+                  placeholder={isUA ? form.category_en : form.category}
+                />
               </FormField>
-              <FormField label="Дата" required>
-                <input className={inputClass} value={form.date} onChange={(e) => set('date', e.target.value)} placeholder="12.03.2026" required />
-              </FormField>
+              
+                <FormField label="Дата" required>
+                  <input className={inputClass} value={form.date} onChange={(e) => set('date', e.target.value)} required />
+                </FormField>
             </div>
 
-            <FormField label="Зображення" required tooltip="Обкладинка статті. Оптимальний розмір від 800x600 пикселів.">
-              <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
-            </FormField>
-            <FormField label="Alt текст фото" tooltip="Альтернативний текст фото. Важливо для SEO та людей з порушенням зору.">
-              <input
-                type="text"
-                value={form.image_alt}
-                onChange={(e) => set('image_alt', e.target.value)}
-                placeholder="Опишіть, що на фото..."
-                className={inputClass}
-              />
-            </FormField>
+              <FormField label="Зображення" required>
+                <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
+              </FormField>
+              <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"}>
+                <input
+                  type="text"
+                  value={isUA ? form.image_alt : form.image_alt_en}
+                  onChange={(e) => set(isUA ? 'image_alt' : 'image_alt_en', e.target.value)}
+                  className={inputClass}
+                  placeholder={isUA ? form.image_alt_en : form.image_alt}
+                />
+              </FormField>
 
-            <FormField label="Короткий опис (excerpt)" required tooltip="Цей текст буде відображатися в списку статей, як прев'ю (до 2-3 речень).">
-              <textarea className={inputClass} rows={2} value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} required />
+            <FormField label={isUA ? "Короткий опис (excerpt)" : "Short Excerpt"} required={isUA}>
+              <textarea 
+                className={inputClass} 
+                rows={2} 
+                value={isUA ? form.excerpt : form.excerpt_en} 
+                onChange={(e) => set(isUA ? 'excerpt' : 'excerpt_en', e.target.value)} 
+                required={isUA} 
+                placeholder={isUA ? form.excerpt_en : form.excerpt}
+              />
             </FormField>
           </div>
         </div>
@@ -170,17 +231,34 @@ export default function BlogForm() {
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <FileText className="text-blue-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Наповнення статті</h2>
-            <span className="text-xs text-gray-400 font-normal ml-auto">Основний текст та аудіо</span>
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення статті ({isUA ? 'UA' : 'EN'})</h2>
           </div>
           <div className="p-5 space-y-8">
-            <FormField label="Аудіофайл (опціонально)" tooltip="Завантажте або вкажіть посилання на аудіоверсію.">
-              <AudioUploader value={form.audio} onChange={(url) => set('audio', url)} />
+            <FormField label={isUA ? "Аудіофайл (UA)" : "Audio File (EN)"}>
+              <AudioUploader value={isUA ? form.audio : form.audio_en} onChange={(url) => set(isUA ? 'audio' : 'audio_en', url)} />
             </FormField>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">Секції статті (текст, фото, списки)</label>
-              <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+              <label className="block text-sm font-medium text-gray-700 mb-4">Секції статті ({isUA ? 'UA' : 'EN'})</label>
+              <SectionEditor 
+                sections={isUA ? form.sections : form.sections_en} 
+                placeholderSections={isUA ? form.sections_en : form.sections}
+                onChange={(s) => {
+                  if (isUA) {
+                    setForm(prev => ({ 
+                      ...prev, 
+                      sections: s, 
+                      sections_en: syncSections(s, prev.sections_en) 
+                    }));
+                  } else {
+                    setForm(prev => ({ 
+                      ...prev, 
+                      sections_en: s, 
+                      sections: syncSections(s, prev.sections) 
+                    }));
+                  }
+                }} 
+              />
             </div>
           </div>
         </div>
@@ -188,16 +266,24 @@ export default function BlogForm() {
         {/* SEO */}
         <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            🔍 SEO для цієї сторінки
-            <span className="text-xs font-normal text-gray-400">(/blog/{id || 'new'})</span>
+            🔍 SEO ({isUA ? 'UA' : 'EN'})
           </h3>
-          <FormField label="SEO Title" tooltip="Заголовок для пошукових систем (50-60 символів).">
-            <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.title} — Vogel Family Travel`} />
-            <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
+          <FormField label="SEO Title">
+            <input 
+              className={inputClass} 
+              value={isUA ? form.seo_title : form.seo_title_en} 
+              onChange={(e) => set(isUA ? 'seo_title' : 'seo_title_en', e.target.value)} 
+              placeholder={isUA ? form.seo_title_en : form.seo_title}
+            />
           </FormField>
-          <FormField label="SEO Description" tooltip="Короткий опис для пошукових систем (до 160 символів).">
-            <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.excerpt || 'Опис для пошукових систем'} />
-            <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
+          <FormField label="SEO Description">
+            <textarea 
+              className={inputClass} 
+              rows={2} 
+              value={isUA ? form.seo_description : form.seo_description_en} 
+              onChange={(e) => set(isUA ? 'seo_description' : 'seo_description_en', e.target.value)} 
+              placeholder={isUA ? form.seo_description_en : form.seo_description}
+            />
           </FormField>
         </div>
 
@@ -210,7 +296,7 @@ export default function BlogForm() {
 
         <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
-            {mutation.isPending ? 'Збереження...' : 'Зберегти'}
+            {mutation.isPending ? 'Збереження...' : 'Зберегти (Обидві мови)'}
           </button>
           <button type="button" onClick={() => navigate('/admin/blog')} className={btnSecondary}>
             Скасувати
@@ -220,9 +306,9 @@ export default function BlogForm() {
               type="button"
               onClick={handleDelete}
               disabled={deleteMutation.isPending}
-              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium"
             >
-              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+              Видалити
             </button>
           )}
         </div>

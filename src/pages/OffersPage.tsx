@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
 import { useOffers } from '../lib/queries/offers';
-import type { Offer } from '../data/offers';
 import SEOHead from '../components/SEOHead';
 import OptimizedImage from '../components/OptimizedImage';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -29,12 +31,24 @@ function useScrollReveal() {
 }
 
 /* ─── Single Offer Card ─── */
-const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
+const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
   const ref = useScrollReveal();
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
+
+  const hotelName = t(offer, 'hotel');
+  const locationName = t(offer, 'location');
+  const bookBy = t(offer, 'book_by');
+  const stayFrom = t(offer, 'stay_from');
+  const stayTo = t(offer, 'stay_to');
+  const discountVal = t(offer, 'discount');
+  const slug = t(offer, 'slug');
+
   return (
     <div
       ref={ref}
-      id={`offer-${offer.slug}`}
+      id={`offer-${slug}`}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
@@ -43,23 +57,23 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
         <div className="relative h-56 overflow-hidden">
           <OptimizedImage
             src={offer.image}
-            alt={offer.hotel}
+            alt={t(offer, 'image_alt') || hotelName}
             className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
           {/* Discount badge — glassmorphism */}
-          {offer.discount && (
+          {discountVal && (
             <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
-              {offer.discount}
+              {discountVal}
             </div>
           )}
 
           {/* Location tag at bottom of image */}
           <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
             <Tag className="w-3 h-3" strokeWidth={1.5} />
-            {offer.location}
+            {locationName}
           </div>
         </div>
 
@@ -67,7 +81,7 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
         <div className="flex-1 p-7 flex flex-col gap-5">
           {/* Hotel name */}
           <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
-            {offer.hotel}
+            {hotelName}
           </h2>
 
           {/* Details */}
@@ -76,7 +90,7 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
             <div className="flex items-center gap-3 text-white/60 py-3">
               <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
               <span className="font-inter text-[14px] font-light">
-                Бронюй до <strong className="text-white/90 font-medium">{offer.bookBy}</strong>
+                {tr('offers.book_by')} <strong className="text-white/90 font-medium">{bookBy}</strong>
               </span>
             </div>
 
@@ -84,19 +98,19 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
             <div className="flex items-center gap-3 text-white/60 py-3">
               <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
               <span className="font-inter text-[14px] font-light">
-                Період проживання з{' '}
+                {tr('offers.stay_period')}{' '}
                 <strong className="text-white/90 font-medium">
-                  {offer.stayFrom} — {offer.stayTo}
+                  {stayFrom} — {stayTo}
                 </strong>
               </span>
             </div>
 
             {/* Discount row */}
-            {offer.discount && (
+            {discountVal && (
               <div className="flex items-center justify-between py-3">
-                <span className="font-inter text-[14px] text-white/50 font-light">Знижка</span>
+                <span className="font-inter text-[14px] text-white/50 font-light">{tr('common.discount')}</span>
                 <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
-                  {offer.discount}
+                  {discountVal}
                 </span>
               </div>
             )}
@@ -104,10 +118,10 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
 
           {/* CTA button */}
           <Link 
-            to={`/ua/offers/${offer.slug}`}
+            to={l(`/offers/${slug}`)}
             className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 hover:bg-white hover:text-black transition-all duration-500 rounded-sm text-center block"
           >
-            Дізнатися більше
+            {tr('common.details')}
           </Link>
         </div>
       </article>
@@ -120,6 +134,8 @@ const OffersPage = () => {
   const { data: offers = [] } = useOffers();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
+  const { currentLang } = useLanguage();
+  const { t: tr } = useTranslation();
 
   useEffect(() => {
     if (location.hash) {
@@ -143,9 +159,13 @@ const OffersPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/ua/offers" fallbackTitle="Пропозиції — Vogel Family Travel" fallbackDescription="Ексклюзивні пропозиції від наших партнерів — перевірених готелів преміального рівня по всьому світу." />
+      <SEOHead 
+        pagePath={`/${currentLang}/offers`} 
+        fallbackTitle={tr('nav.offers') + " — Vogel Family Travel"} 
+        fallbackDescription={tr('offers.subtitle')} 
+      />
 
-      {/* Background video (matched with About page) */}
+      {/* Background video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
@@ -171,13 +191,13 @@ const OffersPage = () => {
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
             <span className="block text-white/30 text-2xl md:text-3xl mb-2">Vogel Family Travel</span>
             <span className="block text-5xl md:text-7xl lg:text-[88px] text-white">
-              Пропозиції
+              {tr('nav.offers')}
             </span>
           </h1>
 
           {/* Scroll Indicator with smooth fade out */}
           <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
-            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">Гортай</span>
+            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">{currentLang === 'ua' ? 'Гортай' : 'Scroll'}</span>
             <div className="scroll-indicator"></div>
           </div>
         </div>
@@ -192,17 +212,17 @@ const OffersPage = () => {
           <div>
             <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white flex items-center gap-4 mb-6">
               <span className="w-8 h-px bg-white/30" />
-              Актуальні знижки
+              {tr('offers.title')}
             </h2>
             <p className="font-inter text-white/70 text-lg leading-relaxed">
-              Ексклюзивні пропозиції від наших партнерів — перевірених готелів преміального рівня по
-              всьому світу. Бронюйте завчасно та отримуйте найкращі умови.
+              {tr('offers.subtitle')}
             </p>
           </div>
           <div>
             <p className="font-inter text-white/50 text-base leading-relaxed border-l border-white/10 pl-8">
-              Кожна пропозиція перевірена нашими менеджерами особисто. Ми гарантуємо відповідність
-              заявленого рівня сервісу та захист інтересів клієнта на кожному етапі бронювання.
+              {currentLang === 'ua' 
+                ? "Кожна пропозиція перевірена нашими менеджерами особисто. Ми гарантуємо відповідність заявленого рівня сервісу та захист інтересів клієнта на кожному етапі бронювання."
+                : "Each offer is personally verified by our managers. We guarantee compliance with the stated level of service and protection of client interests at every stage of booking."}
             </p>
           </div>
         </div>
@@ -211,7 +231,7 @@ const OffersPage = () => {
       {/* ── Offer cards grid ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {offers.map((offer, idx) => (
+          {offers.map((offer: any, idx: number) => (
             <OfferCard key={offer.id} offer={offer} idx={idx} />
           ))}
         </div>

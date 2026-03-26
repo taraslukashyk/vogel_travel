@@ -6,6 +6,8 @@ import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
+import LanguageTabs from '../components/LanguageTabs';
+import { syncSections } from '../utils/sectionSync';
 import { Plus, FileText, Trash2, GripVertical } from 'lucide-react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
@@ -76,19 +78,36 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
 }
 
 const emptyOffer = {
+  // UA
   location: '',
   hotel: '',
-  image: '',
-  image_alt: '',
   book_by: '',
   stay_from: '',
   stay_to: '',
   discount: '',
   description: '',
   sections: [] as DBSection[],
-  slug: '',
   seo_title: '',
   seo_description: '',
+  
+  // EN
+  location_en: '',
+  hotel_en: '',
+  book_by_en: '',
+  stay_from_en: '',
+  stay_to_en: '',
+  discount_en: '',
+  description_en: '',
+  sections_en: [] as DBSection[],
+  seo_title_en: '',
+  seo_description_en: '',
+  
+  // Common
+  image: '',
+  image_alt: '',
+  image_alt_en: '',
+  slug: '',
+  slug_en: '',
   is_published: true,
 };
 
@@ -98,7 +117,9 @@ export default function OfferForm() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyOffer);
+  const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
   const [gallery, setGallery] = useState<{ image: string; caption: string; alt: string }[]>([]);
+  
   const gallerySensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -120,6 +141,7 @@ export default function OfferForm() {
   useEffect(() => {
     if (existing) {
       // Separate image sections (gallery) from text/list sections
+      // For now, gallery is common but sections can be language-specific
       const allSections = existing.sections || [];
       const textSections = allSections.filter(s => s.type !== 'image');
       const imageSections = allSections.filter(s => s.type === 'image');
@@ -127,17 +149,31 @@ export default function OfferForm() {
       setForm({
         location: existing.location,
         hotel: existing.hotel,
-        image: existing.image,
-        image_alt: existing.image_alt || '',
         book_by: existing.book_by,
         stay_from: existing.stay_from,
         stay_to: existing.stay_to,
         discount: existing.discount,
         description: existing.description || '',
         sections: textSections,
-        slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
+        
+        location_en: existing.location_en || '',
+        hotel_en: existing.hotel_en || '',
+        book_by_en: existing.book_by_en || '',
+        stay_from_en: existing.stay_from_en || '',
+        stay_to_en: existing.stay_to_en || '',
+        discount_en: existing.discount_en || '',
+        description_en: existing.description_en || '',
+        sections_en: syncSections(textSections, existing.sections_en || []),
+        seo_title_en: existing.seo_title_en || '',
+        seo_description_en: existing.seo_description_en || '',
+
+        image: existing.image,
+        image_alt: existing.image_alt || '',
+        image_alt_en: existing.image_alt_en || '',
+        slug: existing.slug || '',
+        slug_en: existing.slug_en || '',
         is_published: existing.is_published,
       });
 
@@ -149,9 +185,9 @@ export default function OfferForm() {
     }
   }, [existing]);
 
-  // Combine text sections + gallery into final sections array for saving
-  const buildSections = (): DBSection[] => {
-    const textSections = form.sections;
+  const buildSections = (target: 'ua' | 'en'): DBSection[] => {
+    const textSections = target === 'ua' ? form.sections : form.sections_en;
+    // Gallery is shared currently, but we could translate captions if needed
     const imageSections: DBSection[] = gallery
       .filter(g => g.image)
       .map(g => ({ type: 'image' as const, content: g.caption, image: g.image, alt: g.alt || undefined }));
@@ -160,7 +196,13 @@ export default function OfferForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = { ...form, sections: buildSections() };
+      const payload = { 
+        ...form, 
+        slug_en: form.slug, // Sync English slug with Ukrainian
+        sections: buildSections('ua'),
+        sections_en: buildSections('en')
+      };
+      
       if (isNew) {
         const { data: maxOrder } = await supabase.from('offers').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
@@ -214,86 +256,103 @@ export default function OfferForm() {
     }
   };
 
+  const isUA = activeTab === 'ua';
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Нова пропозиція' : 'Редагувати пропозицію'}</h1>
+
+      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         {/* Секція 1: Картка (Прев'ю) */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <Plus className="text-teal-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки (прев'ю)</h2>
-            <span className="text-xs text-gray-400 font-normal ml-auto">Побачать у каталозі</span>
+            <h2 className="font-semibold text-gray-800 text-base">Інформація для картки ({isUA ? 'UA' : 'EN'})</h2>
           </div>
           <div className="p-5 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField label="Готель" required tooltip="Назва готелю. Це буде головним заголовком на картці пропозиції.">
+              <FormField label={isUA ? "Готель" : "Hotel Name"} required={isUA}>
                 <input
                   className={inputClass}
-                  value={form.hotel}
+                  value={isUA ? form.hotel : form.hotel_en}
                   onChange={(e) => {
-                    const hotel = e.target.value;
-                    set('hotel', hotel);
-                    if (isNew) set('slug', slugify(`${hotel} ${form.location}`));
+                    const val = e.target.value;
+                    if (isUA) {
+                      set('hotel', val);
+                      if (isNew) set('slug', slugify(`${val} ${form.location}`));
+                    } else {
+                      set('hotel_en', val);
+                    }
                   }}
-                  required
-                  placeholder="Dusit Thani Maldives"
+                  required={isUA}
+                  placeholder={isUA ? form.hotel_en : form.hotel || (isUA ? "Dusit Thani Maldives" : "Hotel name in English")}
                 />
               </FormField>
 
-              <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично.">
+              <FormField label="URL-адреса (спільна для обох мов)">
                 <input
                   className={inputClass}
                   value={form.slug}
                   onChange={(e) => set('slug', slugify(e.target.value))}
-                  placeholder="dusit-thani-maldives"
-                  required
                 />
                 <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/offers/<strong>{form.slug || 'slug'}</strong></p>
               </FormField>
 
-              <FormField label="Локація" required tooltip="Місто, курорт або країна.">
+              <FormField label={isUA ? "Локація" : "Location"} required={isUA}>
                 <input
                   className={inputClass}
-                  value={form.location}
+                  value={isUA ? form.location : form.location_en}
                   onChange={(e) => {
-                    const location = e.target.value;
-                    set('location', location);
-                    if (isNew) set('slug', slugify(`${form.hotel} ${location}`));
+                    const val = e.target.value;
+                    if (isUA) {
+                      set('location', val);
+                      if (isNew) set('slug', slugify(`${form.hotel} ${val}`));
+                    } else {
+                      set('location_en', val);
+                    }
                   }}
-                  required
+                  required={isUA}
+                  placeholder={isUA ? form.location_en : form.location}
                 />
               </FormField>
-              <FormField label="Бронювання до" required tooltip="Остання дата, до якої клієнт може забронювати цю пропозицію.">
-                <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
+              <FormField label={isUA ? "Бронювання до" : "Book by"} required={isUA}>
+                <input className={inputClass} value={isUA ? form.book_by : form.book_by_en} onChange={(e) => set(isUA ? 'book_by' : 'book_by_en', e.target.value)} placeholder={isUA ? form.book_by_en : form.book_by || "12/04"} required={isUA} />
               </FormField>
-              <FormField label="Знижка" tooltip="Вкажіть розмір знижки (наприклад: 20%, 500$, До 30%). Цей текст відображатиметься як зелений бейдж на картинці.">
-                <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
+              <FormField label={isUA ? "Знижка" : "Discount"}>
+                <input className={inputClass} value={isUA ? form.discount : form.discount_en} onChange={(e) => set(isUA ? 'discount' : 'discount_en', e.target.value)} placeholder={isUA ? form.discount_en : form.discount || "-60%"} />
               </FormField>
-              <FormField label="Перебування з" required tooltip="Початкова дата періоду, в який діє ця пропозиція на проживання.">
-                <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
+              <FormField label={isUA ? "Перебування з" : "Stay from"} required={isUA}>
+                <input className={inputClass} value={isUA ? form.stay_from : form.stay_from_en} onChange={(e) => set(isUA ? 'stay_from' : 'stay_from_en', e.target.value)} placeholder={isUA ? form.stay_from_en : form.stay_from || "05/05"} required={isUA} />
               </FormField>
-              <FormField label="Перебування до" required tooltip="Кінцева дата періоду, в який діє ця пропозиція на проживання.">
-                <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
+              <FormField label={isUA ? "Перебування до" : "Stay to"} required={isUA}>
+                <input className={inputClass} value={isUA ? form.stay_to : form.stay_to_en} onChange={(e) => set(isUA ? 'stay_to' : 'stay_to_en', e.target.value)} placeholder={isUA ? form.stay_to_en : form.stay_to || "30/09"} required={isUA} />
               </FormField>
             </div>
 
-            <FormField label="Зображення" required tooltip="Головне фото пропозиції, яке виводиться на картці. Рекомендований розмір 800x600 px.">
+            {/* Main Image (Common) */}
+            <FormField label="Зображення" required tooltip="Головне фото пропозиції.">
               <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
             </FormField>
-            <FormField label="Alt текст фото" tooltip="Опишіть, що зображено на головному фото. Це допомагає пошуковим системам та людям з порушенням зору.">
+            <FormField label={isUA ? "Alt текст головного фото" : "Main Image Alt Text"}>
               <input
                 type="text"
-                value={form.image_alt}
-                onChange={(e) => set('image_alt', e.target.value)}
-                placeholder="Наприклад: Вигляд на сучасний готельний комплекс біля моря"
                 className={inputClass}
+                value={isUA ? form.image_alt : form.image_alt_en}
+                onChange={(e) => set(isUA ? 'image_alt' : 'image_alt_en', e.target.value)}
+                placeholder={isUA ? form.image_alt_en : form.image_alt}
               />
             </FormField>
 
-            <FormField label="Короткий опис" tooltip="Текст-анонс, який описує головні переваги. До 150 символів.">
-              <textarea className={inputClass} rows={2} value={form.description} onChange={(e) => set('description', e.target.value)} />
+            <FormField label={isUA ? "Короткий опис" : "Short Description"}>
+              <textarea 
+                className={inputClass} 
+                rows={2} 
+                value={isUA ? form.description : form.description_en} 
+                onChange={(e) => set(isUA ? 'description' : 'description_en', e.target.value)} 
+                placeholder={isUA ? form.description_en : form.description}
+              />
             </FormField>
           </div>
         </div>
@@ -302,20 +361,34 @@ export default function OfferForm() {
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 flex items-center gap-2">
             <FileText className="text-blue-600" size={18} />
-            <h2 className="font-semibold text-gray-800 text-base">Наповнення сторінки </h2>
-            <span className="text-xs text-gray-400 font-normal ml-auto">Детальний опис та галерея</span>
+            <h2 className="font-semibold text-gray-800 text-base">Наповнення сторінки ({isUA ? 'UA' : 'EN'})</h2>
           </div>
           <div className="p-5 space-y-8">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">Контент-секції (текст, списки)</label>
-              <SectionEditor sections={form.sections} onChange={(s) => set('sections', s)} />
+              <label className="block text-sm font-medium text-gray-700 mb-4">Контент-секції</label>
+              <SectionEditor 
+                sections={isUA ? form.sections : form.sections_en} 
+                placeholderSections={isUA ? form.sections_en : form.sections}
+                onChange={(s) => {
+                  if (isUA) {
+                    setForm(prev => ({ 
+                      ...prev, 
+                      sections: s, 
+                      sections_en: syncSections(s, prev.sections_en) 
+                    }));
+                  } else {
+                    setForm(prev => ({ 
+                      ...prev, 
+                      sections_en: s, 
+                      sections: syncSections(s, prev.sections) 
+                    }));
+                  }
+                }} 
+              />
             </div>
 
             <div className="pt-6 border-t border-gray-100">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Галерея фото ({gallery.length} {gallery.length === 1 ? 'фото' : 'фото'})
-              </label>
-              <p className="text-xs text-gray-400 mb-4">Ці фото відображатимуться в каруселі на сторінці пропозиції</p>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Галерея фото (спільна)</label>
               <div className="space-y-3">
                 <DndContext sensors={gallerySensors} collisionDetection={closestCenter} onDragEnd={handleGalleryDragEnd}>
                   <SortableContext items={gallery.map((_, i) => `gal-${i}`)} strategy={verticalListSortingStrategy}>
@@ -333,7 +406,7 @@ export default function OfferForm() {
                 <button
                   type="button"
                   onClick={addGalleryImage}
-                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-teal-500 hover:text-teal-600 w-full justify-center transition-all bg-gray-50/50 hover:bg-teal-50/30"
+                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-teal-500 hover:text-teal-600 w-full justify-center"
                 >
                   <Plus size={16} />
                   Додати фото до галереї
@@ -346,16 +419,24 @@ export default function OfferForm() {
         {/* SEO */}
         <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            🔍 SEO для цієї сторінки
-            <span className="text-xs font-normal text-gray-400">(/offers/{id || 'new'})</span>
+            🔍 SEO ({isUA ? 'UA' : 'EN'})
           </h3>
-          <FormField label="SEO Title" tooltip="Заголовок для пошукових систем (50-60 символів).">
-            <input className={inputClass} value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} placeholder={`${form.hotel} — ${form.location} | Vogel Travel`} />
-            <p className="text-xs text-gray-400 mt-1">{form.seo_title.length}/60 — залиште порожнім для автоматичного</p>
+          <FormField label="SEO Title">
+            <input 
+              className={inputClass} 
+              value={isUA ? form.seo_title : form.seo_title_en} 
+              onChange={(e) => set(isUA ? 'seo_title' : 'seo_title_en', e.target.value)} 
+              placeholder={isUA ? form.seo_title_en : form.seo_title}
+            />
           </FormField>
-          <FormField label="SEO Description" tooltip="Короткий опис сторінки пропозиції для пошукових систем (до 160 символів).">
-            <textarea className={inputClass} rows={2} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} placeholder={form.description || 'Опис для пошукових систем'} />
-            <p className="text-xs text-gray-400 mt-1">{form.seo_description.length}/160 — залиште порожнім для автоматичного</p>
+          <FormField label="SEO Description">
+            <textarea 
+              className={inputClass} 
+              rows={2} 
+              value={isUA ? form.seo_description : form.seo_description_en} 
+              onChange={(e) => set(isUA ? 'seo_description' : 'seo_description_en', e.target.value)} 
+              placeholder={isUA ? form.seo_description_en : form.seo_description}
+            />
           </FormField>
         </div>
 
@@ -368,7 +449,7 @@ export default function OfferForm() {
 
         <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
-            {mutation.isPending ? 'Збереження...' : 'Зберегти'}
+            {mutation.isPending ? 'Збереження...' : 'Зберегти (Обидві мови)'}
           </button>
           <button type="button" onClick={() => navigate('/admin/offers')} className={btnSecondary}>
             Скасувати
@@ -378,9 +459,9 @@ export default function OfferForm() {
               type="button"
               onClick={handleDelete}
               disabled={deleteMutation.isPending}
-              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium"
             >
-              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+              Видалити
             </button>
           )}
         </div>

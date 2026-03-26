@@ -12,6 +12,9 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
+  ::placeholder {
+    @apply text-gray-400 italic opacity-70 font-light;
+  }
 }
 @layer utilities {
   .scroll-indicator {

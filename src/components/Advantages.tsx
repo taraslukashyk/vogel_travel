@@ -1,5 +1,5 @@
-
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* ─── Scroll-reveal hook for fade in/out on scroll ─── */
 function useScrollReveal() {
@@ -25,7 +25,7 @@ function useScrollReveal() {
   return ref;
 }
 
-const AdvantageItem = ({ num, title, text, delayIdx }: { num: string; title: React.ReactNode; text: string; delayIdx: number }) => {
+const AdvantageItem = ({ num, title, text, delayIdx }: { num: string; title: string; text: string; delayIdx: number }) => {
   const ref = useScrollReveal();
   return (
     <div
@@ -47,6 +47,8 @@ const AdvantageItem = ({ num, title, text, delayIdx }: { num: string; title: Rea
 };
 
 const Advantages = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="w-full py-24 bg-transparent text-white relative flex flex-col items-center justify-center border-t border-white/10 px-6 sm:px-12 object-contain">
       <div className="max-w-[1440px] w-full grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 relative z-10">
@@ -54,22 +56,22 @@ const Advantages = () => {
         <AdvantageItem 
           num="01" 
           delayIdx={0}
-          title={<>Подорожі з<br />продуманим змістом</>}
-          text="Ми проєктуємо подорожі, виходячи з ритму життя, цілей і контексту клієнта. Не перевантажуємо маршрутами й активностями заради галочки. Наш критерій якості — стан, у якому людина повертається, і відчуття, що подорож була доречною саме зараз." 
+          title={t('advantages.item1_title')}
+          text={t('advantages.item1_text')} 
         />
 
         <AdvantageItem 
           num="02" 
           delayIdx={1}
-          title={<>Комфорт як результат<br />уваги до деталей</>}
-          text="Кожна подорож для нас — індивідуальний проєкт. Ми продумуємо не лише напрямок і готель, а й логіку пересувань, таймінг, паузи та дрібні деталі, які знімають напругу в дорозі. Ми не працюємо за шаблонами й завжди тримаємо процес під контролем." 
+          title={t('advantages.item2_title')}
+          text={t('advantages.item2_text')} 
         />
 
         <AdvantageItem 
           num="03" 
           delayIdx={2}
-          title={<>Довіра через<br />передбачуваний результат</>}
-          text="Ми будуємо довгострокові відносини, а не разові поїздки. Довіра для нас — це чіткі процеси, чесні рекомендації та відповідальність за результат. Клієнти повертаються до нас, бо знають: їхній час, бюджет і очікування будуть враховані." 
+          title={t('advantages.item3_title')}
+          text={t('advantages.item3_text')} 
         />
 
       </div>

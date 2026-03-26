@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const FinalQuote = () => {
-  const quoteText = '«Подорож, як найбільша і найсерйозніша наука, допомагає нам знову віднайти себе.»';
-  const authorText = "– Альбер Камю";
+  const { t, i18n } = useTranslation();
+  const quoteText = t('home.final_quote');
+  const authorText = t('home.final_author');
   
   const [displayedQuote, setDisplayedQuote] = useState('');
   const [displayedAuthor, setDisplayedAuthor] = useState('');
@@ -10,6 +12,15 @@ const FinalQuote = () => {
   const [isTypingAuthor, setIsTypingAuthor] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Reset animation when language changes
+  useEffect(() => {
+    setDisplayedQuote('');
+    setDisplayedAuthor('');
+    setHasAnimated(false);
+    setIsTypingQuote(false);
+    setIsTypingAuthor(false);
+  }, [i18n.language]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,7 +60,7 @@ const FinalQuote = () => {
     }, 45); 
 
     return () => clearInterval(typingInterval);
-  }, [isTypingQuote]);
+  }, [isTypingQuote, quoteText]);
 
   // Type author
   useEffect(() => {
@@ -67,7 +78,7 @@ const FinalQuote = () => {
     }, 50);
 
     return () => clearInterval(typingInterval);
-  }, [isTypingAuthor]);
+  }, [isTypingAuthor, authorText]);
 
   return (
     <section ref={sectionRef} className="w-full py-40 bg-transparent text-white relative flex flex-col items-center justify-center border-t border-white/5">

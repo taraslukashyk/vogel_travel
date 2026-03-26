@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, Outlet } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -47,14 +48,33 @@ const AdminLoader = () => (
   </div>
 );
 
+// Helper to sync i18n language with URL prefix
+function LanguageHandler() {
+  const { lang } = useParams();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (lang && (lang === 'ua' || lang === 'en')) {
+      if (i18n.language !== lang) {
+        i18n.changeLanguage(lang);
+      }
+    }
+  }, [lang, i18n]);
+
+  return <PublicLayout />;
+}
+
 function App() {
+  const { i18n } = useTranslation();
+  
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* Public routes with Header/Footer and /ua prefix */}
-          <Route path="/" element={<Navigate to="/ua" replace />} />
-          <Route path="/ua" element={<PublicLayout />}>
+          {/* Public routes with Header/Footer and language prefix */}
+          <Route path="/" element={<Navigate to={`/${i18n.language || 'ua'}`} replace />} />
+          
+          <Route path="/:lang" element={<LanguageHandler />}>
             <Route index element={<Home />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="services" element={<ServicesPage />} />
@@ -103,8 +123,6 @@ function App() {
 }
 
 // Layout wrapper for public pages
-import { Outlet } from 'react-router-dom';
-
 function PublicLayout() {
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/30 flex flex-col">

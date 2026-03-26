@@ -4,10 +4,16 @@ import { ArrowLeft, Share2 } from 'lucide-react';
 import { useBlogPost } from '../lib/queries/blog';
 import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const ArticlePage = () => {
   const { slug } = useParams();
   const location = useLocation();
+  const { currentLang, l } = useLanguage();
+  const { t, sections: getSections } = useLanguageContent();
+  const { t: tr } = useTranslation();
   const { data: post, isLoading } = useBlogPost(slug!);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -17,8 +23,35 @@ const ArticlePage = () => {
     window.scrollTo(0, 0);
   }, [location]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#5cc8bd] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-serif text-gray-900 mb-4">{tr('blog.not_found')}</h1>
+          <Link to={l('/blog')} className="text-[#5cc8bd] font-bold uppercase tracking-widest">
+            {tr('blog.back_to_blog')}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const title = t(post, 'title');
+  const excerpt = t(post, 'excerpt');
+  const category = t(post, 'category');
+  const audio = t(post, 'audio');
+  const sections = getSections(post);
+
   // Fix Vite base path issue for public assets
-  const audioUrl = post?.audio ? (post.audio.startsWith('/') ? `${import.meta.env.BASE_URL}${post.audio.slice(1)}` : post.audio) : undefined;
+  const audioUrl = audio ? (audio.startsWith('/') ? `${import.meta.env.BASE_URL}${audio.slice(1)}` : audio) : undefined;
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -35,8 +68,8 @@ const ArticlePage = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: post?.title,
-          text: post?.excerpt,
+          title: title,
+          text: excerpt,
           url: window.location.href,
         });
       } catch (err) {
@@ -44,37 +77,16 @@ const ArticlePage = () => {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Посилання скопійовано в буфер обміну!');
+      alert(tr('common.link_copied'));
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#5cc8bd] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-serif text-gray-900 mb-4">Статтю не знайдено</h1>
-          <Link to="/ua/blog" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
-            Повернутися до блогу
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
       <SEOHead
-        pagePath={`/ua/blog/${slug}`}
-        title={post.seoTitle || `${post.title} — Vogel Family Travel`}
-        description={post.seoDescription || post.excerpt}
+        pagePath={`/${currentLang}/blog/${slug}`}
+        title={t(post, 'seo_title') || `${title} — Vogel Family Travel`}
+        description={t(post, 'seo_description') || excerpt}
         ogImage={post.image}
       />
 
@@ -83,7 +95,7 @@ const ArticlePage = () => {
         <div className="absolute inset-0 overflow-hidden">
           <OptimizedImage
             src={post.image}
-            alt={post.title}
+            alt={t(post, 'image_alt') || title}
             className="w-full h-full object-cover"
             sizes="100vw"
             loading="eager"
@@ -96,26 +108,26 @@ const ArticlePage = () => {
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <div className="max-w-4xl">
             <Link
-              to="/ua/blog"
+              to={l('/blog')}
               className="inline-flex items-center gap-2 text-white/70 hover:text-[#5cc8bd] transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Назад до блогу
+              {tr('blog.back_to_blog')}
             </Link>
 
             <div className="flex items-center gap-4 text-[#5cc8bd] text-xs font-black uppercase tracking-[0.2em] mb-4">
-              <span>{post.category}</span>
+              <span>{category}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-white/20"></span>
               <span className="text-white/60 font-medium">{post.date}</span>
             </div>
 
             <h1 className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 drop-shadow-sm">
-              {post.title}
+              {title}
             </h1>
 
             <div className="flex flex-wrap items-center gap-8 md:gap-12 pt-4">
               {/* Audio Listen Button */}
-              {post.audio && (
+              {audio && (
                 <button
                   onClick={toggleAudio}
                   className="flex items-center gap-3 group text-left"
@@ -138,10 +150,10 @@ const ArticlePage = () => {
                   
                   <div className="flex flex-col">
                     <span className="font-montserrat font-bold text-[12px] uppercase tracking-widest text-white group-hover:text-[#5cc8bd] transition-colors">
-                      {isPlaying ? 'Пауза' : 'Прослухати'}
+                      {isPlaying ? tr('common.pause') : tr('common.listen')}
                     </span>
                     <span className="font-inter text-[13px] font-medium text-white/40 mt-0.5">
-                      {duration ? `${Math.ceil(duration / 60)} хв прослуховування` : 'Завантаження...'}
+                      {duration ? `${Math.ceil(duration / 60)} ${tr('common.min_listen')}` : tr('common.loading')}
                     </span>
                   </div>
 
@@ -166,7 +178,7 @@ const ArticlePage = () => {
                 <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                   <Share2 className="w-4 h-4 transition-transform group-hover:scale-110" strokeWidth={1.5} />
                 </div>
-                <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">Поділитися</span>
+                <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">{tr('common.share')}</span>
               </button>
             </div>
           </div>
@@ -177,7 +189,7 @@ const ArticlePage = () => {
       <section className="relative py-16 px-6 md:px-8 bg-zinc-200/50">
         <div className="max-w-5xl mx-auto">
           <div className="prose prose-lg prose-gray max-w-none prose-headings:font-serif prose-headings:italic prose-p:font-inter prose-p:leading-relaxed prose-p:text-gray-700">
-            {post.sections.map((section, idx) => {
+            {sections.map((section: any, idx: number) => {
               if (section.type === 'text') {
                 return (
                   <div key={idx} className="mb-12">
@@ -239,12 +251,14 @@ const ArticlePage = () => {
           </div>
 
           <div className="mt-24 pt-16 border-t border-gray-100 flex flex-col items-center">
-            <p className="text-gray-400 font-serif italic text-xl mb-8">Плануєте свою наступну подорож?</p>
+            <p className="text-gray-400 font-serif italic text-xl mb-8">
+              {currentLang === 'ua' ? 'Плануєте свою наступну подорож?' : 'Planning your next trip?'}
+            </p>
             <Link
-              to="/ua/services"
+              to={l('/services')}
               className="bg-black text-white font-montserrat font-bold uppercase tracking-[0.2em] text-xs px-10 py-5 hover:bg-[#5cc8bd] transition-all duration-300 rounded-[2px]"
             >
-              Переглянути наші сервіси
+              {tr('nav.services')}
             </Link>
           </div>
 

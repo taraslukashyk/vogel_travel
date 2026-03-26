@@ -6,25 +6,41 @@ import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
+import { syncSections } from '../utils/sectionSync';
+import LanguageTabs from '../components/LanguageTabs';
 import type { DBPartner, DBSection } from '../../lib/types';
 
 const emptyPartner = {
+  // UA
   name: '',
   category: '',
   location: '',
+  description: '',
+  sections: [] as DBSection[],
+  slug: '',
+  seo_title: '',
+  seo_description: '',
+
+  // EN
+  name_en: '',
+  category_en: '',
+  location_en: '',
+  description_en: '',
+  sections_en: [] as DBSection[],
+  slug_en: '',
+  seo_title_en: '',
+  seo_description_en: '',
+
+  // Common
   logo: '',
   image: '',
   image_alt: '',
-  description: '',
+  image_alt_en: '',
   website: '',
   tag: '',
   color: '#5cc8bd',
   lng: '',
   lat: '',
-  sections: [] as DBSection[],
-  slug: '',
-  seo_title: '',
-  seo_description: '',
   is_published: true,
 };
 
@@ -34,6 +50,7 @@ export default function PartnerForm() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyPartner);
+  const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
   const [coordsInput, setCoordsInput] = useState('');
 
   const { data: existing } = useQuery({
@@ -52,19 +69,30 @@ export default function PartnerForm() {
         name: existing.name,
         category: existing.category,
         location: existing.location,
+        description: existing.description || '',
+        sections: existing.sections || [],
+        slug: existing.slug || '',
+        seo_title: existing.seo_title || '',
+        seo_description: existing.seo_description || '',
+
+        name_en: existing.name_en || '',
+        category_en: existing.category_en || '',
+        location_en: existing.location_en || '',
+        description_en: existing.description_en || '',
+        sections_en: syncSections(existing.sections || [], existing.sections_en || []),
+        slug_en: existing.slug_en || '',
+        seo_title_en: existing.seo_title_en || '',
+        seo_description_en: existing.seo_description_en || '',
+
         logo: existing.logo,
         image: existing.image,
         image_alt: existing.image_alt || '',
-        description: existing.description || '',
+        image_alt_en: existing.image_alt_en || '',
         website: existing.website || '',
         tag: existing.tag || '',
         color: existing.color || '#5cc8bd',
         lng: existing.lng != null ? String(existing.lng) : '',
         lat: existing.lat != null ? String(existing.lat) : '',
-        sections: existing.sections || [],
-        slug: existing.slug || '',
-        seo_title: existing.seo_title || '',
-        seo_description: existing.seo_description || '',
         is_published: existing.is_published,
       });
       if (existing.lat != null && existing.lng != null) {
@@ -76,31 +104,32 @@ export default function PartnerForm() {
   const mutation = useMutation({
     mutationFn: async () => {
       const payload = {
-        name: form.name,
-        category: form.category,
-        location: form.location,
-        logo: form.logo,
-        image: form.image,
+        ...form,
         image_alt: form.image_alt || null,
         description: form.description || null,
+        description_en: form.description_en || null,
         website: form.website || null,
         tag: form.tag || null,
         color: form.color || null,
         lng: form.lng !== '' ? Number(form.lng) : null,
         lat: form.lat !== '' ? Number(form.lat) : null,
-        sections: form.sections,
-        slug: form.slug || null,
-        seo_title: form.seo_title || null,
-        seo_description: form.seo_description || null,
-        is_published: form.is_published,
       };
+      
       if (isNew) {
         const { data: maxOrder } = await supabase.from('partners').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('partners').insert({ ...payload, sort_order });
+        const { error } = await supabase.from('partners').insert({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          sort_order 
+        });
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('partners').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', Number(id));
+        const { error } = await supabase.from('partners').update({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          updated_at: new Date().toISOString() 
+        }).eq('id', Number(id));
         if (error) throw error;
       }
     },
@@ -125,164 +154,194 @@ export default function PartnerForm() {
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
+  const isUA = activeTab === 'ua';
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         {isNew ? 'Новий партнер' : 'Редагувати партнера'}
       </h1>
 
+      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
 
         {/* Basic Info */}
-        <FormField label="Назва партнера" required>
+        <FormField label={isUA ? "Назва партнера" : "Partner Name"} required={isUA}>
           <input 
             className={inputClass} 
-            value={form.name} 
+            value={isUA ? form.name : form.name_en} 
             onChange={(e) => {
-              const name = e.target.value;
-              set('name', name);
-              if (isNew) set('slug', slugify(name));
+              const val = e.target.value;
+              if (isUA) {
+                set('name', val);
+                if (isNew) set('slug', slugify(val));
+              } else {
+                set('name_en', val);
+              }
             }} 
-            required 
-            placeholder="Four Seasons Hotels & Resorts" 
+            required={isUA} 
+            placeholder={isUA ? form.name_en : form.name}
           />
         </FormField>
 
-        <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично з назви.">
+        <FormField label="URL-адреса (спільна для обох мов)">
           <input
             className={inputClass}
             value={form.slug}
             onChange={(e) => set('slug', slugify(e.target.value))}
-            placeholder="four-seasons"
-            required
           />
           <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/partners/<strong>{form.slug || 'slug'}</strong></p>
         </FormField>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Категорія" required tooltip="Наприклад: Готелі, Авіакомпанія, Круїзи, Wellness-курорти">
-            <input className={inputClass} value={form.category} onChange={(e) => set('category', e.target.value)} required placeholder="Готелі" />
+          <FormField label={isUA ? "Категорія" : "Category"} required={isUA}>
+            <input 
+              className={inputClass} 
+              value={isUA ? form.category : form.category_en} 
+              onChange={(e) => set(isUA ? 'category' : 'category_en', e.target.value)} 
+              required={isUA} 
+              placeholder={isUA ? form.category_en : form.category}
+            />
           </FormField>
-          <FormField label="Локація" required>
-            <input className={inputClass} value={form.location} onChange={(e) => set('location', e.target.value)} required placeholder="Мальдіви" />
+          <FormField label={isUA ? "Локація" : "Location"} required={isUA}>
+            <input 
+              className={inputClass} 
+              value={isUA ? form.location : form.location_en} 
+              onChange={(e) => set(isUA ? 'location' : 'location_en', e.target.value)} 
+              required={isUA} 
+              placeholder={isUA ? form.location_en : form.location}
+            />
           </FormField>
         </div>
 
-        {/* Logo Upload — PNG/SVG */}
-        <FormField
-          label="Логотип партнера (PNG або SVG)"
-          required
-          tooltip="Завантажте логотип у форматі PNG або SVG. Рекомендовано: прозорий фон, ширина від 300px."
-        >
+        {/* Logo and Image (Common) */}
+        <FormField label="Логотип партнера (PNG або SVG)" required>
           <ImageUploader
             value={form.logo}
             onChange={(url) => set('logo', url)}
             folder="partners/logos"
             accept="image/png,image/svg+xml"
-            hint="Підтримується PNG та SVG"
           />
         </FormField>
-
-        {/* Hero Image */}
-        <FormField
-          label="Фото обкладинки (hero image)"
-          required
-          tooltip="Головне фото для сторінки партнера. Рекомендований розмір 1920x1080 px."
-        >
+        <FormField label="Фото обкладинки (hero image)" required>
           <ImageUploader
             value={form.image}
             onChange={(url) => set('image', url)}
             folder="partners/images"
           />
         </FormField>
-
-        <FormField label="Alt-текст для фото">
-          <input className={inputClass} value={form.image_alt} onChange={(e) => set('image_alt', e.target.value)} placeholder="Опис зображення для SEO" />
+        <FormField label={isUA ? "Alt-текст для фото" : "Image Alt Text"}>
+          <input 
+            className={inputClass} 
+            value={isUA ? form.image_alt : form.image_alt_en} 
+            onChange={(e) => set(isUA ? 'image_alt' : 'image_alt_en', e.target.value)} 
+            placeholder={isUA ? form.image_alt_en : form.image_alt}
+          />
         </FormField>
 
-        <FormField label="Опис (вступний текст)" tooltip="Короткий вступний текст, показується курсивом вгорі сторінки.">
-          <textarea className={inputClass} rows={4} value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Короткий опис партнера..." />
+        <FormField label={isUA ? "Опис (вступний текст)" : "Intro Description"}>
+          <textarea 
+            className={inputClass} 
+            rows={4} 
+            value={isUA ? form.description : form.description_en} 
+            onChange={(e) => set(isUA ? 'description' : 'description_en', e.target.value)} 
+            placeholder={isUA ? form.description_en : form.description}
+          />
         </FormField>
+
 
         <FormField label="Офіційний сайт">
-          <input className={inputClass} type="url" value={form.website} onChange={(e) => set('website', e.target.value)} placeholder="https://www.example.com" />
-        </FormField>
-
-        {/* Map Settings */}
-        <div className="border border-gray-200 rounded-lg p-4 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">Маркер на мапі</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label="Скорочення (tag)" tooltip="2–3 символи для маркера на мапі (наприклад: FS, EK, AM)">
-              <input className={inputClass} value={form.tag} onChange={(e) => set('tag', e.target.value)} placeholder="FS" maxLength={4} />
+              <input className={inputClass} type="url" value={form.website} onChange={(e) => set('website', e.target.value)} />
             </FormField>
-            <FormField label="Колір маркера" tooltip="HEX-колір фону маркера на мапі">
-              <div className="flex gap-2 items-center">
-                <input
-                  type="color"
-                  value={form.color}
-                  onChange={(e) => set('color', e.target.value)}
-                  className="h-10 w-14 rounded border border-gray-300 cursor-pointer p-1"
-                />
+
+            {/* Map Settings */}
+            <div className="border border-gray-200 rounded-lg p-4 space-y-4">
+              <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">Маркер на мапі</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField label="Скорочення (tag)">
+                  <input className={inputClass} value={form.tag} onChange={(e) => set('tag', e.target.value)} maxLength={4} />
+                </FormField>
+                <FormField label="Колір маркера">
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      value={form.color}
+                      onChange={(e) => set('color', e.target.value)}
+                      className="h-10 w-14 rounded border border-gray-300 cursor-pointer p-1"
+                    />
+                    <input
+                      className={inputClass}
+                      value={form.color}
+                      onChange={(e) => set('color', e.target.value)}
+                    />
+                  </div>
+                </FormField>
+              </div>
+              <FormField label="Координати (широта, довгота)">
                 <input
                   className={inputClass}
-                  value={form.color}
-                  onChange={(e) => set('color', e.target.value)}
-                  placeholder="#5cc8bd"
+                  value={coordsInput}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setCoordsInput(val);
+                    const match = val.match(/^\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*$/);
+                    if (match) {
+                      set('lat', match[1]);
+                      set('lng', match[2]);
+                    } else if (!val.trim()) {
+                      set('lat', '');
+                      set('lng', '');
+                    }
+                  }}
                 />
-              </div>
-            </FormField>
-          </div>
-          <FormField label="Координати (з Google Maps)" tooltip="Вставте координати у форматі «широта, довгота» — наприклад: 50.429281, 30.542412">
-            <input
-              className={inputClass}
-              placeholder="50.429281, 30.542412"
-              value={coordsInput}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCoordsInput(val);
-                const match = val.match(/^\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*$/);
-                if (match) {
-                  set('lat', match[1]);
-                  set('lng', match[2]);
-                } else if (!val.trim()) {
-                  set('lat', '');
-                  set('lng', '');
-                }
-              }}
-            />
-          </FormField>
-        </div>
+              </FormField>
+            </div>
 
         {/* Sections */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Розділи сторінки деталей
-            <span className="ml-2 text-xs text-gray-400">(текст, список або зображення для /partners/:id)</span>
+            Розділи сторінки деталізації ({isUA ? 'UA' : 'EN'})
           </label>
           <SectionEditor
-            sections={form.sections}
-            onChange={(sections) => set('sections', sections)}
+            sections={isUA ? form.sections : form.sections_en}
+            placeholderSections={isUA ? form.sections_en : form.sections}
+            onChange={(s) => {
+              if (isUA) {
+                setForm(prev => ({ 
+                  ...prev, 
+                  sections: s, 
+                  sections_en: syncSections(s, prev.sections_en) 
+                }));
+              } else {
+                setForm(prev => ({ 
+                  ...prev, 
+                  sections_en: s, 
+                  sections: syncSections(s, prev.sections) 
+                }));
+              }
+            }}
           />
         </div>
 
         {/* SEO */}
         <div className="border-t border-gray-100 pt-6 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO</h2>
-          <FormField label="SEO Заголовок" tooltip="Заголовок для пошукових систем (рекомендовано до 60 символів).">
+          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO ({isUA ? 'UA' : 'EN'})</h2>
+          <FormField label="SEO Title">
             <input
               className={inputClass}
-              value={form.seo_title}
-              onChange={(e) => set('seo_title', e.target.value)}
-              placeholder="Назва партнера — Vogel Family Travel"
+              value={isUA ? form.seo_title : form.seo_title_en}
+              onChange={(e) => set(isUA ? 'seo_title' : 'seo_title_en', e.target.value)}
+              placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Опис" tooltip="Мета-опис для пошукових систем (рекомендовано до 160 символів).">
+          <FormField label="SEO Description">
             <textarea
               className={inputClass}
               rows={3}
-              value={form.seo_description}
-              onChange={(e) => set('seo_description', e.target.value)}
-              placeholder="Короткий опис партнерства для Google..."
+              value={isUA ? form.seo_description : form.seo_description_en}
+              onChange={(e) => set(isUA ? 'seo_description' : 'seo_description_en', e.target.value)}
+              placeholder={isUA ? form.seo_description_en : form.seo_description}
             />
           </FormField>
         </div>
@@ -302,7 +361,7 @@ export default function PartnerForm() {
 
         <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
-            {mutation.isPending ? 'Збереження...' : 'Зберегти'}
+            {mutation.isPending ? 'Збереження...' : 'Зберегти (Обидві мови)'}
           </button>
           <button type="button" onClick={() => navigate('/admin/partners')} className={btnSecondary}>
             Скасувати
@@ -312,9 +371,9 @@ export default function PartnerForm() {
               type="button"
               onClick={() => { if (confirm('Видалити цього партнера?')) deleteMutation.mutate(); }}
               disabled={deleteMutation.isPending}
-              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium"
             >
-              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+              Видалити
             </button>
           )}
         </div>

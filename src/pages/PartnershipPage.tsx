@@ -4,11 +4,17 @@ import { ArrowRight } from 'lucide-react';
 import FinalQuote from '../components/FinalQuote';
 import SEOHead from '../components/SEOHead';
 import { usePartners } from '../lib/queries/partners';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const PartnershipMap = lazy(() => import('../components/PartnershipMap'));
 
 const PartnershipPage = () => {
   const { data: partners = [] } = usePartners();
+  const { currentLang, l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,22 +24,25 @@ const PartnershipPage = () => {
     .filter(p => p.lng != null && p.lat != null)
     .map(p => ({
       id: p.id,
-      name: p.name,
-      slug: p.slug,
+      name: t(p, 'name'),
+      slug: t(p, 'slug'),
       lng: p.lng!,
       lat: p.lat!,
-      tag: p.tag || p.name.slice(0, 2).toUpperCase(),
+      tag: t(p, 'tag') || t(p, 'name').slice(0, 2).toUpperCase(),
       color: p.color || '#5cc8bd',
       logo: p.logo || '',
     }));
 
   return (
     <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
-      <SEOHead pagePath="/ua/partners" fallbackTitle="Партнерство — Vogel Family Travel" />
+      <SEOHead 
+        pagePath={`/${currentLang}/partners`} 
+        fallbackTitle={tr('nav.partners') + " — Vogel Family Travel"} 
+      />
 
       {/* ── Map ── */}
       <section className="relative w-full z-10 border-b border-white/5">
-        <Suspense fallback={<div className="h-[600px] flex items-center justify-center bg-zinc-950">Завантаження мапи...</div>}>
+        <Suspense fallback={<div className="h-[600px] flex items-center justify-center bg-zinc-950">{tr('common.loading')}</div>}>
           <PartnershipMap partners={mapPartners} />
         </Suspense>
       </section>
@@ -43,57 +52,65 @@ const PartnershipPage = () => {
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-4xl font-montserrat font-bold tracking-[0.2em] uppercase text-white/90">
-              Наші партнери
+              {tr('partners.title')}
             </h2>
             <div className="w-12 h-px bg-[#5cc8bd] mx-auto mt-6"></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {partners.map(partner => (
-              <Link
-                key={partner.id}
-                to={`/ua/partners/${partner.slug}`}
-                className="group bg-white/5 border border-white/10 p-6 hover:bg-white/10 hover:border-[#5cc8bd]/40 transition-all duration-500 flex flex-col gap-4"
-              >
-                {/* Logo */}
-                <div className="h-12 flex items-center">
-                  {partner.logo ? (
-                    <img
-                      src={partner.logo}
-                      alt={`${partner.name} logo`}
-                      className="max-h-full max-w-[140px] w-auto object-contain brightness-0 invert opacity-50 group-hover:opacity-80 transition-opacity duration-300"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <span
-                      className="text-2xl font-black font-montserrat tracking-wider"
-                      style={{ color: partner.color || '#5cc8bd' }}
-                    >
-                      {partner.tag || partner.name.slice(0, 2)}
-                    </span>
-                  )}
-                </div>
+            {partners.map((partner: any) => {
+              const name = t(partner, 'name');
+              const category = t(partner, 'category');
+              const location = t(partner, 'location');
+              const slug = t(partner, 'slug');
+              const tag = t(partner, 'tag');
 
-                <div className="flex-1">
-                  <h3 className="font-montserrat font-bold text-base text-white group-hover:text-[#5cc8bd] transition-colors duration-300 leading-tight mb-1">
-                    {partner.name}
-                  </h3>
-                  <p className="text-[#5cc8bd] text-xs font-bold uppercase tracking-widest font-montserrat mb-1">
-                    {partner.category}
-                  </p>
-                  <p className="text-white/50 text-sm font-inter">
-                    {partner.location}
-                  </p>
-                </div>
+              return (
+                <Link
+                  key={partner.id}
+                  to={l(`/partners/${slug}`)}
+                  className="group bg-white/5 border border-white/10 p-6 hover:bg-white/10 hover:border-[#5cc8bd]/40 transition-all duration-500 flex flex-col gap-4"
+                >
+                  {/* Logo */}
+                  <div className="h-12 flex items-center">
+                    {partner.logo ? (
+                      <img
+                        src={partner.logo}
+                        alt={`${name} logo`}
+                        className="max-h-full max-w-[140px] w-auto object-contain brightness-0 invert opacity-50 group-hover:opacity-80 transition-opacity duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <span
+                        className="text-2xl font-black font-montserrat tracking-wider"
+                        style={{ color: partner.color || '#5cc8bd' }}
+                      >
+                        {tag || name.slice(0, 2)}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="flex items-center gap-1 text-[#5cc8bd] text-[10px] font-bold uppercase tracking-[0.3em] font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span>Детальніше</span>
-                  <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                </div>
-              </Link>
-            ))}
+                  <div className="flex-1">
+                    <h3 className="font-montserrat font-bold text-base text-white group-hover:text-[#5cc8bd] transition-colors duration-300 leading-tight mb-1">
+                      {name}
+                    </h3>
+                    <p className="text-[#5cc8bd] text-xs font-bold uppercase tracking-widest font-montserrat mb-1">
+                      {category}
+                    </p>
+                    <p className="text-white/50 text-sm font-inter">
+                      {location}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1 text-[#5cc8bd] text-[10px] font-bold uppercase tracking-[0.3em] font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span>{tr('common.details')}</span>
+                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -103,30 +120,42 @@ const PartnershipPage = () => {
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-4xl font-montserrat font-bold tracking-[0.2em] uppercase text-white/90">
-              Станьте нашим партнером
+              {tr('partners.become_title')}
             </h2>
             <div className="w-12 h-px bg-[#5cc8bd] mx-auto mt-6"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white/5 border border-white/10 p-8 backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
-              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ЕКСКЛЮЗИВНІ УМОВИ</h3>
+              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">
+                {currentLang === 'ua' ? 'ЕКСКЛЮЗИВНІ УМОВИ' : 'EXCLUSIVE TERMS'}
+              </h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
-                Доступ до закритих баз даних та найкращі фінансові умови співпраці на спеціальному порталі.
+                {currentLang === 'ua' 
+                  ? 'Доступ до закритих баз даних та найкращі фінансові умови співпраці на спеціальному порталі.'
+                  : 'Access to closed databases and the best financial terms of cooperation on a special portal.'}
               </p>
             </div>
 
             <div className="bg-white/5 border border-white/10 p-8 backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
-              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ПЕРСОНАЛЬНИЙ МЕНЕДЖЕР</h3>
+              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">
+                {currentLang === 'ua' ? 'ПЕРСОНАЛЬНИЙ МЕНЕДЖЕР' : 'PERSONAL MANAGER'}
+              </h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
-                Кожен партнер отримує виділеного експерта для розв'язання будь-яких запитів 24/7.
+                {currentLang === 'ua'
+                  ? 'Кожен партнер отримує виділеного експерта для розв\'язання будь-яких запитів 24/7.'
+                  : 'Each partner receives a dedicated expert to solve any requests 24/7.'}
               </p>
             </div>
 
             <div className="bg-white/5 border border-white/10 p-8 backdrop-blur-md hover:bg-white/10 transition-colors duration-500">
-              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">ГЛОБАЛЬНЕ ПОКРИТТЯ</h3>
+              <h3 className="font-montserrat font-bold text-lg mb-4 text-[#5cc8bd]">
+                {currentLang === 'ua' ? 'ГЛОБАЛЬНЕ ПОКРИТТЯ' : 'GLOBAL COVERAGE'}
+              </h3>
               <p className="text-sm tracking-wide text-white/70 leading-relaxed">
-                Працюйте з нами для охоплення найпреміальніших локацій та сервісів у всьому світі.
+                {currentLang === 'ua'
+                  ? 'Працюйте з нами для охоплення найпреміальніших локацій та сервісів у всьому світі.'
+                  : 'Work with us to cover the most premium locations and services worldwide.'}
               </p>
             </div>
           </div>
@@ -136,7 +165,7 @@ const PartnershipPage = () => {
               href="#footer"
               className="inline-flex items-center justify-center border border-[#5cc8bd] text-[#5cc8bd] py-4 px-10 hover:bg-[#5cc8bd] hover:text-black transition-all duration-500 tracking-[0.2em] font-bold text-sm"
             >
-              ЗАПОВНИТИ ЗАЯВКУ
+              {tr('partners.apply')}
             </a>
           </div>
         </div>

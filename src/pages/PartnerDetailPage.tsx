@@ -4,32 +4,21 @@ import { ArrowLeft, Share2, ExternalLink } from 'lucide-react';
 import { usePartner } from '../lib/queries/partners';
 import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const PartnerDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
+  const { currentLang, l } = useLanguage();
+  const { t, sections: getSections } = useLanguageContent();
+  const { t: tr } = useTranslation();
   const { data: partner, isLoading } = usePartner(slug!);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: partner?.name,
-          text: partner?.description ?? undefined,
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Посилання скопійовано в буфер обміну!');
-    }
-  };
 
   if (isLoading) {
     return (
@@ -43,21 +32,44 @@ const PartnerDetailPage = () => {
     return (
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-serif text-gray-900 mb-4">Партнера не знайдено</h1>
-          <Link to="/ua/partners" className="text-[#5cc8bd] font-bold uppercase tracking-widest">
-            Повернутися до партнерів
+          <h1 className="text-4xl font-serif text-gray-900 mb-4">{tr('partners.not_found')}</h1>
+          <Link to={l('/partners')} className="text-[#5cc8bd] font-bold uppercase tracking-widest">
+            {tr('partners.back_to_partners')}
           </Link>
         </div>
       </div>
     );
   }
 
+  const name = t(partner, 'name');
+  const description = t(partner, 'description');
+  const category = t(partner, 'category');
+  const locationName = t(partner, 'location');
+  const sections = getSections(partner);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: name,
+          text: description ?? undefined,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert(tr('common.link_copied'));
+    }
+  };
+
   return (
     <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
       <SEOHead
-        pagePath={`/ua/partners/${slug}`}
-        title={partner.seoTitle || `${partner.name} — Vogel Family Travel`}
-        description={partner.seoDescription || partner.description || ''}
+        pagePath={`/${currentLang}/partners/${slug}`}
+        title={t(partner, 'seo_title') || `${name} — Vogel Family Travel`}
+        description={t(partner, 'seo_description') || description || ''}
         ogImage={partner.image}
       />
 
@@ -66,7 +78,7 @@ const PartnerDetailPage = () => {
         <div className="absolute inset-0 overflow-hidden">
           <OptimizedImage
             src={partner.image}
-            alt={partner.imageAlt || partner.name}
+            alt={t(partner, 'image_alt') || name}
             className="w-full h-full object-cover"
             sizes="100vw"
             loading="eager"
@@ -78,11 +90,11 @@ const PartnerDetailPage = () => {
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
           <div className="max-w-4xl">
             <Link
-              to="/ua/partners"
+              to={l('/partners')}
               className="inline-flex items-center gap-2 text-white/70 hover:text-[#5cc8bd] transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-8 group"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Назад до партнерів
+              {tr('partners.back_to_partners')}
             </Link>
 
             {/* Logo */}
@@ -90,7 +102,7 @@ const PartnerDetailPage = () => {
               <div className="mb-6">
                 <img
                   src={partner.logo}
-                  alt={`${partner.name} logo`}
+                  alt={`${name} logo`}
                   className="h-10 md:h-14 w-auto object-contain brightness-0 invert opacity-80"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
@@ -98,13 +110,13 @@ const PartnerDetailPage = () => {
             )}
 
             <div className="flex items-center gap-4 text-[#5cc8bd] text-xs font-black uppercase tracking-[0.2em] mb-4">
-              <span>{partner.category}</span>
+              <span>{category}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-white/20"></span>
-              <span className="text-white/60 font-medium">{partner.location}</span>
+              <span className="text-white/60 font-medium">{locationName}</span>
             </div>
 
             <h1 className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 drop-shadow-sm">
-              {partner.name}
+              {name}
             </h1>
 
             <div className="flex flex-wrap items-center gap-8 md:gap-12 pt-4">
@@ -118,7 +130,7 @@ const PartnerDetailPage = () => {
                   <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                     <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
                   </div>
-                  <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">Офіційний сайт</span>
+                  <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">{tr('common.official_website')}</span>
                 </a>
               )}
 
@@ -129,7 +141,7 @@ const PartnerDetailPage = () => {
                 <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                   <Share2 className="w-4 h-4 transition-transform group-hover:scale-110" strokeWidth={1.5} />
                 </div>
-                <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">Поділитися</span>
+                <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest">{tr('common.share')}</span>
               </button>
             </div>
           </div>
@@ -141,14 +153,14 @@ const PartnerDetailPage = () => {
         <div className="max-w-5xl mx-auto">
 
           {/* Description intro */}
-          {partner.description && (
+          {description && (
             <div className="mb-12 text-xl text-gray-700 leading-relaxed font-inter border-l-4 border-[#5cc8bd] pl-8 italic">
-              {partner.description}
+              {description}
             </div>
           )}
 
           <div className="prose prose-lg prose-gray max-w-none prose-headings:font-serif prose-headings:italic prose-p:font-inter prose-p:leading-relaxed prose-p:text-gray-700">
-            {partner.sections?.map((section, idx) => {
+            {sections?.map((section: any, idx: number) => {
               if (section.type === 'text') {
                 return (
                   <div key={idx} className="mb-12">
@@ -208,12 +220,14 @@ const PartnerDetailPage = () => {
           </div>
 
           <div className="mt-24 pt-16 border-t border-gray-100 flex flex-col items-center">
-            <p className="text-gray-400 font-serif italic text-xl mb-8">Хочете скористатися перевагами цього партнерства?</p>
+            <p className="text-gray-400 font-serif italic text-xl mb-8">
+              {currentLang === 'ua' ? 'Хочете скористатися перевагами цього партнерства?' : 'Want to take advantage of this partnership?'}
+            </p>
             <Link
-              to="/ua/partners"
+              to={l('/partners')}
               className="bg-black text-white font-montserrat font-bold uppercase tracking-[0.2em] text-xs px-10 py-5 hover:bg-[#5cc8bd] transition-all duration-300 rounded-[2px]"
             >
-              Всі партнери
+              {tr('partners.all_partners')}
             </Link>
           </div>
         </div>

@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight } from 'lucide-react';
 import { useServices } from '../lib/queries/services';
-import type { Service } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import OptimizedImage from '../components/OptimizedImage';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const icons: Record<string, React.ReactNode> = {
   '01': <Building2 className="w-8 h-8" strokeWidth={1} />,
@@ -37,17 +39,26 @@ function useScrollReveal() {
 }
 
 /* ─── Single Service Block ─── */
-const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.ReactNode }; idx: number }) => {
+const ServiceBlock = ({ service, idx }: { service: any; idx: number }) => {
   const ref = useScrollReveal();
   const isReversed = idx % 2 !== 0;
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
+
+  const title = t(service, 'title');
+  const description = t(service, 'description');
+  const items = t(service, 'items') || [];
+  const slug = t(service, 'slug');
+
   return (
     <div
       ref={ref}
-      id={`service-${service.slug}`}
+      id={`service-${slug}`}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
       style={{ transitionDelay: `${idx * 80}ms` }}
     >
-      <Link to={`/ua/services/${service.slug}`} className="block">
+      <Link to={l(`/services/${slug}`)} className="block">
         <article
           className={`group flex flex-col ${
             isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
@@ -60,7 +71,7 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
             </span>
             <OptimizedImage
               src={service.image}
-              alt={service.title}
+              alt={service.image_alt || title}
               className="w-full h-full object-cover opacity-60 group-hover:opacity-75 transition-all duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 45vw"
             />
@@ -73,18 +84,18 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
               <span className="shrink-0 text-white/80 group-hover:text-[#5cc8bd] transition-colors duration-300">
                 {service.icon}
               </span>
-              {service.title}
+              {title}
             </h2>
 
-            {service.description && (
+            {description && (
               <p className="font-inter text-white/60 text-[15px] leading-relaxed">
-                {service.description}
+                {description}
               </p>
             )}
 
-            {service.items && (
+            {items.length > 0 && (
               <ul className="space-y-4 mt-1">
-                {service.items.map((item, i) => (
+                {items.map((item: any, i: number) => (
                   <li key={i} className="flex items-start gap-4">
                     <span className="mt-[7px] w-4 h-px bg-[#5cc8bd]/60 shrink-0" />
                     <p className="font-inter text-[15px] text-white/60 leading-relaxed">
@@ -96,7 +107,7 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
             )}
 
             <div className="mt-8 flex items-center gap-2 text-[#5cc8bd] text-xs font-bold uppercase tracking-[0.3em] font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span>Детальніше</span>
+              <span>{tr('common.details')}</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
@@ -112,6 +123,8 @@ const ServicesPage = () => {
   const services = servicesData.map(s => ({ ...s, icon: icons[s.num] }));
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
+  const { currentLang } = useLanguage();
+  const { t: tr } = useTranslation();
 
   useEffect(() => {
     if (location.hash) {
@@ -135,7 +148,11 @@ const ServicesPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/ua/services" fallbackTitle="Сервіси — Vogel Family Travel" fallbackDescription="Повний спектр послуг для преміальних подорожей — від оренди вілл до професійного супроводу." />
+      <SEOHead 
+        pagePath={`/${currentLang}/services`} 
+        fallbackTitle={tr('nav.services') + " — Vogel Family Travel"} 
+        fallbackDescription={tr('services.subtitle')} 
+      />
 
       {/* Background video (matched with About page) */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -163,13 +180,13 @@ const ServicesPage = () => {
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
             <span className="block text-white/30 text-2xl md:text-3xl mb-2">Vogel Family Travel</span>
             <span className="block text-5xl md:text-7xl lg:text-[88px] text-white">
-              Сервіси
+              {tr('nav.services')}
             </span>
           </h1>
 
           {/* Scroll Indicator with smooth fade out */}
           <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
-            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">Гортай</span>
+            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">{currentLang === 'ua' ? 'Гортай' : 'Scroll'}</span>
             <div className="scroll-indicator"></div>
           </div>
         </div>
@@ -184,18 +201,19 @@ const ServicesPage = () => {
           <div>
             <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white flex items-center gap-4 mb-6">
               <span className="w-8 h-px bg-white/30" />
-              Гнучкий формат
+              {currentLang === 'ua' ? 'Гнучкий формат' : 'Flexible Format'}
             </h2>
             <p className="font-inter text-white/70 text-lg leading-relaxed">
-              Ми працюємо як з повними подорожами «під ключ», так і з окремими запитами — бронювання
-              готелів, авіаперельотів, трансферів, екскурсій чи оренди вілл.
+              {currentLang === 'ua' 
+                ? "Ми працюємо як з повними подорожами «під ключ», так і з окремими запитами — бронювання готелів, авіаперельотів, трансферів, екскурсій чи оренди вілл."
+                : "We work both with complete turnkey trips and individual requests — booking hotels, flights, transfers, excursions, or villa rentals."}
             </p>
           </div>
           <div>
             <p className="font-inter text-white/50 text-base leading-relaxed border-l border-white/10 pl-8">
-              Ви обираєте рівень залученості — ми забезпечуємо результат і контроль над кожним
-              етапом. Кожен клієнт отримує персонального менеджера, який веде весь маршрут від
-              першого запиту до повернення додому.
+              {currentLang === 'ua'
+                ? "Ви обираєте рівень залученості — ми забезпечуємо результат і контроль над кожним етапом. Кожен клієнт отримує персонального менеджера, який веде весь маршрут від першого запиту до повернення додому."
+                : "You choose the level of involvement — we provide the result and control over every stage. Each client gets a personal manager who handles the entire route from the first request to returning home."}
             </p>
           </div>
         </div>

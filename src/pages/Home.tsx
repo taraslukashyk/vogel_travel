@@ -8,11 +8,19 @@ import BlogCarousel from '../components/BlogCarousel'
 import SEOHead from '../components/SEOHead'
 import bgImage from '../assets/about-bg.png'
 import OptimizedImage from '../components/OptimizedImage'
+import { useLanguage } from '../hooks/useLanguage'
+import { useTranslation } from 'react-i18next'
 
 const Home = () => {
+  const { currentLang } = useLanguage();
+  const { t } = useTranslation();
+
   return (
     <>
-      <SEOHead pagePath="/ua" fallbackTitle="Vogel Family Travel — Преміальні подорожі" />
+      <SEOHead 
+        pagePath={`/${currentLang}`} 
+        fallbackTitle={t('home.hero_title') + " — " + (currentLang === 'ua' ? 'Преміальні подорожі' : 'Premium Travel')} 
+      />
       <Hero />
       
       {/* ── Text Banner (Glass Strip) ── */}
@@ -20,10 +28,9 @@ const Home = () => {
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 text-center flex justify-center">
           <p className="font-inter text-white/90 text-[16px] md:text-[18px] lg:text-[20px] max-w-[1100px] leading-relaxed font-light tracking-wide drop-shadow-sm">
             <span className="font-bold text-white tracking-widest text-lg md:text-xl lg:text-2xl mr-2">Vogel Family Travel</span> 
-            — туристичний оператор, що створює індивідуальні подорожі 
-            для клієнтів із високими вимогами до сервісу, приватності та деталей. 
-            Ми працюємо з нестандартними запитами і повністю беремо на себе 
-            організацію подорожі — від ідеї до повернення.
+            {currentLang === 'ua' 
+              ? "— туристичний оператор, що створює індивідуальні подорожі для клієнтів із високими вимогами до сервісу, приватності та деталей. Ми працюємо з нестандартними запитами і повністю беремо на себе організацію подорожі — від ідеї до повернення."
+              : "— a travel operator creating tailormade journeys for clients with high requirements for service, privacy, and details. We work with non-standard requests and take full responsibility for organizing the trip — from the idea to the return."}
           </p>
         </div>
       </section>

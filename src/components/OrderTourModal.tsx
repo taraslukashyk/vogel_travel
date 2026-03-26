@@ -3,6 +3,9 @@ import { X, ArrowRight, Send, ChevronLeft, ChevronRight, CheckCircle2 } from 'lu
 import { useOffers } from '../lib/queries/offers';
 import { Link } from 'react-router-dom';
 import { sendTelegramNotification } from '../lib/notifications';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
 
 interface OrderTourModalProps {
   isOpen: boolean;
@@ -10,7 +13,11 @@ interface OrderTourModalProps {
 }
 
 const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
+  const { t } = useTranslation();
+  const { l, currentLang } = useLanguage();
+  const isUA = currentLang === 'ua';
   const { data: offers = [] } = useOffers();
+  const { t: getLocalized } = useLanguageContent();
   const scrollRef = useRef<HTMLDivElement>(null);
   
   const [contact, setContact] = useState('');
@@ -34,10 +41,10 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
     setIsSubmitting(true);
     
     const telegramMessage = `
-<b>📩 Новий запит на тур (Модальне вікно)</b>
+<b>📩 ${isUA ? 'Новий запит на тур' : 'New Tour Request'} (Modal)</b>
 
-<b>👤 Контакт:</b> ${contact}
-<b>💬 Побажання:</b> ${message || 'Без повідомлення'}
+<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${contact}
+<b>💬 ${isUA ? 'Побажання' : 'Wishes'}:</b> ${message || (isUA ? 'Без повідомлення' : 'No message')}
     `.trim();
 
     const result = await sendTelegramNotification(telegramMessage);
@@ -95,11 +102,11 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             <div className="mb-4 md:mb-8 text-center md:text-left flex-shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
                 <h2 className="text-xl md:text-3xl font-montserrat font-extrabold text-white mb-1.5 md:mb-3 tracking-tight uppercase">
-                  Актуальні пропозиції
+                  {t('modals.order_tour.title')}
                 </h2>
                 <div className="w-12 md:w-20 h-1 bg-[#5cc8bd] mb-1.5 mx-auto md:mx-0" />
                 <p className="text-white/40 text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-bold">
-                  Гортайте та обирайте свій напрямок
+                  {t('modals.order_tour.subtitle')}
                 </p>
               </div>
 
@@ -128,29 +135,29 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
               {offers.map((offer) => (
                 <Link
                   key={offer.id}
-                  to={`/ua/offers/${offer.slug}`}
+                  to={l(`/offers/${offer.slug}`)}
                   onClick={onClose}
                   className="group relative min-w-[240px] md:min-w-[320px] h-[160px] md:h-[280px] overflow-hidden rounded-[2px] border border-white/10 hover:border-[#5cc8bd]/50 transition-all duration-500 bg-white/5 snap-start"
                 >
                   <img
                     src={offer.image}
-                    alt={offer.hotel}
+                    alt={getLocalized(offer, 'image_alt')}
                     className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                     <div className="text-[#5cc8bd] text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-1">
-                      {offer.location}
+                      {getLocalized(offer, 'location')}
                     </div>
                     <h3 className="text-white font-montserrat font-bold text-sm md:text-base mb-2 md:mb-3 leading-tight group-hover:text-[#5cc8bd] transition-colors">
-                      {offer.hotel}
+                      {getLocalized(offer, 'hotel')}
                     </h3>
                   </div>
 
-                  {offer.discount && (
+                  {getLocalized(offer, 'discount') && (
                     <div className="absolute top-3 left-3 bg-[#5cc8bd] text-black font-montserrat font-black text-[9px] md:text-xs px-2 py-1 rounded-sm">
-                      {offer.discount}
+                      {getLocalized(offer, 'discount')}
                     </div>
                   )}
                 </Link>
@@ -162,30 +169,30 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
               {isSuccess ? (
                 <div className="flex flex-col items-center justify-center py-4 animate-in fade-in zoom-in duration-500">
                   <CheckCircle2 className="text-[#5cc8bd] w-12 h-12 mb-3" />
-                  <h3 className="text-xl font-montserrat font-bold text-white mb-1 uppercase tracking-widest">Дякуємо!</h3>
-                  <p className="text-white/40 text-sm">Ваш запит отримано.</p>
+                  <h3 className="text-xl font-montserrat font-bold text-white mb-1 uppercase tracking-widest">{t('modals.order_tour.success_title')}</h3>
+                  <p className="text-white/40 text-sm">{t('modals.order_tour.success_desc')}</p>
                 </div>
               ) : (
                 <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
                   <div className="flex-shrink-0 text-center md:text-left hidden lg:block">
                     <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-1">
-                      Ваше побажання
+                      {t('modals.order_tour.wish_title')}
                     </h3>
                     <p className="text-white/30 text-[10px] uppercase font-bold tracking-[0.15em]">
-                      Залиште контакти для консультації
+                      {t('modals.order_tour.wish_subtitle')}
                     </p>
                   </div>
 
                   <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full items-end">
                     <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
                       <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                        Контактні дані
+                        {t('modals.order_tour.contact_label')}
                       </label>
                       <input
                         type="text"
                         value={contact}
                         onChange={(e) => setContact(e.target.value)}
-                        placeholder="Номер, e-mail, або нікнейм у соцмережі"
+                        placeholder={t('modals.order_tour.contact_placeholder')}
                         className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
                         required
                         disabled={isSubmitting}
@@ -194,13 +201,13 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 
                     <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
                       <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                        Коментар (де ви хочете відпочити?)
+                        {t('modals.order_tour.comment_label')}
                       </label>
                       <input
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Ваше повідомлення..."
+                        placeholder={t('modals.order_tour.comment_placeholder')}
                         className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
                         disabled={isSubmitting}
                       />
@@ -212,7 +219,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                       className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-xs md:text-[12px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 py-4 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-auto lg:h-[58px] disabled:opacity-50"
                     >
                       <div className="flex items-center justify-center gap-3">
-                        <span>{isSubmitting ? 'Надсилаємо...' : 'Надіслати'}</span>
+                        <span>{isSubmitting ? t('modals.order_tour.submitting') : t('modals.order_tour.submit')}</span>
                         <Send className="w-4 h-4" />
                       </div>
                     </button>
@@ -224,11 +231,11 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 
             <div className="mt-6 text-center md:text-right flex-shrink-0">
               <Link
-                to="/ua/offers"
+                to={l('/offers')}
                 onClick={onClose}
                 className="inline-flex items-center gap-4 text-white hover:text-[#5cc8bd] transition-colors text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] group"
               >
-                Переглянути всі пропозиції
+                {t('modals.order_tour.all_offers')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Send, CheckCircle2, X } from 'lucide-react';
 import { sendTelegramNotification } from '../lib/notifications';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -9,6 +11,9 @@ interface ContactModalProps {
 }
 
 const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProps) => {
+  const { t } = useTranslation();
+  const { currentLang } = useLanguage();
+  const isUA = currentLang === 'ua';
   const [contact, setContact] = useState('');
   const [message, setMessage] = useState(initialMessage);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,10 +34,10 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
     setIsSubmitting(true);
     
     const telegramMessage = `
-<b>📩 Новий запит на зворотній зв'язок (Модальне вікно)</b>
+<b>📩 ${isUA ? "Новий запит на зворотній зв'язок" : "New Feedback Request"} (Modal)</b>
 
-<b>👤 Контакт:</b> ${contact}
-<b>💬 Повідомлення:</b> ${message || 'Без повідомлення'}
+<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${contact}
+<b>💬 ${isUA ? 'Повідомлення' : 'Message'}:</b> ${message || (isUA ? 'Без повідомлення' : 'No message')}
     `.trim();
 
     const result = await sendTelegramNotification(telegramMessage);
@@ -64,30 +69,30 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
             {isSuccess ? (
               <div className="flex flex-col items-center justify-center py-4 animate-in fade-in zoom-in duration-500">
                 <CheckCircle2 className="text-[#5cc8bd] w-16 h-16 mb-4" />
-                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-white mb-2 uppercase tracking-widest text-center">Дякуємо!</h2>
-                <p className="text-white/60 text-center">Запит отримано. Ми зв'яжемося з вами найближчим часом.</p>
+                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-white mb-2 uppercase tracking-widest text-center">{t('modals.contact.success_title')}</h2>
+                <p className="text-white/60 text-center">{t('modals.contact.success_desc')}</p>
               </div>
             ) : (
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="flex-shrink-0 text-center md:text-left">
                   <h2 className="text-xl md:text-3xl font-montserrat font-bold text-white mb-2 tracking-[0.05em] uppercase">
-                    Зв'язок
+                    {t('modals.contact.title')}
                   </h2>
                   <p className="text-white/40 text-[11px] uppercase tracking-widest font-bold">
-                    Залиште запит і ми зв'яжемося з вами
+                    {t('modals.contact.subtitle')}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-4 w-full">
                   <div className="flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
                     <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                      Контактні дані
+                      {t('modals.contact.contact_label')}
                     </label>
                     <input
                       type="text"
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
-                      placeholder="Номер, e-mail, або нікнейм у соцмережі"
+                      placeholder={t('modals.contact.contact_placeholder')}
                       className="w-full outline-none text-white font-inter font-semibold text-sm md:text-base border-none p-0 bg-transparent placeholder-white/20"
                       required
                       disabled={isSubmitting}
@@ -96,13 +101,13 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
 
                   <div className="flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
                     <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                      Коментар до звернення
+                      {t('modals.contact.comment_label')}
                     </label>
                     <input
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Ваше повідомлення..."
+                      placeholder={t('modals.contact.comment_placeholder')}
                       className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/20"
                       disabled={isSubmitting}
                     />
@@ -114,7 +119,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                     className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-sm md:text-[13px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-10 py-5 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-[64px] disabled:opacity-50"
                   >
                     <div className="flex items-center justify-center gap-3">
-                      <span>{isSubmitting ? 'Надсилаємо...' : 'Надіслати'}</span>
+                      <span>{isSubmitting ? t('modals.contact.submitting') : t('modals.contact.submit')}</span>
                       <Send className="w-4 h-4" />
                     </div>
                   </button>
@@ -136,4 +141,3 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
 };
 
 export default ContactModal;
-

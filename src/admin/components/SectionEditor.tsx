@@ -9,14 +9,16 @@ import type { DBSection } from '../../lib/types';
 
 interface SectionEditorProps {
   sections: DBSection[];
+  placeholderSections?: DBSection[];
   onChange: (sections: DBSection[]) => void;
 }
 
-function SortableSection({ section, index, onUpdate, onRemove }: {
+function SortableSection({ section, index, onUpdate, onRemove, placeholderSection }: {
   section: DBSection & { _id: string };
   index: number;
   onUpdate: (index: number, section: DBSection) => void;
   onRemove: (index: number) => void;
+  placeholderSection?: DBSection;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: section._id });
   const style = { transform: CSS.Transform.toString(transform), transition };
@@ -57,7 +59,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
           type="text"
           value={section.title || ''}
           onChange={(e) => onUpdate(index, { ...section, title: e.target.value })}
-          placeholder="Заголовок секції (необов'язково)"
+          placeholder={placeholderSection?.title || "Заголовок секції (необов'язково)"}
           className={inputClass}
         />
       )}
@@ -66,7 +68,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
         <RichTextEditor
           value={typeof section.content === 'string' ? section.content : ''}
           onChange={(val) => onUpdate(index, { ...section, content: val })}
-          placeholder="Вміст секції..."
+          placeholder={typeof placeholderSection?.content === 'string' ? placeholderSection.content : "Вміст секції..."}
         />
       )}
 
@@ -82,7 +84,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
               type="text"
               value={typeof section.content === 'string' ? section.content : ''}
               onChange={(e) => onUpdate(index, { ...section, content: e.target.value })}
-              placeholder="Введіть підпис..."
+              placeholder={typeof placeholderSection?.content === 'string' ? placeholderSection.content : "Введіть підпис..."}
               className={inputClass}
             />
           </FormField>
@@ -91,7 +93,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
               type="text"
               value={section.alt || ''}
               onChange={(e) => onUpdate(index, { ...section, alt: e.target.value })}
-              placeholder="Що зображено на фото?"
+              placeholder={placeholderSection?.alt || "Що зображено на фото?"}
               className={inputClass + ' text-xs'}
             />
           </FormField>
@@ -111,7 +113,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
                   onUpdate(index, { ...section, content: newContent });
                 }}
                 className={inputClass}
-                placeholder={`Пункт ${i + 1}`}
+                placeholder={(placeholderSection?.content as string[])?.[i] || `Пункт ${i + 1}`}
               />
               <button
                 type="button"
@@ -141,7 +143,7 @@ function SortableSection({ section, index, onUpdate, onRemove }: {
   );
 }
 
-export default function SectionEditor({ sections, onChange }: SectionEditorProps) {
+export default function SectionEditor({ sections, placeholderSections, onChange }: SectionEditorProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -188,6 +190,7 @@ export default function SectionEditor({ sections, onChange }: SectionEditorProps
               index={index}
               onUpdate={handleUpdate}
               onRemove={handleRemove}
+              placeholderSection={placeholderSections?.[index]}
             />
           ))}
         </SortableContext>

@@ -4,8 +4,9 @@ import type { DBOffer } from '../types';
 import { offers as staticOffers } from '../../data/offers';
 import type { Offer } from '../../data/offers';
 
-function mapOffer(db: DBOffer): Offer {
+function mapOffer(db: DBOffer): any {
   return {
+    ...db,
     id: db.id,
     location: db.location,
     hotel: db.hotel,
@@ -26,7 +27,7 @@ function mapOffer(db: DBOffer): Offer {
 export function useOffers() {
   return useQuery({
     queryKey: ['offers'],
-    queryFn: async (): Promise<Offer[]> => {
+    queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('offers')
         .select('*')
@@ -44,19 +45,19 @@ export function useOffer(idOrSlug: number | string) {
   const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
     queryKey: ['offers', idOrSlug],
-    queryFn: async (): Promise<Offer | null> => {
+    queryFn: async (): Promise<any | null> => {
       const query = supabase.from('offers').select('*');
       if (isId) {
         query.eq('id', Number(idOrSlug));
       } else {
-        query.eq('slug', idOrSlug);
+        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data, error } = await query.single();
-      // Table may not exist yet or record not found — fall back to static data
-      if (error) {
+      const { data } = await query.maybeSingle();
+      
+      if (!data) {
         return (staticOffers.find(o => isId ? o.id === Number(idOrSlug) : (o as any).slug === idOrSlug) ?? null);
       }
-      return data ? mapOffer(data as DBOffer) : null;
+      return mapOffer(data as DBOffer);
     },
     placeholderData: () => staticOffers.find(o => isId ? o.id === Number(idOrSlug) : (o as any).slug === idOrSlug) ?? null,
     staleTime: 5 * 60 * 1000,

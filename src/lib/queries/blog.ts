@@ -4,8 +4,9 @@ import type { DBBlogPost } from '../types';
 import { blogPosts as staticPosts } from '../../data/blog';
 import type { BlogPost } from '../../data/blog';
 
-function mapPost(db: DBBlogPost): BlogPost {
+function mapPost(db: DBBlogPost): any {
   return {
+    ...db,
     id: db.id,
     title: db.title,
     excerpt: db.excerpt,
@@ -24,7 +25,7 @@ function mapPost(db: DBBlogPost): BlogPost {
 export function useBlogPosts() {
   return useQuery({
     queryKey: ['blog_posts'],
-    queryFn: async (): Promise<BlogPost[]> => {
+    queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
@@ -42,24 +43,22 @@ export function useBlogPost(idOrSlug: number | string) {
   const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
     queryKey: ['blog_posts', idOrSlug],
-    queryFn: async (): Promise<BlogPost | null> => {
+    queryFn: async (): Promise<any | null> => {
       const query = supabase.from('blog_posts').select('*');
       
       if (isId) {
         query.eq('id', Number(idOrSlug));
       } else {
-        query.eq('slug', idOrSlug);
+        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
       
-      const { data, error } = await query.single();
-      if (error) {
-        // Якщо за slug не знайдено, спробуємо знайти старі записи за ID, якщо idOrSlug це число у форматі рядка
-        if (!isId) return null;
-        throw error;
+      const { data } = await query.maybeSingle();
+      if (!data) {
+        return (staticPosts.find(p => isId ? p.id === Number(idOrSlug) : p.slug === idOrSlug) ?? null);
       };
-      return data ? mapPost(data as DBBlogPost) : null;
+      return mapPost(data as DBBlogPost);
     },
-    placeholderData: () => staticPosts.find(p => isId ? p.id === Number(idOrSlug) : p.slug === idOrSlug),
+    placeholderData: () => staticPosts.find(p => isId ? p.id === Number(idOrSlug) : p.slug === idOrSlug) ?? null,
     staleTime: 5 * 60 * 1000,
   });
 }

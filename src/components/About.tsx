@@ -1,11 +1,14 @@
 import aboutBg from '../assets/about-bg.png';
 import viktoria from '../assets/viktoria.jpg';
 import OptimizedImage from './OptimizedImage';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="w-full relative py-20 md:py-28 overflow-hidden">
-      {/* Blurred exotic background: using OptimizedImage for lazy loading */}
+      {/* Blurred exotic background */}
       <OptimizedImage
         src={aboutBg}
         alt="Background Blur"
@@ -27,7 +30,7 @@ const About = () => {
           <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-sm overflow-hidden shadow-2xl">
             <OptimizedImage 
               src={viktoria} 
-              alt="Вікторія Шелюжко" 
+              alt={t('about.founder_name')} 
               className="w-full h-auto block" 
               sizes="(max-width: 1024px) 100vw, 440px"
             />
@@ -42,32 +45,21 @@ const About = () => {
             <span className="block font-serif text-5xl text-white/80 leading-none mb-3 select-none">&ldquo;</span>
 
             <blockquote className="font-inter text-white text-lg md:text-xl leading-relaxed font-light">
-              За роки роботи в туристичному бізнесі я зрозуміла
-              головне: якісна подорож&nbsp;— це не набір локацій, а
-              продумане рішення, за яке хтось несе відповідальність.
-              У&nbsp;<strong className="font-semibold">Vogel Family Travel</strong> ми працюємо з клієнтами, для яких
-              важливі контроль, передбачуваність і увага до деталей.
-              Я особисто задаю стандарти сервісу і формую команду
-              фахівців, які вміють працювати зі складними запитами
-              та нестандартними ситуаціями. Нам довіряють подорожі,
-              бо знають: кожне рішення буде зваженим, а результат
-              &nbsp;— відповідатиме очікуванням
+              {t('about.quote')}
             </blockquote>
 
             <cite className="block mt-5 text-white/70 font-inter text-sm not-italic">
-              <em>Вікторія Шелюжко, засновниця Vogel Family Travel.</em>
+              <em>{t('about.founder_name')}, {t('about.founder_role')}</em>
             </cite>
           </div>
 
           {/* Mission */}
           <div>
             <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white mb-4">
-              Наша місія
+              {t('about.mission_title')}
             </h2>
             <p className="font-inter text-white/80 text-base md:text-lg leading-relaxed">
-              Створювати подорожі, які органічно вписуються в життя клієнта і залишають відчуття цілісного, добре
-              продуманого досвіду. Ми працюємо не з напрямками, а з запитами, беручи на себе відповідальність за
-              якість, конфіденційність і кінцевий результат.
+              {t('about.mission_description')}
             </p>
           </div>
 

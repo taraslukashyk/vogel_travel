@@ -27,9 +27,13 @@ import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import { useSettings } from '../hooks/useSettings';
 import { sendTelegramNotification } from '../lib/notifications';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../hooks/useLanguage';
 
 
 const ContactsPage = () => {
+  const { t } = useTranslation();
+  const { currentLang } = useLanguage();
   const { data: offers = [] } = useOffers();
   const { data: services = [] } = useServices();
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
@@ -151,7 +155,11 @@ ${formData.details || 'не вказано'}
 
   return (
     <main className="w-full bg-zinc-950 text-white min-h-screen overflow-hidden relative selection:bg-[#5cc8bd]/30">
-      <SEOHead pagePath="/ua/contacts" fallbackTitle="Контакти — Vogel Family Travel" fallbackDescription="Зв'яжіться з нами для консультації та бронювання преміальних подорожей." />
+      <SEOHead 
+        pagePath={`/${currentLang}/contacts`} 
+        fallbackTitle={currentLang === 'ua' ? "Контакти — Vogel Family Travel" : "Contacts — Vogel Family Travel"} 
+        fallbackDescription={currentLang === 'ua' ? "Зв'яжіться з нами для консультації та бронювання преміальних подорожей." : "Contact us for consultation and booking of premium travels."} 
+      />
 
       {/* Background Video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -169,14 +177,13 @@ ${formData.details || 'не вказано'}
         {/* Header */}
         <section className="mb-20 text-center md:text-left">
           <span className="text-[#5cc8bd] text-[10px] font-black uppercase tracking-[0.4em] mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">
-            Контакти та Оплата
+            {t('contacts.title')}
           </span>
           <h1 className="font-montserrat text-5xl md:text-7xl lg:text-[88px] font-extrabold uppercase tracking-tight leading-[0.9] mb-8 text-white animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 italic">
-            Оплата послуг <br /> <span className="text-white/20 not-italic">& Бронювання</span>
+            {t('contacts.hero_title')} <br /> <span className="text-white/20 not-italic">{t('contacts.hero_subtitle')}</span>
           </h1>
           <p className="font-inter text-white/50 text-lg md:text-xl max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
-            Vogel Family Travel — це найвищий рівень сервісу. <br />
-            Ми на зв'язку 24/7 для наших клієнтів по всьому світу.
+            {t('contacts.hero_description')}
           </p>
         </section>
 
@@ -190,15 +197,15 @@ ${formData.details || 'не вказано'}
                 <div className="w-24 h-24 bg-white/5 rounded-sm flex items-center justify-center mx-auto mb-10 border border-white/10 font-bold">
                   <Check className="w-12 h-12 text-[#5cc8bd]" />
                 </div>
-                <h2 className="font-montserrat text-4xl font-bold uppercase mb-6 text-white tracking-widest">Дякуємо!</h2>
+                <h2 className="font-montserrat text-4xl font-bold uppercase mb-6 text-white tracking-widest">{t('contacts.success_title')}</h2>
                 <p className="font-inter text-white/50 text-lg mb-12 max-w-md mx-auto leading-relaxed">
-                  Вашу заявку прийнято до обробки. Пріоритетний менеджер сконтактує з вами протягом 15 хвилин.
+                  {t('contacts.success_description')}
                 </p>
                 <button
                   onClick={() => setShowSuccess(false)}
                   className="px-12 py-5 bg-white text-black rounded-sm text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#5cc8bd] transition-all shadow-lg"
                 >
-                  Нова заявка
+                  {t('contacts.new_request_btn')}
                 </button>
               </div>
             ) : (
@@ -206,10 +213,10 @@ ${formData.details || 'не вказано'}
                 <div className="bg-white/5 px-8 md:px-12 py-10 border-b border-white/10">
                   <h2 className="font-montserrat text-2xl font-bold uppercase text-white flex items-center gap-5 tracking-wide mb-2">
                     <span className="w-2 h-8 bg-[#5cc8bd]" />
-                    Оформлення Бронювання
+                    {t('contacts.form_title')}
                   </h2>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 ml-7">
-                    Всі дані передаються по захищеному протоколу HTTPS
+                    {t('contacts.form_subtitle')}
                   </p>
                 </div>
 
@@ -217,25 +224,25 @@ ${formData.details || 'не вказано'}
                   <div className="space-y-8">
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
-                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">Персональні дані</h3>
+                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.personal_data')}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Ім'я</label>
-                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder="Ваше ім'я" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.first_name')}</label>
+                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder={t('contacts.first_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Прізвище</label>
-                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder="Ваше прізвище" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.last_name')}</label>
+                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder={t('contacts.last_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Контактний номер</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.phone_label')}</label>
                         <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">E-mail адреса</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.email_label')}</label>
                         <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
@@ -245,46 +252,50 @@ ${formData.details || 'не вказано'}
                   <div className="space-y-8">
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
-                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">Склад подорожі</h3>
+                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.trip_composition')}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Обрати напрямок / Послугу</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.service_label')}</label>
                         <div className="relative">
                           <select
                             value={selectedServiceId}
                             onChange={(e) => setSelectedServiceId(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
-                            <option value="" className="bg-zinc-900 text-white">Оберіть послугу...</option>
-                            <optgroup label="Пропозиції (Tours)" className="bg-zinc-950 text-white">
+                            <option value="" className="bg-zinc-900 text-white">{t('contacts.service_placeholder')}</option>
+                            <optgroup label="Tours" className="bg-zinc-950 text-white">
                               {offers.map(offer => (
-                                <option key={`offer-${offer.id}`} value={`offer-${offer.slug}`} className="bg-zinc-950 text-white">{offer.hotel}</option>
+                                <option key={`offer-${offer.id}`} value={`offer-${offer.slug}`} className="bg-zinc-950 text-white">
+                                  {currentLang === 'en' && offer.hotel_en ? offer.hotel_en : offer.hotel}
+                                </option>
                               ))}
                             </optgroup>
-                            <optgroup label="Сервіси (Services)" className="bg-zinc-950 text-white">
+                            <optgroup label="Services" className="bg-zinc-950 text-white">
                               {services.map(service => (
-                                <option key={`service-${service.id}`} value={`service-${service.slug}`} className="bg-zinc-950 text-white">{service.title}</option>
+                                <option key={`service-${service.id}`} value={`service-${service.slug}`} className="bg-zinc-950 text-white">
+                                  {currentLang === 'en' && service.title_en ? service.title_en : service.title}
+                                </option>
                               ))}
                             </optgroup>
-                            <option value="custom" className="bg-zinc-900 text-white">Індивідуальний розрахунок</option>
+                            <option value="custom" className="bg-zinc-900 text-white">{t('contacts.service_custom') || 'Custom Invoice'}</option>
                           </select>
                           <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 w-4 h-4 rotate-90" />
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Кількість гостей</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.persons_label')}</label>
                         <div className="relative">
                           <select
                             value={persons}
                             onChange={(e) => setPersons(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
-                            <option value="1" className="bg-zinc-900 text-white">1 людина</option>
-                            <option value="2" className="bg-zinc-900 text-white">2 людини</option>
-                            <option value="3" className="bg-zinc-900 text-white">3 людини</option>
-                            <option value="4" className="bg-zinc-900 text-white">4 людини</option>
-                            <option value="5+" className="bg-zinc-900 text-white">Більше 5 (група)</option>
+                            <option value="1" className="bg-zinc-900 text-white">1 {t('contacts.person_unit')}</option>
+                            <option value="2" className="bg-zinc-900 text-white">2 {t('contacts.persons_unit')}</option>
+                            <option value="3" className="bg-zinc-900 text-white">3 {t('contacts.persons_unit')}</option>
+                            <option value="4" className="bg-zinc-900 text-white">4 {t('contacts.persons_unit')}</option>
+                            <option value="5+" className="bg-zinc-900 text-white">{t('contacts.persons_group')}</option>
                           </select>
                           <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 w-4 h-4 rotate-90" />
                         </div>
@@ -305,17 +316,17 @@ ${formData.details || 'не вказано'}
                     )}
 
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Деталі або Побажання</label>
-                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={4} placeholder="Вкажіть бажані дати, готель або особливі вимоги до сервісу..." className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.details_label')}</label>
+                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={4} placeholder={t('contacts.details_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
                     </div>
 
 
                     {totalAmount > 0 && (
                       <div className="bg-[#5cc8bd]/10 border border-[#5cc8bd]/20 rounded-sm p-8 flex justify-between items-center animate-in zoom-in-95 duration-300">
                         <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">Разом до сплати</p>
+                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.total_to_pay')}</p>
                           <p className="text-white/40 text-[11px] uppercase tracking-widest font-bold">
-                            Final Amount • Inclusive of taxes
+                            {t('contacts.final_amount_note')}
                           </p>
                         </div>
                         <div className="text-right">
@@ -329,7 +340,7 @@ ${formData.details || 'не вказано'}
                   <div className="space-y-8">
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
-                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">Спосіб розрахунку</h3>
+                      <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.payment_method')}</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                       {[
@@ -359,11 +370,11 @@ ${formData.details || 'не вказано'}
 
                     {selectedPayment && (
                       <div className="p-8 bg-black/40 border border-white/5 rounded-sm animate-in slide-in-from-top-4 duration-300">
-                        {selectedPayment === 'liqpay' && <p className="text-sm text-white/50 leading-relaxed italic">Миттєва оплата через захищений шлюз ПриватБанку. Ми не зберігаємо дані вашої картки.</p>}
-                        {selectedPayment === 'wayforpay' && <p className="text-sm text-white/50 leading-relaxed italic">Універсальний платіжний хаб. Підтримує Apple Pay, Google Pay та карти будь-яких банків світу.</p>}
+                        {selectedPayment === 'liqpay' && <p className="text-sm text-white/50 leading-relaxed italic">{t('contacts.payment_liqpay_desc')}</p>}
+                        {selectedPayment === 'wayforpay' && <p className="text-sm text-white/50 leading-relaxed italic">{t('contacts.payment_wayforpay_desc')}</p>}
                         {selectedPayment === 'transfer' && (
                           <div className="space-y-5">
-                            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">Офіційні Реквізити</h4>
+                            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.official_requisites')}</h4>
                             <div className="space-y-1">
                               {[
                                 { label: 'ТОВ', value: 'Vogel Family Travel' },
@@ -388,8 +399,8 @@ ${formData.details || 'не вказано'}
 
                   <div className="pt-8 space-y-5">
                     {[
-                      { id: 'offer', label: 'Ознайомлений(-а) та погоджуюсь з умовами', link: 'Публічної оферти', state: isOfferAccepted, setState: setIsOfferAccepted },
-                      { id: 'privacy', label: 'Надаю згоду на обробку даних згідно з', link: 'Політикою конфіденційності', state: isPrivacyAccepted, setState: setIsPrivacyAccepted },
+                      { id: 'offer', label: t('contacts.agree_offer'), link: t('contacts.public_offer_link'), state: isOfferAccepted, setState: setIsOfferAccepted },
+                      { id: 'privacy', label: t('contacts.agree_privacy'), link: t('contacts.privacy_policy_link'), state: isPrivacyAccepted, setState: setIsPrivacyAccepted },
                     ].map((item) => (
                       <label key={item.id} className="flex items-start gap-5 cursor-pointer group">
                         <div className="relative mt-1 shrink-0">
@@ -409,7 +420,7 @@ ${formData.details || 'не вказано'}
                     disabled={!isFormValid()}
                     className="w-full py-6 bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] rounded-sm hover:bg-[#5cc8bd] transition-all disabled:opacity-20 mt-8 shadow-2xl active:scale-[0.98]"
                   >
-                    Перейти до оплати
+                    {t('contacts.pay_btn')}
                   </button>
                 </form>
               </div>
@@ -421,15 +432,15 @@ ${formData.details || 'не вказано'}
                   <div className="mb-0 p-4 bg-white/5 inline-block rounded-sm transition-transform duration-500 group-hover:scale-110 border border-white/5">
                     <Briefcase className="w-8 h-8 text-[#5cc8bd]" />
                   </div>
-                  <h2 className="font-montserrat text-3xl font-bold uppercase text-white tracking-[0.05em] group-hover:text-primary transition-colors">Для партнерів</h2>
+                  <h2 className="font-montserrat text-3xl font-bold uppercase text-white tracking-[0.05em] group-hover:text-primary transition-colors">{t('contacts.partners_title')}</h2>
                   <p className="font-inter text-white/50 text-lg leading-relaxed max-w-lg">
-                    Ми формуємо мережу найкращих готелів та сервісів світу. Якщо ваші стандарти відповідають рівню Vogel — ми відкриті до діалогу.
+                    {t('contacts.partners_description')}
                   </p>
                   <button
                     type="button"
                     className="group/btn flex items-center gap-4 px-10 py-4 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all"
                   >
-                    B2B Співпраця <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-2" />
+                    {t('contacts.b2b_btn')} <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-2" />
                   </button>
                 </div>
                 <div className="w-full md:w-1/3 aspect-[4/3] bg-white/5 border border-white/10 rounded-sm flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
@@ -513,27 +524,26 @@ ${formData.details || 'не вказано'}
                       <Clock className="w-6 h-6 text-white/20" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-1.5">Office Hours</p>
-                      <p className="text-[11px] font-bold text-white/40 leading-relaxed uppercase tracking-widest">
-                        Mon–Fri: 09:00 – 19:00 <br />
-                        Weekend: On Demand
-                      </p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-1.5">{t('contacts.office_hours')}</p>
+                      <div className="text-[11px] font-bold text-white/40 leading-relaxed uppercase tracking-widest whitespace-pre-line">
+                        {t('contacts.office_hours_desc')}
+                      </div>
                     </div>
                   </div>
 
                   <div className="w-full h-44 bg-black/40 rounded-sm overflow-hidden border border-white/10 shadow-inner group mt-4 relative">
                     <a 
-                      href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((currentLang === 'en' ? settings?.address_en : settings?.address) || 'Спортивна площа, 1А, Київ')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="absolute top-2 right-2 z-20 bg-zinc-950/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-sm text-[8px] font-black text-white/50 hover:text-[#5cc8bd] hover:border-[#5cc8bd]/50 transition-all opacity-0 group-hover:opacity-100 uppercase tracking-widest flex items-center gap-2"
                     >
-                      Відкрити в картах
+                      {t('contacts.open_in_maps')}
                       <ChevronRight className="w-2.5 h-2.5" />
                     </a>
                     <div ref={mapContainer} className="w-full h-full grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
                     <div className="absolute inset-x-0 bottom-0 bg-zinc-950/90 backdrop-blur-sm py-2 px-3 flex justify-between items-center z-20">
-                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">{settings?.address || 'Спортивна площа, 1А'}</span>
+                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">{(currentLang === 'en' ? settings?.address_en : settings?.address) || (currentLang === 'ua' ? 'Спортивна площа, 1А' : 'Sportyvna Square, 1A')}</span>
                       <MapPin className="w-3 h-3 text-white/40" />
                     </div>
 
@@ -542,12 +552,12 @@ ${formData.details || 'не вказано'}
               </div>
 
               <div className="pt-12 border-t border-white/5 space-y-4 font-montserrat relative z-10">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-6">Документи</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-6">{t('contacts.documents_title')}</h4>
                 {[
-                  { id: 'offer', name: 'Публічна оферта', icon: <FileText className="w-4 h-4" /> },
-                  { id: 'privacy', name: 'Політика конфіденційності', icon: <ShieldCheck className="w-4 h-4" /> },
-                  { id: 'cookie', name: 'Політика використання Cookie', icon: <Cookie className="w-4 h-4" /> },
-                  { id: 'returns', name: 'Умови повернення коштів', icon: <Undo2 className="w-4 h-4" /> },
+                  { id: 'offer', name: t('contacts.doc_offer'), icon: <FileText className="w-4 h-4" /> },
+                  { id: 'privacy', name: t('contacts.doc_privacy'), icon: <ShieldCheck className="w-4 h-4" /> },
+                  { id: 'cookie', name: t('contacts.doc_cookie'), icon: <Cookie className="w-4 h-4" /> },
+                  { id: 'returns', name: t('contacts.doc_returns'), icon: <Undo2 className="w-4 h-4" /> },
                 ].map((link) => (
                   <button
                     key={link.id}
@@ -573,10 +583,10 @@ ${formData.details || 'не вказано'}
           <div className="relative bg-[#111] border border-white/10 rounded-sm max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
               <h2 className="font-montserrat text-xl font-bold uppercase text-white tracking-[0.3em]">
-                {activeModal === 'offer' && 'Публічна оферта'}
-                {activeModal === 'privacy' && 'Політика конфіденційності'}
-                {activeModal === 'cookie' && 'Політика Cookie'}
-                {activeModal === 'returns' && 'Умови повернення'}
+                {activeModal === 'offer' && t('contacts.doc_offer')}
+                {activeModal === 'privacy' && t('contacts.doc_privacy')}
+                {activeModal === 'cookie' && t('contacts.doc_cookie')}
+                {activeModal === 'returns' && t('contacts.doc_returns')}
               </h2>
               <button
                 onClick={() => setActiveModal(null)}
@@ -586,11 +596,11 @@ ${formData.details || 'не вказано'}
               </button>
             </div>
             <div className="p-10 md:p-14 overflow-y-auto font-inter text-[15px] text-white/50 leading-relaxed space-y-8 scrollbar-thin scrollbar-thumb-white/10">
-              <h3 className="text-white font-bold text-lg uppercase tracking-widest font-montserrat">Юридичні засади</h3>
-              <p>Даний документ визначає умови надання туристичних послуг та захисту прав клієнтів Vogel Family Travel.</p>
-              <p>Ми дотримуємося високих стандартів прозорості та безпеки у роботі з вашими персональними даними та фінансовими операціями.</p>
+              <h3 className="text-white font-bold text-lg uppercase tracking-widest font-montserrat">{t('contacts.modal_legal_basis')}</h3>
+              <p>{t('contacts.modal_legal_desc1')}</p>
+              <p>{t('contacts.modal_legal_desc2')}</p>
               <div className="p-8 bg-white/5 border-l-2 border-[#5cc8bd] italic text-white/70">
-                За потреби ви можете звернутися до свого персонального менеджера для отримання повного тексту документа з печаткою.
+                {t('contacts.modal_legal_footer')}
               </div>
             </div>
             <div className="p-10 border-t border-white/5 bg-white/5 flex justify-end">
@@ -598,7 +608,7 @@ ${formData.details || 'не вказано'}
                 onClick={() => setActiveModal(null)}
                 className="px-10 py-4 bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] rounded-sm hover:bg-[#5cc8bd] transition-all font-montserrat"
               >
-                ЗРОЗУМІЛО
+                {t('contacts.modal_close_btn')}
               </button>
             </div>
           </div>

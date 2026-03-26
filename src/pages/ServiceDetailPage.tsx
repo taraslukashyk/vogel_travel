@@ -3,10 +3,16 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { useService } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const ServiceDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
+  const { currentLang, l } = useLanguage();
+  const { t, sections: getSections } = useLanguageContent();
+  const { t: tr } = useTranslation();
   const { data: service, isLoading } = useService(slug!);
 
   const [currentImg, setCurrentImg] = useState(0);
@@ -46,13 +52,13 @@ const ServiceDetailPage = () => {
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: service?.title, url: window.location.href });
+        await navigator.share({ title: t(service, 'title'), url: window.location.href });
       } catch (err) {
         console.error('Error sharing:', err);
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Посилання скопійовано в буфер обміну!');
+      alert(tr('common.link_copied'));
     }
   };
 
@@ -68,17 +74,22 @@ const ServiceDetailPage = () => {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4 italic font-serif">Сервіс не знайдено</h2>
-          <Link to="/ua/services" className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
-            Повернутися до сервісів
+          <h2 className="text-2xl font-bold text-white mb-4 italic font-serif">{tr('services.not_found')}</h2>
+          <Link to={l('/services')} className="text-[#5cc8bd] hover:underline font-medium uppercase tracking-widest text-sm font-montserrat">
+            {tr('services.back_to_services')}
           </Link>
         </div>
       </div>
     );
   }
 
-  const textSections = service.sections?.filter(s => s.type !== 'image') || [];
-  const imageSections = service.sections?.filter(s => s.type === 'image') || [];
+  const title = t(service, 'title');
+  const description = t(service, 'description');
+  const type = t(service, 'type');
+  const items = t(service, 'items') || [];
+  const sections = getSections(service);
+  const textSections = sections?.filter((s: any) => s.type !== 'image') || [];
+  const imageSections = sections?.filter((s: any) => s.type === 'image') || [];
 
   const nextImg = () => setCurrentImg(prev => (prev + 1) % imageSections.length);
   const prevImg = () => setCurrentImg(prev => (prev - 1 + imageSections.length) % imageSections.length);
@@ -86,9 +97,9 @@ const ServiceDetailPage = () => {
   return (
     <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
       <SEOHead
-        pagePath={`/ua/services/${slug}`}
-        title={service.seoTitle || `${service.title} — Vogel Family Travel`}
-        description={service.seoDescription || service.description || ''}
+        pagePath={`/${currentLang}/services/${slug}`}
+        title={t(service, 'seo_title') || `${title} — Vogel Family Travel`}
+        description={t(service, 'seo_description') || description || ''}
         ogImage={service.image}
       />
 
@@ -102,12 +113,12 @@ const ServiceDetailPage = () => {
         >
           <img
             src={service.image}
-            alt={service.title}
+            alt={t(service, 'image_alt') || title}
             className="w-full h-full object-cover saturate-[1.15] transition-transform duration-1000 group-hover:scale-105"
           />
           <div className="absolute inset-y-0 right-0 w-px bg-white/10 hidden lg:block" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.3em] font-montserrat">Натисніть для перегляду</span>
+            <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.3em] font-montserrat">{tr('common.click_to_view')}</span>
           </div>
         </div>
 
@@ -125,30 +136,30 @@ const ServiceDetailPage = () => {
 
           <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
             <Link
-              to="/ua/services"
+              to={l('/services')}
               className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Всі сервіси
+              {tr('services.all_services')}
             </Link>
 
             <div className="flex flex-col text-white">
               <div className="flex items-center gap-3 text-[#5cc8bd] text-[13px] font-black uppercase tracking-[0.4em] mb-6 font-montserrat">
                 <span className="text-white/20 font-extrabold text-4xl leading-none select-none">{service.num}</span>
-                <span>{service.type}</span>
+                <span>{type}</span>
               </div>
 
               <h1 className="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] mb-10 text-white drop-shadow-sm">
-                {service.title}
+                {title}
               </h1>
 
               <p className="hidden lg:block text-white/80 text-lg leading-relaxed mb-12 font-inter font-light border-l-2 border-[#5cc8bd]/40 pl-8">
-                {service.description}
+                {description}
               </p>
 
-              {service.items && service.items.length > 0 && (
+              {items.length > 0 && (
                 <ul className="space-y-3 mb-10">
-                  {service.items.map((item, i) => (
+                  {items.map((item: any, i: number) => (
                     <li key={i} className="flex items-start gap-3 bg-white/5 border border-white/10 p-4 rounded-sm">
                       <span className="mt-[6px] w-4 h-px bg-[#5cc8bd]/60 shrink-0" />
                       <p className="font-inter text-[14px] text-white/70 leading-relaxed">
@@ -162,7 +173,7 @@ const ServiceDetailPage = () => {
               <div className="flex flex-row gap-3 font-montserrat">
                 <button className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3">
                   <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
-                  <span>Замовити у менеджера</span>
+                  <span>{tr('offers.order_manager')}</span>
                 </button>
                 <button
                   onClick={handleShare}
@@ -180,7 +191,7 @@ const ServiceDetailPage = () => {
       {textSections.length > 0 && (
         <section className="relative py-24 px-6 md:px-8 bg-zinc-200/50 border-b border-zinc-200/50">
           <div className="max-w-4xl mx-auto">
-            {textSections.map((section, index) => (
+            {textSections.map((section: any, index: number) => (
               <div key={index} className="mb-20 last:mb-0">
                 {section.title && (
                   <h2 className="font-serif italic text-3xl md:text-4xl text-gray-900 mt-16 mb-8 uppercase tracking-tight">
@@ -223,7 +234,7 @@ const ServiceDetailPage = () => {
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 mb-10 flex items-end justify-between">
             <h2 className="font-serif italic text-4xl md:text-5xl text-white">
-              Галерея <br />
+              {tr('offers.gallery')} <br />
               <span className="text-white/30 not-italic font-montserrat uppercase text-sm font-black tracking-[0.4em]">Service View</span>
             </h2>
             <div className="flex items-center gap-4">
@@ -249,7 +260,7 @@ const ServiceDetailPage = () => {
             onTouchEnd={onTouchEnd}
           >
             <div className="relative w-full max-w-5xl h-full shadow-[0_50px_100px_rgba(0,0,0,0.8)] rounded-sm overflow-hidden border border-white/5">
-              {imageSections.map((section, idx) => (
+              {imageSections.map((section: any, idx: number) => (
                 <div
                   key={idx}
                   className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-zoom-in group ${idx === currentImg ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}
@@ -262,7 +273,7 @@ const ServiceDetailPage = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 max-w-2xl">
-                    <p className="text-white/40 font-montserrat text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-3 md:mb-4">Деталі сервісу — Натисніть для перегляду</p>
+                    <p className="text-white/40 font-montserrat text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-3 md:mb-4">{tr('offers.click_to_view_details')}</p>
                     <p className="text-white text-lg md:text-2xl font-serif italic leading-relaxed">
                       {section.content as string}
                     </p>
@@ -273,7 +284,7 @@ const ServiceDetailPage = () => {
           </div>
 
           <div className="flex justify-center gap-3 mt-12">
-            {imageSections.map((_, i) => (
+            {imageSections.map((_: any, i: number) => (
               <button
                 key={i}
                 onClick={() => setCurrentImg(i)}
@@ -285,12 +296,12 @@ const ServiceDetailPage = () => {
       )}
 
       {/* Fallback */}
-      {!service.sections && (
+      {!sections.length && (
         <section className="py-32 px-6 bg-zinc-200/50">
           <div className="max-w-2xl mx-auto py-20 px-12 bg-white border border-gray-100 rounded-sm text-center shadow-xl">
-            <p className="font-montserrat text-gray-400 text-lg uppercase tracking-widest font-bold mb-4">Детальний опис готується</p>
+            <p className="font-montserrat text-gray-400 text-lg uppercase tracking-widest font-bold mb-4">{tr('offers.preparing_content')}</p>
             <p className="font-inter text-gray-500 font-light leading-relaxed">
-              Зверніться до нашого менеджера для отримання повної презентації цього сервісу.
+              {tr('offers.preparing_content_desc')}
             </p>
           </div>
         </section>

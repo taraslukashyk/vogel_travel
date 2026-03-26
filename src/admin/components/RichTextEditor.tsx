@@ -13,6 +13,12 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ value, onChange, placeholder = 'Почніть писати...' }: RichTextEditorProps) {
+  // Clean placeholder from HTML tags so it looks clean as a hint
+  const cleanPlaceholder = useMemo(() => {
+    if (!placeholder) return 'Почніть писати...';
+    return placeholder.replace(/<[^>]*>/g, '').trim() || 'Почніть писати...';
+  }, [placeholder]);
+
   const extensions = useMemo(() => [
     StarterKit,
     ImageExtension,
@@ -22,8 +28,10 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
         class: 'text-[#5cc8bd] underline cursor-pointer',
       },
     }),
-    Placeholder.configure({ placeholder }),
-  ], [placeholder]);
+    Placeholder.configure({ 
+      placeholder: cleanPlaceholder,
+    }),
+  ], [cleanPlaceholder]);
 
   const editor = useEditor({
     extensions,
@@ -33,11 +41,24 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
     },
   });
 
+  // Ensure content matches state
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
   }, [value, editor]);
+
+  // Make placeholder reactive to prop changes
+  useEffect(() => {
+    if (editor) {
+      editor.extensionManager.extensions.forEach((ext) => {
+        if (ext.name === 'placeholder') {
+          ext.options.placeholder = cleanPlaceholder;
+          editor.view.dispatch(editor.state.tr); // Trigger view update
+        }
+      });
+    }
+  }, [cleanPlaceholder, editor]);
 
   if (!editor) return null;
 
@@ -105,7 +126,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Поч�
           <Redo size={16} />
         </ToolBtn>
       </div>
-      <EditorContent editor={editor} className="prose prose-sm max-w-none p-3 min-h-[120px] [&_.ProseMirror]:outline-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none" />
+      <EditorContent editor={editor} className="prose prose-sm max-w-none p-3 min-h-[120px] [&_.ProseMirror]:outline-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-400 [&_.ProseMirror_p.is-editor-empty:first-child::before]:italic [&_.ProseMirror_p.is-editor-empty:first-child::before]:opacity-70 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none" />
     </div>
   );
 }

@@ -23,8 +23,9 @@ export interface Partner {
   seoDescription?: string;
 }
 
-function mapPartner(db: DBPartner): Partner {
+function mapPartner(db: DBPartner): any {
   return {
+    ...db,
     id: db.id,
     name: db.name,
     category: db.category,
@@ -48,17 +49,17 @@ function mapPartner(db: DBPartner): Partner {
 export function usePartners() {
   return useQuery({
     queryKey: ['partners'],
-    queryFn: async (): Promise<Partner[]> => {
+    queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('partners')
         .select('*')
         .eq('is_published', true)
         .order('sort_order');
       // Table may not exist yet — fall back to static data
-      if (error) return staticPartners as Partner[];
+      if (error) return staticPartners as any[];
       return (data as DBPartner[]).map(mapPartner);
     },
-    placeholderData: staticPartners as Partner[],
+    placeholderData: staticPartners as any[],
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
@@ -68,17 +69,17 @@ export function usePartner(idOrSlug: number | string) {
   const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
     queryKey: ['partner', idOrSlug],
-    queryFn: async (): Promise<Partner | null> => {
+    queryFn: async (): Promise<any | null> => {
       const query = supabase.from('partners').select('*');
       if (isId) {
         query.eq('id', Number(idOrSlug));
       } else {
-        query.eq('slug', idOrSlug);
+        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data, error } = await query.single();
+      const { data } = await query.maybeSingle();
       // Table may not exist yet or record not found — fall back to static data
-      if (error) {
-        const found = staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as Partner;
+      if (!data) {
+        const found = staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as any;
         return found ?? null;
       }
       const mapped = mapPartner(data as DBPartner);
@@ -92,7 +93,7 @@ export function usePartner(idOrSlug: number | string) {
       }
       return mapped;
     },
-    placeholderData: (staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as Partner) ?? null,
+    placeholderData: (staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as any) ?? null,
     staleTime: 5 * 60 * 1000,
     retry: false,
   });

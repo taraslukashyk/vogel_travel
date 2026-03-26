@@ -6,20 +6,37 @@ import { slugify } from '../../lib/utils/slugify';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
+import { syncSections } from '../utils/sectionSync';
+import LanguageTabs from '../components/LanguageTabs';
 import { Plus, Trash2 } from 'lucide-react';
 import type { DBService, DBServiceItem, DBSection } from '../../lib/types';
 
 const emptyService = {
-  num: '',
+  // UA
   title: '',
   description: '',
-  image: '',
   type: 'Сервіс',
   items: [] as DBServiceItem[],
   sections: [] as DBSection[],
   slug: '',
   seo_title: '',
   seo_description: '',
+
+  // EN
+  title_en: '',
+  description_en: '',
+  type_en: 'Service',
+  items_en: [] as DBServiceItem[],
+  sections_en: [] as DBSection[],
+  slug_en: '',
+  seo_title_en: '',
+  seo_description_en: '',
+
+  // Common
+  num: '',
+  image: '',
+  image_alt: '',
+  image_alt_en: '',
   is_published: true,
 };
 
@@ -29,6 +46,7 @@ export default function ServiceForm() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyService);
+  const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
 
   const { data: existing } = useQuery({
     queryKey: ['admin_service', id],
@@ -47,12 +65,24 @@ export default function ServiceForm() {
         title: existing.title,
         description: existing.description,
         image: existing.image,
+        image_alt: existing.image_alt || '',
+        image_alt_en: existing.image_alt_en || '',
         type: existing.type,
         items: existing.items || [],
         sections: existing.sections || [],
         slug: existing.slug || '',
         seo_title: existing.seo_title || '',
         seo_description: existing.seo_description || '',
+        
+        title_en: existing.title_en || '',
+        description_en: existing.description_en || '',
+        type_en: existing.type_en || 'Service',
+        items_en: existing.items_en || [],
+        sections_en: syncSections(existing.sections || [], existing.sections_en || []),
+        slug_en: existing.slug_en || '',
+        seo_title_en: existing.seo_title_en || '',
+        seo_description_en: existing.seo_description_en || '',
+
         is_published: existing.is_published,
       });
     }
@@ -60,19 +90,22 @@ export default function ServiceForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = {
-        ...form,
-        slug: form.slug || null,
-        seo_title: form.seo_title || null,
-        seo_description: form.seo_description || null,
-      };
+      const payload = { ...form };
       if (isNew) {
         const { data: maxOrder } = await supabase.from('services').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('services').insert({ ...payload, sort_order });
+        const { error } = await supabase.from('services').insert({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          sort_order 
+        });
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('services').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', Number(id));
+        const { error } = await supabase.from('services').update({ 
+          ...payload, 
+          slug_en: form.slug, // Sync English slug with Ukrainian
+          updated_at: new Date().toISOString() 
+        }).eq('id', Number(id));
         if (error) throw error;
       }
     },
@@ -104,80 +137,112 @@ export default function ServiceForm() {
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
   const updateItem = (index: number, field: keyof DBServiceItem, value: string) => {
-    const items = [...form.items];
+    const key = activeTab === 'ua' ? 'items' : 'items_en';
+    const items = [...(form[key] as DBServiceItem[])];
     items[index] = { ...items[index], [field]: value };
-    set('items', items);
+    set(key, items);
   };
+
+  const isUA = activeTab === 'ua';
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Новий сервіс' : 'Редагувати сервіс'}</h1>
 
+      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Номер" required tooltip="Порядковий номер для сортування (наприклад: 01, 02).">
+          <FormField label="Номер" required tooltip="Порядковий номер для сортування.">
             <input className={inputClass} value={form.num} onChange={(e) => set('num', e.target.value)} placeholder="01" required />
           </FormField>
-          <FormField label="Тип" tooltip="Тип сервісу. Допускаються значення: Сервіс тощо.">
-            <input className={inputClass} value={form.type} onChange={(e) => set('type', e.target.value)} placeholder="Сервіс" />
+          <FormField label={isUA ? "Тип" : "Type"}>
+            <input 
+              className={inputClass} 
+              value={isUA ? form.type : form.type_en} 
+              onChange={(e) => set(isUA ? 'type' : 'type_en', e.target.value)} 
+              placeholder={isUA ? form.type_en : form.type}
+            />
           </FormField>
         </div>
 
-        <FormField label="Назва" required>
+        <FormField label={isUA ? "Назва" : "Title"} required={isUA}>
           <input 
             className={inputClass} 
-            value={form.title} 
+            value={isUA ? form.title : form.title_en} 
             onChange={(e) => {
-              const title = e.target.value;
-              set('title', title);
-              if (isNew) set('slug', slugify(title));
+              const val = e.target.value;
+              if (isUA) {
+                set('title', val);
+                if (isNew) set('slug', slugify(val));
+              } else {
+                set('title_en', val);
+              }
             }} 
-            required 
+            required={isUA} 
+            placeholder={isUA ? form.title_en : form.title}
           />
         </FormField>
 
-        <FormField label="URL-адреса (Slug)" tooltip="SEO-дружня назва в URL. Генерується автоматично з назви.">
+        <FormField label="URL-адреса (спільна для обох мов)">
           <input
             className={inputClass}
             value={form.slug}
             onChange={(e) => set('slug', slugify(e.target.value))}
-            placeholder="premium-rentals"
-            required
           />
           <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/services/<strong>{form.slug || 'slug'}</strong></p>
         </FormField>
 
-        <FormField label="Зображення" required tooltip="Основне фото для сервісу. Рекомендований розмір 800x600 px.">
+        <FormField label="Зображення" required>
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="services" />
         </FormField>
+        <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"}>
+          <input
+            type="text"
+            className={inputClass}
+            value={isUA ? form.image_alt : form.image_alt_en}
+            onChange={(e) => set(isUA ? 'image_alt' : 'image_alt_en', e.target.value)}
+            placeholder={isUA ? form.image_alt_en : form.image_alt}
+          />
+        </FormField>
 
-        <FormField label="Опис" required tooltip="Основний текстовий опис послуги.">
-          <textarea className={inputClass} rows={4} value={form.description} onChange={(e) => set('description', e.target.value)} required />
+        <FormField label={isUA ? "Опис" : "Description"} required={isUA}>
+          <textarea 
+            className={inputClass} 
+            rows={4} 
+            value={isUA ? form.description : form.description_en} 
+            onChange={(e) => set(isUA ? 'description' : 'description_en', e.target.value)} 
+            required={isUA} 
+            placeholder={isUA ? form.description_en : form.description}
+          />
         </FormField>
 
         {/* Service Items */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Деталі (підпункти)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Деталі (підпункти) - {isUA ? 'UA' : 'EN'}</label>
           <div className="space-y-2">
-            {form.items.map((item, i) => (
+            {(isUA ? form.items : form.items_en).map((item, i) => (
               <div key={i} className="flex gap-2">
                 <input
                   type="text"
                   value={item.label}
                   onChange={(e) => updateItem(i, 'label', e.target.value)}
                   className={inputClass}
-                  placeholder="Назва"
+                  placeholder={isUA ? "Назва" : "Label"}
                 />
                 <input
                   type="text"
                   value={item.text}
                   onChange={(e) => updateItem(i, 'text', e.target.value)}
                   className={`${inputClass} flex-1`}
-                  placeholder="Опис"
+                  placeholder={isUA ? "Опис" : "Text"}
                 />
                 <button
                   type="button"
-                  onClick={() => set('items', form.items.filter((_, j) => j !== i))}
+                  onClick={() => {
+                    const key = isUA ? 'items' : 'items_en';
+                    set(key, (form[key] as DBServiceItem[]).filter((_, j) => j !== i));
+                  }}
                   className="text-red-400 hover:text-red-600 shrink-0"
                 >
                   <Trash2 size={16} />
@@ -186,7 +251,10 @@ export default function ServiceForm() {
             ))}
             <button
               type="button"
-              onClick={() => set('items', [...form.items, { label: '', text: '' }])}
+              onClick={() => {
+                const key = isUA ? 'items' : 'items_en';
+                set(key, [...(form[key] as DBServiceItem[]), { label: '', text: '' }]);
+              }}
               className="flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
             >
               <Plus size={14} /> Додати підпункт
@@ -197,38 +265,51 @@ export default function ServiceForm() {
         {/* Sections */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Розділи сторінки деталей
-            <span className="ml-2 text-xs text-gray-400">(текст, список або зображення для сторінки /services/:id)</span>
+            Розділи сторінки деталей ({isUA ? 'UA' : 'EN'})
           </label>
           <SectionEditor
-            sections={form.sections}
-            onChange={(sections) => set('sections', sections)}
+            sections={isUA ? form.sections : form.sections_en}
+            placeholderSections={isUA ? form.sections_en : form.sections}
+            onChange={(s) => {
+              if (isUA) {
+                setForm(prev => ({ 
+                  ...prev, 
+                  sections: s, 
+                  sections_en: syncSections(s, prev.sections_en) 
+                }));
+              } else {
+                setForm(prev => ({ 
+                  ...prev, 
+                  sections_en: s, 
+                  sections: syncSections(s, prev.sections) 
+                }));
+              }
+            }}
           />
         </div>
 
         {/* SEO */}
         <div className="border-t border-gray-100 pt-6 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO</h2>
-          <FormField label="SEO Заголовок" tooltip="Заголовок для пошукових систем (рекомендовано до 60 символів).">
+          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO ({isUA ? 'UA' : 'EN'})</h2>
+          <FormField label="SEO Title">
             <input
               className={inputClass}
-              value={form.seo_title}
-              onChange={(e) => set('seo_title', e.target.value)}
-              placeholder="Назва сервісу — Vogel Family Travel"
+              value={isUA ? form.seo_title : form.seo_title_en}
+              onChange={(e) => set(isUA ? 'seo_title' : 'seo_title_en', e.target.value)}
+              placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Опис" tooltip="Мета-опис для пошукових систем (рекомендовано до 160 символів).">
+          <FormField label="SEO Description">
             <textarea
               className={inputClass}
               rows={3}
-              value={form.seo_description}
-              onChange={(e) => set('seo_description', e.target.value)}
-              placeholder="Короткий опис сервісу для Google..."
+              value={isUA ? form.seo_description : form.seo_description_en}
+              onChange={(e) => set(isUA ? 'seo_description' : 'seo_description_en', e.target.value)}
+              placeholder={isUA ? form.seo_description_en : form.seo_description}
             />
           </FormField>
         </div>
 
-        {/* Publish toggle */}
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.is_published} onChange={(e) => set('is_published', e.target.checked)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
@@ -238,7 +319,7 @@ export default function ServiceForm() {
 
         <div className="flex items-center gap-3">
           <button type="submit" disabled={mutation.isPending} className={btnPrimary}>
-            {mutation.isPending ? 'Збереження...' : 'Зберегти'}
+            {mutation.isPending ? 'Збереження...' : 'Зберегти (Обидві мови)'}
           </button>
           <button type="button" onClick={() => navigate('/admin/services')} className={btnSecondary}>
             Скасувати
@@ -248,9 +329,9 @@ export default function ServiceForm() {
               type="button"
               onClick={handleDelete}
               disabled={deleteMutation.isPending}
-              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium transition-colors"
+              className="ml-auto text-red-500 hover:text-red-600 p-2 font-medium"
             >
-              {deleteMutation.isPending ? 'Видалення...' : 'Видалити'}
+              Видалити
             </button>
           )}
         </div>

@@ -6,6 +6,7 @@ export interface SiteSettings {
   phone_secondary: string;
   email: string;
   address: string;
+  address_en: string;
   instagram_url: string;
   facebook_url: string;
   telegram_url: string;

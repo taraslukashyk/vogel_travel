@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useBlogPosts } from '../lib/queries/blog';
 import OptimizedImage from './OptimizedImage';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 const BlogCarousel = () => {
   const { data: blogPosts = [] } = useBlogPosts();
@@ -12,6 +15,9 @@ const BlogCarousel = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const total = blogPosts.length;
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,11 +58,11 @@ const BlogCarousel = () => {
       >
         <div>
           <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.3em] text-[#5cc8bd] mb-3">
-            Наш Блог
+            {tr('blog.carousel_subtitle')}
           </p>
           <h2 className="font-serif italic text-4xl md:text-5xl text-white leading-tight">
-            Читайте про<br />
-            <span className="text-white/50">найкращі напрямки</span>
+            {tr('blog.carousel_title_top')}<br />
+            <span className="text-white/50">{tr('blog.carousel_title_bot')}</span>
           </h2>
         </div>
 
@@ -64,14 +70,14 @@ const BlogCarousel = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={prev}
-            aria-label="Попередня стаття"
+            aria-label={tr('blog.prev_article')}
             className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] transition-all duration-300 group"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
           </button>
           <button
             onClick={next}
-            aria-label="Наступна стаття"
+            aria-label={tr('blog.next_article')}
             className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] transition-all duration-300 group"
           >
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -97,54 +103,61 @@ const BlogCarousel = () => {
             '--gap': '32px'
           } as any}
         >
-          {blogPosts.map((post, index) => (
-            <div
-              key={post.id}
-              className={`shrink-0 transition-all duration-700 select-none ${current === index ? 'opacity-100 scale-100' : 'opacity-30 scale-95'}`}
-              style={{ width: 'var(--card-width)', marginRight: 'var(--gap)' }}
-            >
-              <Link to={`/ua/blog/${post.slug}`} className="block group">
-                <article className={`relative rounded-sm overflow-hidden transition-shadow duration-500 ${current === index ? 'shadow-2xl shadow-black/60' : ''}`}>
-                  {/* Image */}
-                  <div className="relative h-[320px] md:h-[480px] overflow-hidden">
-                    <OptimizedImage
-                      src={post.image}
-                      alt={post.title}
-                      className={`w-full h-full object-cover transition-transform duration-1000 ${current === index ? 'group-hover:scale-105' : ''}`}
-                      draggable={false}
-                      sizes="min(85vw, 840px)"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          {blogPosts.map((post: any, index: number) => {
+            const title = t(post, 'title');
+            const excerpt = t(post, 'excerpt');
+            const category = t(post, 'category');
+            const slug = t(post, 'slug');
 
-                    {/* Category badge */}
-                    <div className="absolute top-6 left-6">
-                      <span className="font-montserrat text-[10px] font-black uppercase tracking-[0.25em] bg-[#5cc8bd] text-black px-4 py-2 rounded-[2px] shadow-lg">
-                        {post.category}
-                      </span>
+            return (
+              <div
+                key={post.id}
+                className={`shrink-0 transition-all duration-700 select-none ${current === index ? 'opacity-100 scale-100' : 'opacity-30 scale-95'}`}
+                style={{ width: 'var(--card-width)', marginRight: 'var(--gap)' }}
+              >
+                <Link to={l(`/blog/${slug}`)} className="block group">
+                  <article className={`relative rounded-sm overflow-hidden transition-shadow duration-500 ${current === index ? 'shadow-2xl shadow-black/60' : ''}`}>
+                    {/* Image */}
+                    <div className="relative h-[320px] md:h-[480px] overflow-hidden">
+                      <OptimizedImage
+                        src={post.image}
+                        alt={t(post, 'image_alt') || title}
+                        className={`w-full h-full object-cover transition-transform duration-1000 ${current === index ? 'group-hover:scale-105' : ''}`}
+                        draggable={false}
+                        sizes="min(85vw, 840px)"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+                      {/* Category badge */}
+                      <div className="absolute top-6 left-6">
+                        <span className="font-montserrat text-[10px] font-black uppercase tracking-[0.25em] bg-[#5cc8bd] text-black px-4 py-2 rounded-[2px] shadow-lg">
+                          {category}
+                        </span>
+                      </div>
+
+                      {/* Bottom content */}
+                      <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                        <p className="font-montserrat text-[11px] text-white/50 uppercase tracking-widest mb-3">{post.date}</p>
+                        <h3 className={`font-serif italic text-white leading-tight mb-4 transition-all duration-500 ${current === index ? 'text-2xl md:text-4xl' : 'text-xl md:text-2xl'}`}>
+                          {title}
+                        </h3>
+                        {current === index && (
+                          <p className="font-inter text-white/60 text-sm md:text-base leading-relaxed line-clamp-2 max-w-2xl opacity-0 translate-y-4 animate-fade-up">
+                            {excerpt}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Bottom content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-                      <p className="font-montserrat text-[11px] text-white/50 uppercase tracking-widest mb-3">{post.date}</p>
-                      <h3 className={`font-serif italic text-white leading-tight mb-4 transition-all duration-500 ${current === index ? 'text-2xl md:text-4xl' : 'text-xl md:text-2xl'}`}>
-                        {post.title}
-                      </h3>
-                      {current === index && (
-                        <p className="font-inter text-white/60 text-sm md:text-base leading-relaxed line-clamp-2 max-w-2xl opacity-0 translate-y-4 animate-fade-up">
-                          {post.excerpt}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hover line */}
-                  {current === index && (
-                    <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#5cc8bd] group-hover:w-full transition-all duration-700 ease-out" />
-                  )}
-                </article>
-              </Link>
-            </div>
-          ))}
+                    {/* Hover line */}
+                    {current === index && (
+                      <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#5cc8bd] group-hover:w-full transition-all duration-700 ease-out" />
+                    )}
+                  </article>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -154,7 +167,7 @@ const BlogCarousel = () => {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            aria-label={`Стаття ${i + 1}`}
+            aria-label={`${tr('blog.title')} ${i + 1}`}
             className={`transition-all duration-500 rounded-full h-1.5 ${i === current
               ? 'w-10 bg-[#5cc8bd]'
               : 'w-1.5 bg-white/10 hover:bg-white/30'
@@ -166,10 +179,10 @@ const BlogCarousel = () => {
       {/* CTA */}
       <div className="text-center mt-16">
         <Link
-          to="/ua/blog"
+          to={l('/blog')}
           className="inline-flex items-center gap-4 font-montserrat font-bold uppercase tracking-[0.2em] text-[10px] text-white/40 hover:text-[#5cc8bd] transition-all duration-300 group"
         >
-          <span>Всі матеріали блогу</span>
+          <span>{tr('blog.all_posts')}</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
         </Link>
       </div>

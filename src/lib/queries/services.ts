@@ -17,8 +17,9 @@ export interface Service {
   seoDescription?: string;
 }
 
-function mapService(db: DBService): Service {
+function mapService(db: DBService): any {
   return {
+    ...db,
     id: db.id,
     num: db.num,
     title: db.title,
@@ -36,7 +37,7 @@ function mapService(db: DBService): Service {
 export function useServices() {
   return useQuery({
     queryKey: ['services'],
-    queryFn: async (): Promise<Service[]> => {
+    queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -45,7 +46,7 @@ export function useServices() {
       if (error) throw error;
       return (data as DBService[]).map(mapService);
     },
-    placeholderData: staticServices as Service[],
+    placeholderData: staticServices as any[],
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -54,16 +55,16 @@ export function useService(idOrSlug: number | string) {
   const isId = typeof idOrSlug === 'number' || !isNaN(Number(idOrSlug));
   return useQuery({
     queryKey: ['service', idOrSlug],
-    queryFn: async (): Promise<Service | null> => {
+    queryFn: async (): Promise<any | null> => {
       const query = supabase.from('services').select('*');
       if (isId) {
         query.eq('id', Number(idOrSlug));
       } else {
-        query.eq('slug', idOrSlug);
+        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data, error } = await query.single();
-      if (error) {
-        const found = staticServices.find(s => isId ? s.id === Number(idOrSlug) : (s as any).slug === idOrSlug) as Service;
+      const { data } = await query.maybeSingle();
+      if (!data) {
+        const found = staticServices.find(s => isId ? s.id === Number(idOrSlug) : (s as any).slug === idOrSlug) as any;
         return found ?? null;
       }
       const mapped = mapService(data as DBService);
@@ -76,7 +77,7 @@ export function useService(idOrSlug: number | string) {
       }
       return mapped;
     },
-    placeholderData: (staticServices.find(s => isId ? s.id === Number(idOrSlug) : (s as any).slug === idOrSlug) as Service) ?? null,
+    placeholderData: (staticServices.find(s => isId ? s.id === Number(idOrSlug) : (s as any).slug === idOrSlug) as any) ?? null,
     staleTime: 5 * 60 * 1000,
   });
 }

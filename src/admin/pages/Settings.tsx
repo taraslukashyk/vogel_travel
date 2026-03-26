@@ -3,6 +3,7 @@ import { Settings as SettingsIcon, Save, AlertCircle, CheckCircle2, Phone, Mail,
 import { getSettings, updateSettings } from '../../lib/queries/settings';
 import type { SiteSettings } from '../../lib/queries/settings';
 import { sendTelegramNotification } from '../../lib/notifications';
+import LanguageTabs from '../components/LanguageTabs';
 
 
 export default function Settings() {
@@ -11,6 +12,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
 
   useEffect(() => {
     fetchSettings();
@@ -30,6 +32,7 @@ export default function Settings() {
           phone_secondary: '+38 044 469 2882',
           email: 'booking@vogel.travel',
           address: 'Спортивна площа, 1А, Київ',
+          address_en: '1A Sportyvna Square, Kyiv',
           instagram_url: 'https://www.instagram.com/vogel.family.travel/',
           facebook_url: 'https://www.facebook.com/vogelfamilytravel/',
           telegram_url: 'https://t.me/Taras_luka',
@@ -119,6 +122,8 @@ export default function Settings() {
         </div>
       </div>
 
+      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Contact Information */}
         <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -172,16 +177,18 @@ export default function Settings() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Адреса офісу</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Адреса офісу ({activeTab === 'ua' ? 'UA' : 'EN'})
+              </label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                 <input
                   type="text"
-                  name="address"
-                  value={settings?.address || ''}
+                  name={activeTab === 'ua' ? "address" : "address_en"}
+                  value={(activeTab === 'ua' ? settings?.address : settings?.address_en) || ''}
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
-                  placeholder="Вулиця, буд., місто"
+                  placeholder={activeTab === 'ua' ? (settings?.address_en || "Вулиця, буд., місто") : (settings?.address || "Street, bld., city")}
                 />
               </div>
             </div>

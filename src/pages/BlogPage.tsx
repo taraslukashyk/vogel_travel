@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useBlogPosts } from '../lib/queries/blog';
-import type { BlogPost } from '../data/blog';
 import SEOHead from '../components/SEOHead';
 import OptimizedImage from '../components/OptimizedImage';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
+import { useTranslation } from 'react-i18next';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal<T extends HTMLElement>() {
@@ -29,11 +31,20 @@ function useScrollReveal<T extends HTMLElement>() {
 }
 
 /* ─── Single Blog Card ─── */
-const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
+const BlogCard = ({ post, idx }: { post: any; idx: number }) => {
   const ref = useScrollReveal<HTMLAnchorElement>();
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
+  const { t: tr } = useTranslation();
+
+  const title = t(post, 'title');
+  const excerpt = t(post, 'excerpt');
+  const category = t(post, 'category');
+  const slug = t(post, 'slug');
+
   return (
     <Link
-      to={`/ua/blog/${post.slug}`}
+      to={l(`/blog/${slug}`)}
       ref={ref}
       className="opacity-0 translate-y-10 transition-all duration-700 ease-out group"
       style={{ transitionDelay: `${idx * 100}ms` }}
@@ -43,7 +54,7 @@ const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
         <div className="relative aspect-[16/10] overflow-hidden">
           <OptimizedImage
             src={post.image}
-            alt={post.title}
+            alt={t(post, 'image_alt') || title}
             className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
@@ -51,7 +62,7 @@ const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
           
           <div className="absolute top-4 left-4">
             <span className="bg-[#5cc8bd]/80 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-sm shadow-lg">
-              {post.category}
+              {category}
             </span>
           </div>
         </div>
@@ -64,15 +75,15 @@ const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
           </div>
           
           <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 mb-4 line-clamp-2">
-            {post.title}
+            {title}
           </h2>
           
           <p className="text-white/50 text-sm leading-relaxed mb-6 line-clamp-3 font-inter">
-            {post.excerpt}
+            {excerpt}
           </p>
           
           <div className="mt-auto flex items-center gap-2 text-[#5cc8bd] text-xs font-bold uppercase tracking-widest group/link">
-            Читати далі
+            {tr('common.read_more')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
           </div>
         </div>
@@ -86,6 +97,8 @@ const BlogPage = () => {
   const { data: blogPosts = [] } = useBlogPosts();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const location = useLocation();
+  const { currentLang } = useLanguage();
+  const { t: tr } = useTranslation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -100,7 +113,11 @@ const BlogPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead pagePath="/ua/blog" fallbackTitle="Блог — Vogel Family Travel" fallbackDescription="Натхнення, практичні поради та ексклюзивні огляди найкращих місць планети." />
+      <SEOHead 
+        pagePath={`/${currentLang}/blog`} 
+        fallbackTitle={tr('nav.blog') + " — Vogel Family Travel"} 
+        fallbackDescription={tr('blog.subtitle')} 
+      />
 
       {/* Background video */}
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -127,12 +144,12 @@ const BlogPage = () => {
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
             <span className="block text-white/30 text-2xl md:text-3xl mb-2">Vogel Family Travel</span>
             <span className="block text-5xl md:text-7xl lg:text-[88px] text-white">
-              Блог
+              {tr('nav.blog')}
             </span>
           </h1>
 
           <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
-            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">Гортай</span>
+            <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">{currentLang === 'ua' ? 'Гортай' : 'Scroll'}</span>
             <div className="scroll-indicator"></div>
           </div>
         </div>
@@ -147,10 +164,10 @@ const BlogPage = () => {
           <div className="max-w-3xl">
             <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white flex items-center gap-4 mb-6">
               <span className="w-8 h-px bg-white/30" />
-              Мистецтво подорожувати
+              {currentLang === 'ua' ? 'Мистецтво подорожувати' : 'The Art of Travel'}
             </h2>
             <p className="font-inter text-white/70 text-lg leading-relaxed">
-              Ділимося натхненням, практичними порадами та ексклюзивними оглядами найкращих місць планети. Наш блог — це компас у світі розкішного відпочинку та справжніх емоцій.
+              {tr('blog.subtitle')}
             </p>
           </div>
         </div>
@@ -159,7 +176,7 @@ const BlogPage = () => {
       {/* ── Post Grid ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post, idx) => (
+          {blogPosts.map((post: any, idx: number) => (
             <BlogCard key={post.id} post={post} idx={idx} />
           ))}
         </div>
