@@ -1,17 +1,20 @@
 import aboutBg from '../assets/about-bg.png';
 import viktoria from '../assets/viktoria.jpg';
+import OptimizedImage from './OptimizedImage';
 
 const About = () => {
   return (
     <section className="w-full relative py-20 md:py-28 overflow-hidden">
-      {/* Blurred exotic background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center scale-110"
+      {/* Blurred exotic background: using OptimizedImage for lazy loading */}
+      <OptimizedImage
+        src={aboutBg}
+        alt="Background Blur"
+        className="absolute inset-0 w-full h-full object-cover scale-110 pointer-events-none"
         style={{
-          backgroundImage: `url(${aboutBg})`,
           filter: 'blur(8px)',
           WebkitFilter: 'blur(8px)',
         }}
+        sizes="100vw"
       />
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/50" />
@@ -22,7 +25,12 @@ const About = () => {
         {/* Left: Victoria Photo */}
         <div className="w-full lg:w-[380px] xl:w-[440px] flex-shrink-0">
           <div className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-sm overflow-hidden shadow-2xl">
-            <img src={viktoria} alt="Вікторія Шелюжко" className="w-full h-auto block" />
+            <OptimizedImage 
+              src={viktoria} 
+              alt="Вікторія Шелюжко" 
+              className="w-full h-auto block" 
+              sizes="(max-width: 1024px) 100vw, 440px"
+            />
           </div>
         </div>
 

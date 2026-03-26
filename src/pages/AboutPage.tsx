@@ -54,6 +54,7 @@ const AboutPage = () => {
           muted
           loop
           playsInline
+          preload="none"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>

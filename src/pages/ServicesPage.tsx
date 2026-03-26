@@ -4,6 +4,7 @@ import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight } from 'lucide-re
 import { useServices } from '../lib/queries/services';
 import type { Service } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
+import OptimizedImage from '../components/OptimizedImage';
 
 const icons: Record<string, React.ReactNode> = {
   '01': <Building2 className="w-8 h-8" strokeWidth={1} />,
@@ -57,10 +58,11 @@ const ServiceBlock = ({ service, idx }: { service: Service & { icon?: React.Reac
             <span className="absolute top-4 left-5 font-montserrat text-8xl font-extrabold text-white/10 select-none z-10 leading-none">
               {service.num}
             </span>
-            <img
+            <OptimizedImage
               src={service.image}
               alt={service.title}
               className="w-full h-full object-cover opacity-60 group-hover:opacity-75 transition-all duration-700 group-hover:scale-105"
+              sizes="(max-width: 1024px) 100vw, 45vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
           </div>
@@ -141,6 +143,7 @@ const ServicesPage = () => {
           className="w-full h-full object-cover opacity-20"
           src="/about-video.mp4"
           autoPlay muted loop playsInline
+          preload="none"
         />
         {/* Light gradient overlay to brighten the video edges */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
@@ -148,10 +151,11 @@ const ServicesPage = () => {
 
       {/* ── Hero Banner ── */}
       <section className="relative w-full h-[70vh] min-h-[480px] overflow-hidden flex items-end">
-        <img
+        <OptimizedImage
           src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1920"
           alt="Services hero"
           className="absolute inset-0 w-full h-full object-cover opacity-100"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 

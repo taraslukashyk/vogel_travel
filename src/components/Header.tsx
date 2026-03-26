@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
-import ContactModal from './ContactModal';
-import SearchPortal from './SearchPortal';
+
+// Lazy load modals - they are only shown on user interaction
+const ContactModal = lazy(() => import('./ContactModal'));
+const SearchPortal = lazy(() => import('./SearchPortal'));
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -214,17 +216,21 @@ const Header = () => {
         )}
       </header>
 
-      {/* Contact Modal */}
-      <ContactModal
-        isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-      />
-      {/* Search Results Portal */}
-      <SearchPortal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        query={searchQuery}
-      />
+      {/* Contact Modal - lazy loaded, only needed on user interaction */}
+      <Suspense fallback={null}>
+        <ContactModal
+          isOpen={isContactModalOpen}
+          onClose={() => setIsContactModalOpen(false)}
+        />
+      </Suspense>
+      {/* Search Results Portal - lazy loaded */}
+      <Suspense fallback={null}>
+        <SearchPortal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          query={searchQuery}
+        />
+      </Suspense>
     </>
   );
 };

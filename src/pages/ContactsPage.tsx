@@ -159,6 +159,7 @@ ${formData.details || 'не вказано'}
           className="w-full h-full object-cover opacity-20"
           src="/about-video.mp4"
           autoPlay muted loop playsInline
+          preload="none"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
       </div>

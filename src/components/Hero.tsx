@@ -10,7 +10,8 @@ const Hero = () => {
     <>
       <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
       <BirdCursorEffect />
-      {/* Background Video */}
+
+      {/* Background Video — plays on all devices, preload=none means it starts loading only when needed */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
         src="/hero-video.webm"
@@ -18,6 +19,7 @@ const Hero = () => {
         muted
         loop
         playsInline
+        preload="none"
       />
 
       {/* Gradient overlay for text readability */}

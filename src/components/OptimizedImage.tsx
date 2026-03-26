@@ -34,6 +34,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       alt={alt}
       className={className}
       loading="lazy"
+      decoding="async"
       srcSet={srcSet}
       sizes={sizes}
       {...props}

@@ -11,12 +11,21 @@ interface Particle {
   rotationSpeed: number;
 }
 
+// Detect if device is touch-only (mobile/tablet) — no need for cursor effects
+const isTouchDevice = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window);
+
 const BirdCursorEffect: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
   const lastMousePos = useRef({ x: 0, y: 0 });
+  const animationRef = useRef<number>(0);
 
   useEffect(() => {
+    // Skip entirely on touch/mobile devices — no cursor to track
+    if (isTouchDevice()) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -38,7 +47,7 @@ const BirdCursorEffect: React.FC = () => {
         x,
         y,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1, // Slight upwards tendency
+        vy: Math.sin(angle) * speed - 1,
         life: 1.0,
         size: 8 + Math.random() * 8,
         rotation: Math.random() * Math.PI * 2,
@@ -53,14 +62,9 @@ const BirdCursorEffect: React.FC = () => {
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation);
       ctx.globalAlpha = p.life;
-
-      // Scaling factor: the SVG path is approx 250 units high, let's normalize to p.size
       const scale = p.size / 250;
       ctx.scale(scale, scale);
-
-      // Adjust center since path starts at 0,0 which is one end of the shape
-      ctx.translate(0, -125); // Center it roughly on its axis
-
+      ctx.translate(0, -125);
       ctx.fillStyle = '#5cc8bd';
       ctx.fill(birdPath);
       ctx.restore();
@@ -68,41 +72,41 @@ const BirdCursorEffect: React.FC = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       for (let i = particles.current.length - 1; i >= 0; i--) {
         const p = particles.current[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.life -= 0.015; // Fade out speed
+        p.life -= 0.015;
         p.rotation += p.rotationSpeed;
-
         if (p.life <= 0) {
           particles.current.splice(i, 1);
         } else {
           drawBird(ctx, p);
         }
       }
-
-      requestAnimationFrame(animate);
+      animationRef.current = requestAnimationFrame(animate);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
       const dist = Math.hypot(e.clientX - lastMousePos.current.x, e.clientY - lastMousePos.current.y);
-      if (dist > 15) { // Spawn particle every 15px of movement
+      if (dist > 15) {
         createParticle(e.clientX, e.clientY);
         lastMousePos.current = { x: e.clientX, y: e.clientY };
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    const animationId = requestAnimationFrame(animate);
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(animationRef.current);
     };
   }, []);
+
+  // Don't even render canvas on touch devices
+  if (typeof window !== 'undefined' && isTouchDevice()) return null;
 
   return (
     <canvas

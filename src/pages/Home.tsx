@@ -7,6 +7,7 @@ import FinalQuote from '../components/FinalQuote'
 import BlogCarousel from '../components/BlogCarousel'
 import SEOHead from '../components/SEOHead'
 import bgImage from '../assets/about-bg.png'
+import OptimizedImage from '../components/OptimizedImage'
 
 const Home = () => {
   return (
@@ -27,11 +28,15 @@ const Home = () => {
         </div>
       </section>
 
-      <div 
-        className="relative w-full overflow-hidden bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgImage})` }}
-      >
-        <div className="absolute inset-0 bg-black/85 backdrop-blur-[10px] pointer-events-none" />
+      <div className="relative w-full overflow-hidden">
+        {/* Background image replaces backgroundImage style for lazy loading support */}
+        <OptimizedImage 
+          src={bgImage} 
+          alt="Background Decor" 
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/85 pointer-events-none" />
         <div className="relative z-10 w-full flex flex-col">
           <Advantages />
           <FeaturedTours />

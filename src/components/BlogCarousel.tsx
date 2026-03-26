@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useBlogPosts } from '../lib/queries/blog';
+import OptimizedImage from './OptimizedImage';
 
 const BlogCarousel = () => {
   const { data: blogPosts = [] } = useBlogPosts();
@@ -106,11 +107,12 @@ const BlogCarousel = () => {
                 <article className={`relative rounded-sm overflow-hidden transition-shadow duration-500 ${current === index ? 'shadow-2xl shadow-black/60' : ''}`}>
                   {/* Image */}
                   <div className="relative h-[320px] md:h-[480px] overflow-hidden">
-                    <img
+                    <OptimizedImage
                       src={post.image}
                       alt={post.title}
                       className={`w-full h-full object-cover transition-transform duration-1000 ${current === index ? 'group-hover:scale-105' : ''}`}
                       draggable={false}
+                      sizes="min(85vw, 840px)"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 

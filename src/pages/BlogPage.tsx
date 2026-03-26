@@ -4,6 +4,7 @@ import { Calendar, ArrowRight } from 'lucide-react';
 import { useBlogPosts } from '../lib/queries/blog';
 import type { BlogPost } from '../data/blog';
 import SEOHead from '../components/SEOHead';
+import OptimizedImage from '../components/OptimizedImage';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal<T extends HTMLElement>() {
@@ -40,10 +41,11 @@ const BlogCard = ({ post, idx }: { post: BlogPost; idx: number }) => {
       <article className="bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden">
-          <img
+          <OptimizedImage
             src={post.image}
             alt={post.title}
             className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
           
@@ -106,16 +108,18 @@ const BlogPage = () => {
           className="w-full h-full object-cover opacity-20"
           src="/about-video.mp4"
           autoPlay muted loop playsInline
+          preload="none"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
       </div>
 
       {/* ── Hero Banner ── */}
       <section className="relative w-full h-[60vh] min-h-[480px] overflow-hidden flex items-end">
-        <img
+        <OptimizedImage
           src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=1920"
           alt="Blog hero"
           className="absolute inset-0 w-full h-full object-cover"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 

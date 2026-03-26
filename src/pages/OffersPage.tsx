@@ -4,6 +4,7 @@ import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
 import { useOffers } from '../lib/queries/offers';
 import type { Offer } from '../data/offers';
 import SEOHead from '../components/SEOHead';
+import OptimizedImage from '../components/OptimizedImage';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -40,10 +41,11 @@ const OfferCard = ({ offer, idx }: { offer: Offer; idx: number }) => {
       <article className="group bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
         {/* Image */}
         <div className="relative h-56 overflow-hidden">
-          <img
+          <OptimizedImage
             src={offer.image}
             alt={offer.hotel}
             className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -149,6 +151,7 @@ const OffersPage = () => {
           className="w-full h-full object-cover opacity-20"
           src="/about-video.mp4"
           autoPlay muted loop playsInline
+          preload="none"
         />
         {/* Light gradient overlay to brighten the video edges */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
@@ -156,10 +159,11 @@ const OffersPage = () => {
 
       {/* ── Hero Banner ── */}
       <section className="relative w-full h-[70vh] min-h-[480px] overflow-hidden flex items-end">
-        <img
+        <OptimizedImage
           src="https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&q=80&w=1920"
           alt="Offers hero"
           className="absolute inset-0 w-full h-full object-cover opacity-100"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
