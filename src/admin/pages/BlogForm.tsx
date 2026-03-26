@@ -145,10 +145,11 @@ export default function BlogForm() {
   const isUA = activeTab === 'ua';
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">{isNew ? 'Новий пост' : 'Редагувати пост'}</h1>
-
-      <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+    <div className="min-h-screen pb-20 relative">
+      <div className="sticky top-[64px] lg:top-0 z-[25] bg-gray-50/95 backdrop-blur-sm -mx-4 lg:-mx-6 px-4 lg:px-6 pt-4 pb-1 mb-6 border-b border-gray-200/50 shadow-sm transition-all duration-300">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">{isNew ? 'Новий пост' : 'Редагувати пост'}</h1>
+        <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+      </div>
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
         {/* Секція 1: Картка (Прев'ю) */}

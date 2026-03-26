@@ -157,7 +157,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main content - Compensate for fixed sidebar width */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isCollapsed ? 'lg:pl-[72px]' : 'lg:pl-64'}`}>
+      <div className={`flex-1 flex flex-col min-w-0 transition-[padding] duration-300 ${isCollapsed ? 'lg:pl-[72px]' : 'lg:pl-64'}`}>
         <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between lg:hidden shadow-sm z-30 sticky top-0">
           <button onClick={() => setSidebarOpen(true)} className="text-gray-600 p-2 -ml-2 rounded-lg hover:bg-gray-100">
             <Menu size={24} />
