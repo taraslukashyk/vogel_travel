@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { translateText } from '../utils/translate';
+import { slugify } from '../../lib/utils/slugify';
 
 export function useFormTranslation(form: any, setForm: (updater: (prev: any) => any) => void, isUA: boolean) {
   const [isTranslating, setIsTranslating] = useState(false);
@@ -8,17 +9,24 @@ export function useFormTranslation(form: any, setForm: (updater: (prev: any) => 
     const from = isUA ? 'en' : 'uk';
     const to = isUA ? 'uk' : 'en';
     
-    const sourceField = isUA ? `${field}_en` : field.replace('_en', '');
+    // Determine source field based on current field
+    const sourceField = field.endsWith('_en') ? field.replace('_en', '') : `${field}_en`;
     const sourceValue = form[sourceField] as string;
     
     if (!sourceValue) return;
     
     const translated = await translateText(sourceValue, from, to);
     
-    setForm(prev => ({
-      ...prev,
-      [field]: translated
-    }));
+    setForm(prev => {
+      const updates: any = { [field]: translated };
+      
+      // If we just translated TO English title-like field, update slug
+      if (to === 'en' && (field === 'title_en' || field === 'hotel_en' || field === 'name_en')) {
+        updates.slug = slugify(translated);
+      }
+      
+      return { ...prev, ...updates };
+    });
   };
 
   const handleTranslateAll = async (fields: string[]) => {
@@ -37,8 +45,16 @@ export function useFormTranslation(form: any, setForm: (updater: (prev: any) => 
         
         if (sourceValue && typeof sourceValue === 'string' && sourceValue.trim()) {
           const translated = await translateText(sourceValue, from, to);
-          setForm(prev => ({ ...prev, [targetField]: translated }));
-          // Small delay to allow UI update and avoid rate limit
+          
+          setForm(prev => {
+            const updates: any = { [targetField]: translated };
+            // Auto-update slug if we are translating TO English title
+            if (to === 'en' && (targetField === 'title_en' || targetField === 'hotel_en' || targetField === 'name_en')) {
+              updates.slug = slugify(translated);
+            }
+            return { ...prev, ...updates };
+          });
+          
           await new Promise(r => setTimeout(r, 400));
         }
       }
@@ -49,34 +65,29 @@ export function useFormTranslation(form: any, setForm: (updater: (prev: any) => 
       const sections = form[sourceSectionsKey];
 
       if (sections && Array.isArray(sections)) {
-        const translatedSections = JSON.parse(JSON.stringify(sections)); // Deep clone
+        const translatedSections = JSON.parse(JSON.stringify(sections));
         
         for (let i = 0; i < translatedSections.length; i++) {
           const section = translatedSections[i];
           
-          // Translate title if exists
           if (section.title && typeof section.title === 'string') {
             section.title = await translateText(section.title, from, to);
-            // Update UI periodically
             setForm(prev => ({ ...prev, [sectionsKey]: [...translatedSections] }));
             await new Promise(r => setTimeout(r, 400));
           }
           
-          // Translate alt if exists (for images)
           if (section.alt && typeof section.alt === 'string') {
             section.alt = await translateText(section.alt, from, to);
             setForm(prev => ({ ...prev, [sectionsKey]: [...translatedSections] }));
             await new Promise(r => setTimeout(r, 400));
           }
 
-          // Translate content (can be string or array for lists)
           if (section.content) {
             if (typeof section.content === 'string' && section.content.trim()) {
               section.content = await translateText(section.content, from, to);
               setForm(prev => ({ ...prev, [sectionsKey]: [...translatedSections] }));
               await new Promise(r => setTimeout(r, 400));
             } else if (Array.isArray(section.content)) {
-              // It's a list section
               for (let j = 0; j < section.content.length; j++) {
                 if (typeof section.content[j] === 'string' && section.content[j].trim()) {
                   section.content[j] = await translateText(section.content[j], from, to);
