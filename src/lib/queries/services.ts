@@ -23,14 +23,22 @@ function mapService(db: DBService): any {
     id: db.id,
     num: db.num,
     title: db.title,
+    title_en: db.title_en,
     description: db.description,
+    description_en: db.description_en,
     image: db.image,
     type: db.type,
+    type_en: db.type_en,
     items: db.items && db.items.length > 0 ? db.items : undefined,
+    items_en: db.items_en && db.items_en.length > 0 ? db.items_en : undefined,
     sections: db.sections && db.sections.length > 0 ? db.sections : undefined,
+    sections_en: db.sections_en && db.sections_en.length > 0 ? db.sections_en : undefined,
     slug: db.slug || String(db.id),
+    slug_en: db.slug_en,
     seoTitle: db.seo_title ?? undefined,
+    seoTitle_en: db.seo_title_en ?? undefined,
     seoDescription: db.seo_description ?? undefined,
+    seoDescription_en: db.seo_description_en ?? undefined,
   };
 }
 

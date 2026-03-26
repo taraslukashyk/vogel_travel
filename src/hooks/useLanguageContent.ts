@@ -15,8 +15,10 @@ export function useLanguageContent() {
     if (isEn) {
       const enKey = `${field}_en`;
       if (enKey in obj && obj[enKey]) {
+        console.log(`[Translation] Found EN for ${field}:`, obj[enKey]);
         return obj[enKey];
       }
+      console.log(`[Translation] MISSING EN for ${field}, keys available:`, Object.keys(obj));
     }
     
     return obj[field] || '';
