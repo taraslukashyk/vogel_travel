@@ -3,6 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { useOffer } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
+import ContactModal from '../components/ContactModal';
 
 const OfferDetailPage = () => {
   const { slug } = useParams();
@@ -12,6 +13,7 @@ const OfferDetailPage = () => {
   const [currentImg, setCurrentImg] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   // the required distance between touchStart and touchEnd to be considered a swipe
   const minSwipeDistance = 50;
@@ -198,7 +200,10 @@ const OfferDetailPage = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-row gap-3 font-montserrat">
-                <button className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3">
+                <button 
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                >
                   <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
                   <span>Замовити у менеджера</span>
                 </button>
@@ -212,6 +217,12 @@ const OfferDetailPage = () => {
             </div>
           </div>
         </div>
+
+        <ContactModal 
+          isOpen={isContactModalOpen}
+          onClose={() => setIsContactModalOpen(false)}
+          initialMessage={`Цікавить пропозиція: ${offer?.hotel} (${offer?.location})`}
+        />
       </section>
 
       {/* ── Text Details Section ── */}
@@ -365,8 +376,5 @@ const OfferDetailPage = () => {
     </main>
   );
 };
-
-// ... X icon used in lightbox should be imported from lucide-react if not already ...
-
 
 export default OfferDetailPage;

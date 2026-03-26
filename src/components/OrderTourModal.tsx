@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react';
-import { X, ArrowRight, Send, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { X, ArrowRight, Send, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useOffers } from '../lib/queries/offers';
 import { Link } from 'react-router-dom';
+import { sendTelegramNotification } from '../lib/notifications';
 
 interface OrderTourModalProps {
   isOpen: boolean;
@@ -11,6 +12,11 @@ interface OrderTourModalProps {
 const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
   const { data: offers = [] } = useOffers();
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const [contact, setContact] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -19,6 +25,34 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
       const scrollTo = direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount;
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contact) return;
+
+    setIsSubmitting(true);
+    
+    const telegramMessage = `
+<b>📩 Новий запит на тур (Модальне вікно)</b>
+
+<b>👤 Контакт:</b> ${contact}
+<b>💬 Побажання:</b> ${message || 'Без повідомлення'}
+    `.trim();
+
+    const success = await sendTelegramNotification(telegramMessage);
+    
+    if (success) {
+      setIsSuccess(true);
+      setContact('');
+      setMessage('');
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+      }, 3000);
+    }
+    
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -43,7 +77,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
         onClick={onClose}
       />
 
-      {/* Modal Container: Full Width, 2/3 Height */}
+      {/* Modal Container: Full Width, 85vh Height */}
       <div className={`relative w-full h-[90vh] md:h-[85vh] max-h-[900px] min-h-[500px] md:min-h-[600px] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-8 pointer-events-none'}`}>
 
         {/* Modal Window Panel: Glassmorphism */}
@@ -124,54 +158,69 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
             </div>
 
             {/* Bottom Contact Section */}
-            <div className="mt-auto border-t border-white/10 pt-2 md:pt-4 flex flex-col md:flex-row items-center gap-6 md:gap-8">
-              <div className="flex-shrink-0 text-center md:text-left hidden lg:block">
-                <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-1">
-                  Ваше побажання
-                </h3>
-                <p className="text-white/30 text-[10px] uppercase font-bold tracking-[0.15em]">
-                  Залиште контакти для консультації
-                </p>
-              </div>
-
-              <form className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full items-end">
-                {/* Contact Input */}
-                <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                  <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                    Контактні дані
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Номер, e-mail, або нікнейм у соцмережі"
-                    className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
-                    required
-                  />
+            <div className="mt-auto border-t border-white/10 pt-4 md:pt-6">
+              {isSuccess ? (
+                <div className="flex flex-col items-center justify-center py-4 animate-in fade-in zoom-in duration-500">
+                  <CheckCircle2 className="text-[#5cc8bd] w-12 h-12 mb-3" />
+                  <h3 className="text-xl font-montserrat font-bold text-white mb-1 uppercase tracking-widest">Дякуємо!</h3>
+                  <p className="text-white/40 text-sm">Ваш запит отримано.</p>
                 </div>
-
-                {/* Comment Textarea */}
-                <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                  <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                    Коментар (де ви хочете відпочити?)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ваше повідомлення..."
-                    className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-xs md:text-[12px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 py-4 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-auto lg:h-[58px]"
-                >
-                  <div className="flex items-center justify-center gap-3">
-                    <span>Надіслати</span>
-                    <Send className="w-4 h-4" />
+              ) : (
+                <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+                  <div className="flex-shrink-0 text-center md:text-left hidden lg:block">
+                    <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-1">
+                      Ваше побажання
+                    </h3>
+                    <p className="text-white/30 text-[10px] uppercase font-bold tracking-[0.15em]">
+                      Залиште контакти для консультації
+                    </p>
                   </div>
-                </button>
-              </form>
+
+                  <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full items-end">
+                    <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                      <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                        Контактні дані
+                      </label>
+                      <input
+                        type="text"
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                        placeholder="Номер, e-mail, або нікнейм у соцмережі"
+                        className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
+                        required
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                      <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                        Коментар (де ви хочете відпочити?)
+                      </label>
+                      <input
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Ваше повідомлення..."
+                        className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-xs md:text-[12px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 py-4 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-auto lg:h-[58px] disabled:opacity-50"
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        <span>{isSubmitting ? 'Надсилаємо...' : 'Надіслати'}</span>
+                        <Send className="w-4 h-4" />
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              )}
             </div>
+
 
             <div className="mt-6 text-center md:text-right flex-shrink-0">
               <Link
