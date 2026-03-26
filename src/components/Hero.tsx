@@ -13,7 +13,7 @@ const Hero = () => {
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="hero-video.webm"
+        src="/vogel_travel/hero-video.webm"
         autoPlay
         muted
         loop
