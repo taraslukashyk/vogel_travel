@@ -12,23 +12,40 @@ import { Plus, FileText, Trash2, GripVertical } from 'lucide-react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useFormTranslation } from '../hooks/useFormTranslation';
+import { translateText } from '../utils/translate';
 import type { DBOffer, DBSection } from '../../lib/types';
 
 interface GalleryImage {
   image: string;
   caption: string;
+  caption_en: string;
   alt: string;
+  alt_en: string;
   _id: string;
 }
 
-function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
+function SortableGalleryItem({ item, index, onUpdate, onRemove, isUA }: {
   item: GalleryImage;
   index: number;
-  onUpdate: (index: number, updates: Partial<{ image: string; caption: string; alt: string }>) => void;
+  onUpdate: (index: number, updates: Partial<GalleryImage>) => void;
   onRemove: (index: number) => void;
+  isUA: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item._id });
   const style = { transform: CSS.Transform.toString(transform), transition };
+
+  const handleTranslate = async (field: 'caption' | 'alt') => {
+    const from = isUA ? 'en' : 'uk';
+    const to = isUA ? 'uk' : 'en';
+    const sourceField = isUA ? (field === 'caption' ? 'caption_en' : 'alt_en') : field;
+    const sourceValue = item[sourceField as keyof GalleryImage] as string;
+    
+    if (!sourceValue) return;
+    
+    const translated = await translateText(sourceValue, from, to);
+    onUpdate(index, { [isUA ? field : `${field}_en`]: translated });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="flex flex-col sm:flex-row gap-3 items-start bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
@@ -50,21 +67,29 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove }: {
 
       <div className="flex-1 w-full space-y-2">
         <ImageUploader value={item.image} onChange={(url) => onUpdate(index, { image: url })} folder="offers" />
-        <FormField label="Підпис до фото" tooltip="Текст, який відображатиметься під фото у галереї.">
+        <FormField 
+          label="Підпис до фото" 
+          tooltip="Текст, який відображатиметься під фото у галереї."
+          onTranslate={() => handleTranslate('caption')}
+        >
           <input
             type="text"
-            value={item.caption}
-            onChange={(e) => onUpdate(index, { caption: e.target.value })}
-            placeholder="Наприклад: Вид з вікна"
+            value={isUA ? item.caption : item.caption_en}
+            onChange={(e) => onUpdate(index, { [isUA ? 'caption' : 'caption_en']: e.target.value })}
+            placeholder={isUA ? item.caption_en : item.caption}
             className={inputClass}
           />
         </FormField>
-        <FormField label="Alt текст" tooltip="Опис зображення для SEO (допомагає пошуковим системам зрозуміти що на фото).">
+        <FormField 
+          label="Alt текст" 
+          tooltip="Опис зображення для SEO (допомагає пошуковим системам зрозуміти що на фото)."
+          onTranslate={() => handleTranslate('alt')}
+        >
           <input
             type="text"
-            value={item.alt}
-            onChange={(e) => onUpdate(index, { alt: e.target.value })}
-            placeholder="Опис зображення для SEO"
+            value={isUA ? item.alt : item.alt_en}
+            onChange={(e) => onUpdate(index, { [isUA ? 'alt' : 'alt_en']: e.target.value })}
+            placeholder={isUA ? item.alt_en : item.alt}
             className={inputClass + ' text-xs'}
           />
         </FormField>
@@ -118,7 +143,7 @@ export default function OfferForm() {
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyOffer);
   const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
-  const [gallery, setGallery] = useState<{ image: string; caption: string; alt: string }[]>([]);
+  const [gallery, setGallery] = useState<GalleryImage[]>([]);
   
   const gallerySensors = useSensors(
     useSensor(PointerSensor, {
@@ -177,20 +202,30 @@ export default function OfferForm() {
         is_published: existing.is_published,
       });
 
-      setGallery(imageSections.map(s => ({
-        image: s.image || '',
-        caption: typeof s.content === 'string' ? s.content : '',
-        alt: s.alt || '',
-      })));
+      setGallery(imageSections.map((s, idx) => {
+        const enSection = (existing.sections_en || []).filter(sec => sec.type === 'image')[idx];
+        return {
+          image: s.image || '',
+          caption: typeof s.content === 'string' ? s.content : '',
+          caption_en: typeof enSection?.content === 'string' ? enSection.content : '',
+          alt: s.alt || '',
+          alt_en: enSection?.alt || '',
+          _id: `gal-${idx}`
+        };
+      }));
     }
   }, [existing]);
 
   const buildSections = (target: 'ua' | 'en'): DBSection[] => {
     const textSections = target === 'ua' ? form.sections : form.sections_en;
-    // Gallery is shared currently, but we could translate captions if needed
     const imageSections: DBSection[] = gallery
       .filter(g => g.image)
-      .map(g => ({ type: 'image' as const, content: g.caption, image: g.image, alt: g.alt || undefined }));
+      .map(g => ({ 
+        type: 'image' as const, 
+        content: target === 'ua' ? g.caption : g.caption_en, 
+        image: g.image, 
+        alt: (target === 'ua' ? g.alt : g.alt_en) || undefined 
+      }));
     return [...textSections, ...imageSections];
   };
 
@@ -198,6 +233,10 @@ export default function OfferForm() {
     mutationFn: async () => {
       const payload = { 
         ...form, 
+        book_by_en: form.book_by,
+        stay_from_en: form.stay_from,
+        stay_to_en: form.stay_to,
+        discount_en: form.discount,
         slug_en: form.slug, // Sync English slug with Ukrainian
         sections: buildSections('ua'),
         sections_en: buildSections('en')
@@ -239,24 +278,23 @@ export default function OfferForm() {
   };
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
-
+  const isUA = activeTab === 'ua';
+  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
   // Gallery helpers
-  const addGalleryImage = () => setGallery(prev => [...prev, { image: '', caption: '', alt: '' }]);
-  const updateGalleryImage = (index: number, updates: Partial<{ image: string; caption: string; alt: string }>) => {
+  const addGalleryImage = () => setGallery(prev => [...prev, { image: '', caption: '', caption_en: '', alt: '', alt_en: '', _id: `gal-${prev.length}` }]);
+  const updateGalleryImage = (index: number, updates: Partial<GalleryImage>) => {
     setGallery(prev => prev.map((g, i) => i === index ? { ...g, ...updates } : g));
   };
   const removeGalleryImage = (index: number) => setGallery(prev => prev.filter((_, i) => i !== index));
   const handleGalleryDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const items = gallery.map((g, i) => ({ ...g, _id: `gal-${i}` }));
+      const items = gallery;
       const oldIndex = items.findIndex(g => g._id === active.id);
       const newIndex = items.findIndex(g => g._id === over.id);
       setGallery(arrayMove(gallery, oldIndex, newIndex));
     }
   };
-
-  const isUA = activeTab === 'ua';
 
   return (
     <div className="min-h-screen pb-20 relative">
@@ -274,7 +312,7 @@ export default function OfferForm() {
           </div>
           <div className="p-5 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField label={isUA ? "Готель" : "Hotel Name"} required={isUA}>
+              <FormField label={isUA ? "Готель" : "Hotel Name"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'hotel' : 'hotel_en')}>
                 <input
                   className={inputClass}
                   value={isUA ? form.hotel : form.hotel_en}
@@ -301,7 +339,7 @@ export default function OfferForm() {
                 <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/offers/<strong>{form.slug || 'slug'}</strong></p>
               </FormField>
 
-              <FormField label={isUA ? "Локація" : "Location"} required={isUA}>
+               <FormField label={isUA ? "Локація" : "Location"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'location' : 'location_en')}>
                 <input
                   className={inputClass}
                   value={isUA ? form.location : form.location_en}
@@ -318,17 +356,17 @@ export default function OfferForm() {
                   placeholder={isUA ? form.location_en : form.location}
                 />
               </FormField>
-              <FormField label={isUA ? "Бронювання до" : "Book by"} required={isUA}>
-                <input className={inputClass} value={isUA ? form.book_by : form.book_by_en} onChange={(e) => set(isUA ? 'book_by' : 'book_by_en', e.target.value)} placeholder={isUA ? form.book_by_en : form.book_by || "12/04"} required={isUA} />
+              <FormField label={isUA ? "Бронювання до" : "Book by"} required>
+                <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
               </FormField>
               <FormField label={isUA ? "Знижка" : "Discount"}>
-                <input className={inputClass} value={isUA ? form.discount : form.discount_en} onChange={(e) => set(isUA ? 'discount' : 'discount_en', e.target.value)} placeholder={isUA ? form.discount_en : form.discount || "-60%"} />
+                <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
               </FormField>
-              <FormField label={isUA ? "Перебування з" : "Stay from"} required={isUA}>
-                <input className={inputClass} value={isUA ? form.stay_from : form.stay_from_en} onChange={(e) => set(isUA ? 'stay_from' : 'stay_from_en', e.target.value)} placeholder={isUA ? form.stay_from_en : form.stay_from || "05/05"} required={isUA} />
+              <FormField label={isUA ? "Перебування з" : "Stay from"} required>
+                <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
               </FormField>
-              <FormField label={isUA ? "Перебування до" : "Stay to"} required={isUA}>
-                <input className={inputClass} value={isUA ? form.stay_to : form.stay_to_en} onChange={(e) => set(isUA ? 'stay_to' : 'stay_to_en', e.target.value)} placeholder={isUA ? form.stay_to_en : form.stay_to || "30/09"} required={isUA} />
+              <FormField label={isUA ? "Перебування до" : "Stay to"} required>
+                <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
               </FormField>
             </div>
 
@@ -336,7 +374,7 @@ export default function OfferForm() {
             <FormField label="Зображення" required tooltip="Головне фото пропозиції.">
               <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="offers" />
             </FormField>
-            <FormField label={isUA ? "Alt текст головного фото" : "Main Image Alt Text"}>
+            <FormField label={isUA ? "Alt текст головного фото" : "Main Image Alt Text"} onTranslate={() => handleTranslate(isUA ? 'image_alt' : 'image_alt_en')}>
               <input
                 type="text"
                 className={inputClass}
@@ -346,7 +384,7 @@ export default function OfferForm() {
               />
             </FormField>
 
-            <FormField label={isUA ? "Короткий опис" : "Short Description"}>
+            <FormField label={isUA ? "Короткий опис" : "Short Description"} onTranslate={() => handleTranslate(isUA ? 'description' : 'description_en')}>
               <textarea 
                 className={inputClass} 
                 rows={2} 
@@ -370,6 +408,7 @@ export default function OfferForm() {
               <SectionEditor 
                 sections={isUA ? form.sections : form.sections_en} 
                 placeholderSections={isUA ? form.sections_en : form.sections}
+                isUA={isUA}
                 onChange={(s) => {
                   if (isUA) {
                     setForm(prev => ({ 
@@ -400,6 +439,7 @@ export default function OfferForm() {
                         index={index}
                         onUpdate={updateGalleryImage}
                         onRemove={removeGalleryImage}
+                        isUA={isUA}
                       />
                     ))}
                   </SortableContext>
@@ -422,7 +462,7 @@ export default function OfferForm() {
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             🔍 SEO ({isUA ? 'UA' : 'EN'})
           </h3>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" onTranslate={() => handleTranslate(isUA ? 'seo_title' : 'seo_title_en')}>
             <input 
               className={inputClass} 
               value={isUA ? form.seo_title : form.seo_title_en} 
@@ -430,7 +470,7 @@ export default function OfferForm() {
               placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" onTranslate={() => handleTranslate(isUA ? 'seo_description' : 'seo_description_en')}>
             <textarea 
               className={inputClass} 
               rows={2} 

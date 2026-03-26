@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 import { ChevronDown, Plus, Minus, Globe } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -41,6 +42,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
   const zoomTaskRef = useRef<number | null>(null);
   const isInteractingRef = useRef(false);
   const navigate = useNavigate();
+  const { t, l, i18n } = useLanguage();
 
   const activePartners = (partners && partners.length > 0) ? partners : FALLBACK_PARTNERS;
 
@@ -79,13 +81,13 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
               : `<div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-inner" style="background-color: ${p.color};">${p.tag}</div>`
             }
             <span class="text-white text-xs font-bold tracking-widest uppercase text-center whitespace-nowrap">${p.name}</span>
-            <span class="text-[#5cc8bd] text-[9px] font-bold uppercase tracking-widest">Детальніше →</span>
+            <span class="text-[#5cc8bd] text-[9px] font-bold uppercase tracking-widest">${t('common.details')} →</span>
           </div>
         </div>
       `;
 
       el.addEventListener('click', () => {
-        navigate(`/ua/partners/${p.slug || p.id}`);
+        navigate(l(`/partners/${p.slug || p.id}`));
       });
 
       new maplibregl.Marker({ element: el })
@@ -155,7 +157,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
         map.setZoom(newZoom);
       } else {
         if (instructionRef.current && !isMobile) {
-          instructionRef.current.innerText = 'Використовуйте Ctrl + Scroll для наближення';
+          instructionRef.current.innerText = t('partners.map_zoom_ctrl_instruction');
           instructionRef.current.classList.remove('opacity-0');
           instructionRef.current.classList.add('animate-pulse');
           setTimeout(() => {
@@ -180,7 +182,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
       mapContainer.current?.removeEventListener('wheel', handleWheel);
       map.remove();
     };
-  }, [activePartners, navigate]);
+  }, [activePartners, navigate, i18n.language, t, l]);
 
   const startContinuousZoom = (direction: 'in' | 'out') => {
     if (!mapRef.current) return;
@@ -219,7 +221,7 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
 
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
         <span ref={instructionRef} className="text-[#5cc8bd] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 pointer-events-none">
-          Змініть масштаб щоб зануритись
+          {t('partners.map_zoom_instruction')}
         </span>
         <button
           ref={arrowRef}

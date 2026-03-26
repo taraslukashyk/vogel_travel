@@ -8,6 +8,7 @@ import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
 import { syncSections } from '../utils/sectionSync';
 import LanguageTabs from '../components/LanguageTabs';
+import { useFormTranslation } from '../hooks/useFormTranslation';
 import { Plus, Trash2 } from 'lucide-react';
 import type { DBService, DBServiceItem, DBSection } from '../../lib/types';
 
@@ -144,6 +145,7 @@ export default function ServiceForm() {
   };
 
   const isUA = activeTab === 'ua';
+  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
 
   return (
     <div className="min-h-screen pb-20 relative">
@@ -157,7 +159,7 @@ export default function ServiceForm() {
           <FormField label="Номер" required tooltip="Порядковий номер для сортування.">
             <input className={inputClass} value={form.num} onChange={(e) => set('num', e.target.value)} placeholder="01" required />
           </FormField>
-          <FormField label={isUA ? "Тип" : "Type"}>
+          <FormField label={isUA ? "Тип" : "Type"} onTranslate={() => handleTranslate(isUA ? 'type' : 'type_en')}>
             <input 
               className={inputClass} 
               value={isUA ? form.type : form.type_en} 
@@ -167,7 +169,7 @@ export default function ServiceForm() {
           </FormField>
         </div>
 
-        <FormField label={isUA ? "Назва" : "Title"} required={isUA}>
+        <FormField label={isUA ? "Назва" : "Title"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'title' : 'title_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.title : form.title_en} 
@@ -197,7 +199,7 @@ export default function ServiceForm() {
         <FormField label="Зображення" required>
           <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="services" />
         </FormField>
-        <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"}>
+        <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"} onTranslate={() => handleTranslate(isUA ? 'image_alt' : 'image_alt_en')}>
           <input
             type="text"
             className={inputClass}
@@ -207,7 +209,7 @@ export default function ServiceForm() {
           />
         </FormField>
 
-        <FormField label={isUA ? "Опис" : "Description"} required={isUA}>
+        <FormField label={isUA ? "Опис" : "Description"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'description' : 'description_en')}>
           <textarea 
             className={inputClass} 
             rows={4} 
@@ -271,6 +273,7 @@ export default function ServiceForm() {
           <SectionEditor
             sections={isUA ? form.sections : form.sections_en}
             placeholderSections={isUA ? form.sections_en : form.sections}
+            isUA={isUA}
             onChange={(s) => {
               if (isUA) {
                 setForm(prev => ({ 
@@ -292,7 +295,7 @@ export default function ServiceForm() {
         {/* SEO */}
         <div className="border-t border-gray-100 pt-6 space-y-4">
           <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO ({isUA ? 'UA' : 'EN'})</h2>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" onTranslate={() => handleTranslate(isUA ? 'seo_title' : 'seo_title_en')}>
             <input
               className={inputClass}
               value={isUA ? form.seo_title : form.seo_title_en}
@@ -300,7 +303,7 @@ export default function ServiceForm() {
               placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" onTranslate={() => handleTranslate(isUA ? 'seo_description' : 'seo_description_en')}>
             <textarea
               className={inputClass}
               rows={3}

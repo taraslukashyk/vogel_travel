@@ -8,11 +8,14 @@ export interface BlogSection {
 export interface BlogPost {
   id: number;
   title: string;
+  title_en?: string;
   excerpt: string;
+  excerpt_en?: string;
   date: string;
   image: string;
   imageAlt?: string;
   category: string;
+  category_en?: string;
   audio?: string;
   sections: BlogSection[];
   slug: string;
@@ -24,10 +27,13 @@ export const blogPosts: BlogPost[] = [
   {
     id: 1,
     title: 'Острови Фіджі — Серце Південного Тихого океану',
+    title_en: 'Fiji Islands — The Heart of the South Pacific',
     excerpt: 'Все про архіпелаг із понад 300 островів: від клімату та правил в\u2019їзду до розкішних курортів Маманузи та Ясави.',
+    excerpt_en: 'All about the archipelago of over 300 islands: from climate and entry rules to the luxury resorts of Mamanuca and Yasawa.',
     date: '12.03.2026',
     image: 'https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?auto=format&fit=crop&w=1200&q=80',
     category: 'Фіджі',
+    category_en: 'Fiji',
     audio: '/audio/fiji_review.wav',
     slug: 'fiji-islands',
     sections: [
@@ -100,10 +106,13 @@ export const blogPosts: BlogPost[] = [
   {
     id: 2,
     title: 'Домініканська Республіка — Карибська Мрія',
+    title_en: 'Dominican Republic — a Caribbean Dream',
     excerpt: 'Від запальних ритмів бачати до білосніжних пляжів Баваро: все про відпочинок у Домінікані.',
+    excerpt_en: 'From the fiery rhythms of bachata to the pristine white beaches of Bavaro: everything about vacationing in the Dominican Republic.',
     date: '10.03.2026',
     image: 'https://images.unsplash.com/photo-1468581264429-2548ef9eb732?auto=format&fit=crop&w=1200&q=80',
     category: 'Домінікана',
+    category_en: 'Dominicana',
     audio: '/audio/dominicana_review.wav',
     slug: 'dominican-republic',
     sections: [
@@ -173,10 +182,13 @@ export const blogPosts: BlogPost[] = [
   {
     id: 3,
     title: 'Маврикій — Перлина Індійського океану',
+    title_en: 'Mauritius — Pearl of the Indian Ocean',
     excerpt: 'Острів, з якого скопіювали рай: вишукані готелі, семикольорові піски та гора Ле-Морн.',
+    excerpt_en: 'The island from which paradise was copied: exquisite hotels, seven-colored sands, and Le Morne mountain.',
     date: '08.03.2026',
     image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80',
     category: 'Маврикій',
+    category_en: 'Mauritius',
     audio: '/audio/mauritius_review.wav',
     slug: 'mauritius',
     sections: [

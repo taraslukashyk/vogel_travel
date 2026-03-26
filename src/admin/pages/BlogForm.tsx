@@ -10,6 +10,7 @@ import AudioUploader from '../components/AudioUploader';
 import SectionEditor from '../components/SectionEditor';
 import { syncSections } from '../utils/sectionSync';
 import LanguageTabs from '../components/LanguageTabs';
+import { useFormTranslation } from '../hooks/useFormTranslation';
 import type { DBBlogPost, DBSection } from '../../lib/types';
 
 const emptyPost = {
@@ -141,8 +142,8 @@ export default function BlogForm() {
   };
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
-
   const isUA = activeTab === 'ua';
+  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
 
   return (
     <div className="min-h-screen pb-20 relative">
@@ -159,7 +160,7 @@ export default function BlogForm() {
             <h2 className="font-semibold text-gray-800 text-base">Інформація для картки ({isUA ? 'UA' : 'EN'})</h2>
           </div>
           <div className="p-5 space-y-6">
-            <FormField label={isUA ? "Заголовок" : "Title"} required={isUA}>
+            <FormField label={isUA ? "Заголовок" : "Title"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'title' : 'title_en')}>
               <input 
                 className={inputClass} 
                 value={isUA ? form.title : form.title_en} 
@@ -187,7 +188,7 @@ export default function BlogForm() {
             </FormField>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField label={isUA ? "Категорія" : "Category"} required={isUA}>
+              <FormField label={isUA ? "Категорія" : "Category"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'category' : 'category_en')}>
                 <input 
                   className={inputClass} 
                   value={isUA ? form.category : form.category_en} 
@@ -205,7 +206,7 @@ export default function BlogForm() {
               <FormField label="Зображення" required>
                 <ImageUploader value={form.image} onChange={(url) => set('image', url)} folder="blog" />
               </FormField>
-              <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"}>
+              <FormField label={isUA ? "Alt текст фото" : "Image Alt Text"} onTranslate={() => handleTranslate(isUA ? 'image_alt' : 'image_alt_en')}>
                 <input
                   type="text"
                   value={isUA ? form.image_alt : form.image_alt_en}
@@ -215,7 +216,7 @@ export default function BlogForm() {
                 />
               </FormField>
 
-            <FormField label={isUA ? "Короткий опис (excerpt)" : "Short Excerpt"} required={isUA}>
+            <FormField label={isUA ? "Короткий опис (excerpt)" : "Short Excerpt"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'excerpt' : 'excerpt_en')}>
               <textarea 
                 className={inputClass} 
                 rows={2} 
@@ -244,6 +245,7 @@ export default function BlogForm() {
               <SectionEditor 
                 sections={isUA ? form.sections : form.sections_en} 
                 placeholderSections={isUA ? form.sections_en : form.sections}
+                isUA={isUA}
                 onChange={(s) => {
                   if (isUA) {
                     setForm(prev => ({ 
@@ -269,7 +271,7 @@ export default function BlogForm() {
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             🔍 SEO ({isUA ? 'UA' : 'EN'})
           </h3>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" onTranslate={() => handleTranslate(isUA ? 'seo_title' : 'seo_title_en')}>
             <input 
               className={inputClass} 
               value={isUA ? form.seo_title : form.seo_title_en} 
@@ -277,7 +279,7 @@ export default function BlogForm() {
               placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" onTranslate={() => handleTranslate(isUA ? 'seo_description' : 'seo_description_en')}>
             <textarea 
               className={inputClass} 
               rows={2} 

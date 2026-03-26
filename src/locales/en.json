@@ -100,11 +100,29 @@
   "partners": {
     "title": "Our Partners",
     "become_title": "Become Our Partner",
-    "apply": "APPLY NOW",
+    "apply": "Work with us",
     "not_found": "Partner not found",
     "back_to_partners": "Back to partners",
     "all_partners": "All partners",
-    "map_cta": "Our partners on the world map"
+    "map_cta": "Our partners on the world map",
+    "map_zoom_instruction": "Hold Ctrl to zoom map",
+    "map_zoom_ctrl_instruction": "Use ctrl + scroll to zoom the map"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search...",
+    "results_for": "Search results for:",
+    "no_results": "Unfortunately, nothing was found for your request.",
+    "no_results_subtitle": "But you can always go to the relevant tab and choose what interests you:",
+    "footer_text": "Vogel Family Travel — Look for the best",
+    "categories": {
+      "offers": "Offers",
+      "services": "Services",
+      "blog": "Blog"
+    },
+    "labels": {
+      "discount": "Discount"
+    }
   },
   "blog": {
     "title": "Blog",
@@ -193,6 +211,14 @@
     "socials": "Socials",
     "lang_ua": "UKRAINIAN",
     "lang_en": "ENGLISH"
+  },
+  "advantages": {
+    "item1_title": "Turnkey Trip Control",
+    "item1_text": "We handle all decisions, logistics, and route changes — from the first idea to the return home.",
+    "item2_title": "Access to Privileges",
+    "item2_text": "Thanks to direct contracts, our clients receive better accommodation terms, upgrades, and special rates.",
+    "item3_title": "Personal Support",
+    "item3_text": "Your itinerary is managed by a specific manager who has the authority to make quick decisions in any situation."
   },
   "modals": {
     "order_tour": {

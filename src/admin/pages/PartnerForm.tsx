@@ -8,6 +8,7 @@ import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
 import { syncSections } from '../utils/sectionSync';
 import LanguageTabs from '../components/LanguageTabs';
+import { useFormTranslation } from '../hooks/useFormTranslation';
 import type { DBPartner, DBSection } from '../../lib/types';
 
 const emptyPartner = {
@@ -153,8 +154,8 @@ export default function PartnerForm() {
   });
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
-
   const isUA = activeTab === 'ua';
+  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
 
   return (
     <div className="min-h-screen pb-20 relative">
@@ -166,7 +167,7 @@ export default function PartnerForm() {
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
 
         {/* Basic Info */}
-        <FormField label={isUA ? "Назва партнера" : "Partner Name"} required={isUA}>
+        <FormField label={isUA ? "Назва партнера" : "Partner Name"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'name' : 'name_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.name : form.name_en} 
@@ -194,7 +195,7 @@ export default function PartnerForm() {
         </FormField>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={isUA ? "Категорія" : "Category"} required={isUA}>
+          <FormField label={isUA ? "Категорія" : "Category"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'category' : 'category_en')}>
             <input 
               className={inputClass} 
               value={isUA ? form.category : form.category_en} 
@@ -203,7 +204,7 @@ export default function PartnerForm() {
               placeholder={isUA ? form.category_en : form.category}
             />
           </FormField>
-          <FormField label={isUA ? "Локація" : "Location"} required={isUA}>
+          <FormField label={isUA ? "Локація" : "Location"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'location' : 'location_en')}>
             <input 
               className={inputClass} 
               value={isUA ? form.location : form.location_en} 
@@ -230,7 +231,7 @@ export default function PartnerForm() {
             folder="partners/images"
           />
         </FormField>
-        <FormField label={isUA ? "Alt-текст для фото" : "Image Alt Text"}>
+        <FormField label={isUA ? "Alt-текст для фото" : "Image Alt Text"} onTranslate={() => handleTranslate(isUA ? 'image_alt' : 'image_alt_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.image_alt : form.image_alt_en} 
@@ -239,7 +240,7 @@ export default function PartnerForm() {
           />
         </FormField>
 
-        <FormField label={isUA ? "Опис (вступний текст)" : "Intro Description"}>
+        <FormField label={isUA ? "Опис (вступний текст)" : "Intro Description"} onTranslate={() => handleTranslate(isUA ? 'description' : 'description_en')}>
           <textarea 
             className={inputClass} 
             rows={4} 
@@ -305,6 +306,7 @@ export default function PartnerForm() {
           <SectionEditor
             sections={isUA ? form.sections : form.sections_en}
             placeholderSections={isUA ? form.sections_en : form.sections}
+            isUA={isUA}
             onChange={(s) => {
               if (isUA) {
                 setForm(prev => ({ 
@@ -326,7 +328,7 @@ export default function PartnerForm() {
         {/* SEO */}
         <div className="border-t border-gray-100 pt-6 space-y-4">
           <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">SEO ({isUA ? 'UA' : 'EN'})</h2>
-          <FormField label="SEO Title">
+          <FormField label="SEO Title" onTranslate={() => handleTranslate(isUA ? 'seo_title' : 'seo_title_en')}>
             <input
               className={inputClass}
               value={isUA ? form.seo_title : form.seo_title_en}
@@ -334,7 +336,7 @@ export default function PartnerForm() {
               placeholder={isUA ? form.seo_title_en : form.seo_title}
             />
           </FormField>
-          <FormField label="SEO Description">
+          <FormField label="SEO Description" onTranslate={() => handleTranslate(isUA ? 'seo_description' : 'seo_description_en')}>
             <textarea
               className={inputClass}
               rows={3}

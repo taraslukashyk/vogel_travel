@@ -4,6 +4,9 @@ import { Search, MapPin, Building2, BookOpen, ArrowRight, X } from 'lucide-react
 import { useOffers } from '../lib/queries/offers';
 import { useServices } from '../lib/queries/services';
 import { useBlogPosts } from '../lib/queries/blog';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../hooks/useLanguage';
+import { useLanguageContent } from '../hooks/useLanguageContent';
 
 interface SearchPortalProps {
   isOpen: boolean;
@@ -15,6 +18,9 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
   const { data: offers = [] } = useOffers();
   const { data: services = [] } = useServices();
   const { data: blogPosts = [] } = useBlogPosts();
+  const { t: tr } = useTranslation();
+  const { l } = useLanguage();
+  const { t } = useLanguageContent();
 
   const filteredResults = useMemo(() => {
     if (!query || query.length < 2) return null;
@@ -22,13 +28,13 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
     const q = query.toLowerCase();
 
     const matchedOffers = offers.filter(
-      (o) => o.hotel.toLowerCase().includes(q) || o.location.toLowerCase().includes(q)
+      (o) => t(o, 'hotel').toLowerCase().includes(q) || t(o, 'location').toLowerCase().includes(q)
     );
     const matchedServices = services.filter(
-      (s) => s.title.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q)
+      (s) => t(s, 'title').toLowerCase().includes(q) || t(s, 'description')?.toLowerCase().includes(q)
     );
     const matchedBlog = blogPosts.filter(
-      (b) => b.title.toLowerCase().includes(q) || b.excerpt.toLowerCase().includes(q)
+      (b) => t(b, 'title').toLowerCase().includes(q) || t(b, 'excerpt').toLowerCase().includes(q)
     );
 
     return {
@@ -57,7 +63,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
           <div className="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Search className="w-5 h-5 text-[#5cc8bd]" strokeWidth={2} />
-              <span className="text-white/40 font-montserrat text-xs uppercase tracking-widest">Результати пошуку для:</span>
+              <span className="text-white/40 font-montserrat text-xs uppercase tracking-widest">{tr('search.results_for')}</span>
               <span className="text-white font-bold tracking-wider italic">"{query}"</span>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white">
@@ -69,13 +75,13 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
             {!filteredResults || filteredResults.total === 0 ? (
               <div className="p-12 text-center">
                 <p className="text-white/60 font-inter text-lg mb-8 leading-relaxed">
-                  На жаль, за вашим запитом нічого не знайдено.<br/>
-                  <span className="text-white/30 text-sm">Але ви завжди можете перейти на відповідну вкладку та обрати саме те, що вас цікавить:</span>
+                  {tr('search.no_results')}<br/>
+                  <span className="text-white/30 text-sm">{tr('search.no_results_subtitle')}</span>
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Link to="/ua/offers" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Пропозиції</Link>
-                  <Link to="/ua/services" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Сервіси</Link>
-                  <Link to="/ua/blog" onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">Блог</Link>
+                  <Link to={l('/offers')} onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">{tr('search.categories.offers')}</Link>
+                  <Link to={l('/services')} onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">{tr('search.categories.services')}</Link>
+                  <Link to={l('/blog')} onClick={onClose} className="border border-white/10 px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-all">{tr('search.categories.blog')}</Link>
                 </div>
               </div>
             ) : (
@@ -86,18 +92,18 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                   <div>
                     <div className="flex items-center gap-3 mb-6">
                       <MapPin className="w-4 h-4 text-[#5cc8bd]" />
-                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">Пропозиції</h3>
+                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">{tr('search.categories.offers')}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredResults.offers.map(offer => (
-                        <Link key={offer.id} to={`/ua/offers/${offer.slug}`} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
+                        <Link key={offer.id} to={l(`/offers/${t(offer, 'slug')}`)} onClick={onClose} className="group p-4 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all flex gap-4">
                           <div className="w-20 h-20 shrink-0 rounded-sm overflow-hidden">
-                            <img src={offer.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={offer.hotel} />
+                            <img src={offer.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={t(offer, 'hotel')} />
                           </div>
                           <div>
-                            <h4 className="text-white font-bold text-sm mb-1 group-hover:text-[#5cc8bd] transition-colors">{offer.hotel}</h4>
-                            <p className="text-white/40 text-[11px] uppercase tracking-widest">{offer.location}</p>
-                            {offer.discount && <span className="inline-block mt-2 text-[#5cc8bd] text-[10px] font-bold">Знижка {offer.discount}</span>}
+                            <h4 className="text-white font-bold text-sm mb-1 group-hover:text-[#5cc8bd] transition-colors">{t(offer, 'hotel')}</h4>
+                            <p className="text-white/40 text-[11px] uppercase tracking-widest">{t(offer, 'location')}</p>
+                            {t(offer, 'discount') && <span className="inline-block mt-2 text-[#5cc8bd] text-[10px] font-bold">{tr('search.labels.discount')} {t(offer, 'discount')}</span>}
                           </div>
                         </Link>
                       ))}
@@ -110,15 +116,15 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                   <div>
                     <div className="flex items-center gap-3 mb-6">
                       <Building2 className="w-4 h-4 text-[#5cc8bd]" />
-                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">Сервіси</h3>
+                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">{tr('search.categories.services')}</h3>
                     </div>
                     <div className="space-y-4">
                       {filteredResults.services.map(service => (
-                        <Link key={service.id} to={`/ua/services/${service.slug}`} onClick={onClose} className="group block p-5 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all">
+                        <Link key={service.id} to={l(`/services/${t(service, 'slug')}`)} onClick={onClose} className="group block p-5 bg-white/5 border border-white/5 hover:border-[#5cc8bd]/30 rounded-sm transition-all">
                           <div className="flex justify-between items-center">
                             <div>
-                              <h4 className="text-white font-bold text-base mb-2 group-hover:text-[#5cc8bd] transition-colors">{service.title}</h4>
-                              <p className="text-white/40 text-sm leading-relaxed line-clamp-2 max-w-2xl">{service.description}</p>
+                              <h4 className="text-white font-bold text-base mb-2 group-hover:text-[#5cc8bd] transition-colors">{t(service, 'title')}</h4>
+                              <p className="text-white/40 text-sm leading-relaxed line-clamp-2 max-w-2xl">{t(service, 'description')}</p>
                             </div>
                             <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] group-hover:translate-x-2 transition-all" />
                           </div>
@@ -133,21 +139,27 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
                   <div>
                     <div className="flex items-center gap-3 mb-6">
                       <BookOpen className="w-4 h-4 text-[#5cc8bd]" />
-                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">Блог</h3>
+                      <h3 className="text-[#5cc8bd] font-montserrat text-[11px] font-black uppercase tracking-[0.2em]">{tr('search.categories.blog')}</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {filteredResults.blog.map(post => (
-                        <Link key={post.id} to={`/ua/blog/${post.slug}`} onClick={onClose} className="group flex flex-col gap-4">
-                          <div className="aspect-video w-full rounded-sm overflow-hidden bg-white/5">
-                            <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={post.title} />
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-bold text-[#5cc8bd] uppercase tracking-widest">{post.category}</span>
-                            <h4 className="text-white font-bold text-base mt-2 mb-2 group-hover:text-[#5cc8bd] transition-colors">{post.title}</h4>
-                            <p className="text-white/40 text-xs leading-relaxed line-clamp-2">{post.excerpt}</p>
-                          </div>
-                        </Link>
-                      ))}
+                      {filteredResults.blog.map(post => {
+                        const title = t(post, 'title');
+                        const excerpt = t(post, 'excerpt');
+                        const category = t(post, 'category');
+                        const slug = t(post, 'slug');
+                        return (
+                          <Link key={post.id} to={l(`/blog/${slug}`)} onClick={onClose} className="group flex flex-col gap-4">
+                            <div className="aspect-video w-full rounded-sm overflow-hidden bg-white/5">
+                              <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={title} />
+                            </div>
+                            <div>
+                              <span className="text-[10px] font-bold text-[#5cc8bd] uppercase tracking-widest">{category}</span>
+                              <h4 className="text-white font-bold text-base mt-2 mb-2 group-hover:text-[#5cc8bd] transition-colors">{title}</h4>
+                              <p className="text-white/40 text-xs leading-relaxed line-clamp-2">{excerpt}</p>
+                            </div>
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -156,7 +168,7 @@ const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) =
           </div>
           
           <div className="p-4 bg-white/5 text-center">
-            <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">Vogel Family Travel — Шукайте найкраще</span>
+            <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] font-montserrat">{tr('search.footer_text')}</span>
           </div>
         </div>
       </div>

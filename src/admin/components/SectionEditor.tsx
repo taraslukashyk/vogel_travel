@@ -1,27 +1,60 @@
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Languages } from 'lucide-react';
 import RichTextEditor from './RichTextEditor';
 import ImageUploader from './ImageUploader';
 import FormField, { inputClass } from './FormField';
+import { translateText } from '../utils/translate';
 import type { DBSection } from '../../lib/types';
 
 interface SectionEditorProps {
   sections: DBSection[];
   placeholderSections?: DBSection[];
   onChange: (sections: DBSection[]) => void;
+  isUA: boolean;
 }
 
-function SortableSection({ section, index, onUpdate, onRemove, placeholderSection }: {
+function SortableSection({ section, index, onUpdate, onRemove, placeholderSection, isUA }: {
   section: DBSection & { _id: string };
   index: number;
   onUpdate: (index: number, section: DBSection) => void;
   onRemove: (index: number) => void;
   placeholderSection?: DBSection;
+  isUA: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: section._id });
   const style = { transform: CSS.Transform.toString(transform), transition };
+
+  const handleTranslate = async (field: 'title' | 'content' | 'alt') => {
+    // Current tab language
+    const currentLang = isUA ? 'uk' : 'en';
+    const otherLang = isUA ? 'en' : 'uk';
+    
+    // In SectionEditor, we want to pull from the OTHER language version
+    // placeholderSection contains the data from the other tab
+    if (!placeholderSection) return;
+    
+    let sourceValue = '';
+    if (field === 'title') sourceValue = placeholderSection.title || '';
+    if (field === 'alt') sourceValue = placeholderSection.alt || '';
+    if (field === 'content') {
+      if (typeof placeholderSection.content === 'string') {
+        sourceValue = placeholderSection.content;
+      } else if (Array.isArray(placeholderSection.content)) {
+        // Handle list pull
+        const translatedItems = await Promise.all(
+          placeholderSection.content.map(item => item ? translateText(item, otherLang, currentLang) : Promise.resolve(''))
+        );
+        onUpdate(index, { ...section, content: translatedItems });
+        return;
+      }
+    }
+
+    if (!sourceValue) return;
+    const translated = await translateText(sourceValue, otherLang, currentLang);
+    onUpdate(index, { ...section, [field]: translated });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3 shadow-sm">
@@ -55,21 +88,31 @@ function SortableSection({ section, index, onUpdate, onRemove, placeholderSectio
       </div>
 
       {(section.type === 'text' || section.type === 'list') && (
-        <input
-          type="text"
-          value={section.title || ''}
-          onChange={(e) => onUpdate(index, { ...section, title: e.target.value })}
-          placeholder={placeholderSection?.title || "Заголовок секції (необов'язково)"}
-          className={inputClass}
-        />
+        <FormField 
+          label="Заголовок секції" 
+          onTranslate={() => handleTranslate('title')}
+        >
+          <input
+            type="text"
+            value={section.title || ''}
+            onChange={(e) => onUpdate(index, { ...section, title: e.target.value })}
+            placeholder={placeholderSection?.title || "Заголовок секції (необов'язково)"}
+            className={inputClass}
+          />
+        </FormField>
       )}
 
       {section.type === 'text' && (
-        <RichTextEditor
-          value={typeof section.content === 'string' ? section.content : ''}
-          onChange={(val) => onUpdate(index, { ...section, content: val })}
-          placeholder={typeof placeholderSection?.content === 'string' ? placeholderSection.content : "Вміст секції..."}
-        />
+        <FormField 
+          label="Вміст секції" 
+          onTranslate={() => handleTranslate('content')}
+        >
+          <RichTextEditor
+            value={typeof section.content === 'string' ? section.content : ''}
+            onChange={(val) => onUpdate(index, { ...section, content: val })}
+            placeholder={typeof placeholderSection?.content === 'string' ? placeholderSection.content : "Вміст секції..."}
+          />
+        </FormField>
       )}
 
       {section.type === 'image' && (
@@ -79,7 +122,11 @@ function SortableSection({ section, index, onUpdate, onRemove, placeholderSectio
             onChange={(url) => onUpdate(index, { ...section, image: url })}
             folder="sections"
           />
-          <FormField label="Підпис до зображення" tooltip="Текст під картинкою (не обов'язково)">
+          <FormField 
+            label="Підпис до зображення" 
+            tooltip="Текст під картинкою (не обов'язково)"
+            onTranslate={() => handleTranslate('content')}
+          >
             <input
               type="text"
               value={typeof section.content === 'string' ? section.content : ''}
@@ -88,7 +135,11 @@ function SortableSection({ section, index, onUpdate, onRemove, placeholderSectio
               className={inputClass}
             />
           </FormField>
-          <FormField label="Alt текст" tooltip="Опис зображення для SEO та людей з порушенням зору.">
+          <FormField 
+            label="Alt текст" 
+            tooltip="Опис зображення для SEO та людей з порушенням зору."
+            onTranslate={() => handleTranslate('alt')}
+          >
             <input
               type="text"
               value={section.alt || ''}
@@ -103,18 +154,36 @@ function SortableSection({ section, index, onUpdate, onRemove, placeholderSectio
       {section.type === 'list' && (
         <div className="space-y-2">
           {(Array.isArray(section.content) ? section.content : []).map((item, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) => {
-                  const newContent = [...(section.content as string[])];
-                  newContent[i] = e.target.value;
-                  onUpdate(index, { ...section, content: newContent });
-                }}
-                className={inputClass}
-                placeholder={(placeholderSection?.content as string[])?.[i] || `Пункт ${i + 1}`}
-              />
+            <div key={i} className="flex gap-2 group relative">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => {
+                    const newContent = [...(section.content as string[])];
+                    newContent[i] = e.target.value;
+                    onUpdate(index, { ...section, content: newContent });
+                  }}
+                  className={inputClass + ' pr-20'}
+                  placeholder={(placeholderSection?.content as string[])?.[i] || `Пункт ${i + 1}`}
+                />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const otherValue = (placeholderSection?.content as string[])?.[i];
+                    if (!otherValue) return;
+                    const from = isUA ? 'en' : 'uk';
+                    const to = isUA ? 'uk' : 'en';
+                    const translated = await translateText(otherValue, from, to);
+                    const newContent = [...(section.content as string[])];
+                    newContent[i] = translated;
+                    onUpdate(index, { ...section, content: newContent });
+                  }}
+                  className="absolute right-2 top-1.5 flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-teal-600 hover:bg-teal-50 rounded border border-teal-200 transition-colors"
+                >
+                  <Languages size={10} /> Перекласти
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -143,7 +212,7 @@ function SortableSection({ section, index, onUpdate, onRemove, placeholderSectio
   );
 }
 
-export default function SectionEditor({ sections, placeholderSections, onChange }: SectionEditorProps) {
+export default function SectionEditor({ sections, placeholderSections, onChange, isUA }: SectionEditorProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -191,6 +260,7 @@ export default function SectionEditor({ sections, placeholderSections, onChange 
               onUpdate={handleUpdate}
               onRemove={handleRemove}
               placeholderSection={placeholderSections?.[index]}
+              isUA={isUA}
             />
           ))}
         </SortableContext>

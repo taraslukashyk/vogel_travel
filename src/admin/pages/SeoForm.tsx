@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import LanguageTabs from '../components/LanguageTabs';
+import { useFormTranslation } from '../hooks/useFormTranslation';
 import type { DBSeoMeta } from '../../lib/types';
 
 const emptySeo = {
@@ -109,9 +110,9 @@ export default function SeoForm() {
     }
   };
 
-  const set = (key: string, value: string) => setForm(prev => ({ ...prev, [key]: value }));
-
+  const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
   const isUA = activeTab === 'ua';
+  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
 
   return (
     <div className="min-h-screen pb-20 relative">
@@ -129,7 +130,7 @@ export default function SeoForm() {
           </p>
         </div>
 
-        <FormField label={isUA ? "Title" : "Title EN"}>
+        <FormField label={isUA ? "Title" : "Title EN"} onTranslate={() => handleTranslate(isUA ? 'title' : 'title_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.title : form.title_en} 
@@ -139,7 +140,7 @@ export default function SeoForm() {
           <p className="text-xs text-gray-400 mt-1">{(isUA ? form.title : form.title_en).length}/60 символів</p>
         </FormField>
 
-        <FormField label={isUA ? "Meta Description" : "Meta Description EN"}>
+        <FormField label={isUA ? "Meta Description" : "Meta Description EN"} onTranslate={() => handleTranslate(isUA ? 'description' : 'description_en')}>
           <textarea 
             className={inputClass} 
             rows={3} 
@@ -150,7 +151,7 @@ export default function SeoForm() {
           <p className="text-xs text-gray-400 mt-1">{(isUA ? form.description : form.description_en).length}/160 символів</p>
         </FormField>
 
-        <FormField label={isUA ? "Keywords" : "Keywords EN"}>
+        <FormField label={isUA ? "Keywords" : "Keywords EN"} onTranslate={() => handleTranslate(isUA ? 'keywords' : 'keywords_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.keywords : form.keywords_en} 
@@ -166,7 +167,7 @@ export default function SeoForm() {
         <hr className="border-gray-200" />
         <h2 className="text-lg font-semibold text-gray-700">Open Graph ({isUA ? 'UA' : 'EN'})</h2>
 
-        <FormField label={isUA ? "OG Title" : "OG Title EN"}>
+        <FormField label={isUA ? "OG Title" : "OG Title EN"} onTranslate={() => handleTranslate(isUA ? 'og_title' : 'og_title_en')}>
           <input 
             className={inputClass} 
             value={isUA ? form.og_title : form.og_title_en} 
@@ -175,7 +176,7 @@ export default function SeoForm() {
           />
         </FormField>
 
-        <FormField label={isUA ? "OG Description" : "OG Description EN"}>
+        <FormField label={isUA ? "OG Description" : "OG Description EN"} onTranslate={() => handleTranslate(isUA ? 'og_description' : 'og_description_en')}>
           <textarea 
             className={inputClass} 
             rows={2} 
