@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { DBBlogPost } from '../types';
 import { blogPosts as staticPosts } from '../../data/blog';
-import type { BlogPost } from '../../data/blog';
 
 function mapPost(db: DBBlogPost): any {
   return {
@@ -44,15 +43,27 @@ export function useBlogPost(idOrSlug: number | string) {
   return useQuery({
     queryKey: ['blog_posts', idOrSlug],
     queryFn: async (): Promise<any | null> => {
-      const query = supabase.from('blog_posts').select('*');
-      
+      let query = supabase.from('blog_posts').select('*');
       if (isId) {
-        query.eq('id', Number(idOrSlug));
+        query = query.eq('id', Number(idOrSlug));
       } else {
-        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
+        query = query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
       
-      const { data } = await query.maybeSingle();
+      const { data, error } = await query.maybeSingle();
+      
+      // If we got an error about missing column, retry without slug_en
+      if (error && error.message.includes('slug_en')) {
+        const fallbackQuery = supabase.from('blog_posts').select('*');
+        if (isId) {
+          fallbackQuery.eq('id', Number(idOrSlug));
+        } else {
+          fallbackQuery.eq('slug', idOrSlug);
+        }
+        const { data: retryData } = await fallbackQuery.maybeSingle();
+        if (retryData) return mapPost(retryData as DBBlogPost);
+      }
+
       if (!data) {
         return (staticPosts.find(p => isId ? p.id === Number(idOrSlug) : p.slug === idOrSlug) ?? null);
       };

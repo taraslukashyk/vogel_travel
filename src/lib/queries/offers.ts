@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { DBOffer } from '../types';
 import { offers as staticOffers } from '../../data/offers';
-import type { Offer } from '../../data/offers';
 
 function mapOffer(db: DBOffer): any {
   return {
@@ -46,13 +45,26 @@ export function useOffer(idOrSlug: number | string) {
   return useQuery({
     queryKey: ['offers', idOrSlug],
     queryFn: async (): Promise<any | null> => {
-      const query = supabase.from('offers').select('*');
+      let query = supabase.from('offers').select('*');
       if (isId) {
-        query.eq('id', Number(idOrSlug));
+        query = query.eq('id', Number(idOrSlug));
       } else {
-        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
+        query = query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data } = await query.maybeSingle();
+      
+      const { data, error } = await query.maybeSingle();
+      
+      // If we got an error about missing column, retry without slug_en
+      if (error && error.message.includes('slug_en')) {
+        const fallbackQuery = supabase.from('offers').select('*');
+        if (isId) {
+          fallbackQuery.eq('id', Number(idOrSlug));
+        } else {
+          fallbackQuery.eq('slug', idOrSlug);
+        }
+        const { data: retryData } = await fallbackQuery.maybeSingle();
+        if (retryData) return mapOffer(retryData as DBOffer);
+      }
       
       if (!data) {
         return (staticOffers.find(o => isId ? o.id === Number(idOrSlug) : (o as any).slug === idOrSlug) ?? null);

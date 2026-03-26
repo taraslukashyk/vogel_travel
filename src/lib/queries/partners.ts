@@ -70,13 +70,26 @@ export function usePartner(idOrSlug: number | string) {
   return useQuery({
     queryKey: ['partner', idOrSlug],
     queryFn: async (): Promise<any | null> => {
-      const query = supabase.from('partners').select('*');
+      let query = supabase.from('partners').select('*');
       if (isId) {
-        query.eq('id', Number(idOrSlug));
+        query = query.eq('id', Number(idOrSlug));
       } else {
-        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
+        query = query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data } = await query.maybeSingle();
+      
+      const { data, error } = await query.maybeSingle();
+      
+      // If we got an error about missing column, retry without slug_en
+      if (error && error.message.includes('slug_en')) {
+        const fallbackQuery = supabase.from('partners').select('*');
+        if (isId) {
+          fallbackQuery.eq('id', Number(idOrSlug));
+        } else {
+          fallbackQuery.eq('slug', idOrSlug);
+        }
+        const { data: retryData } = await fallbackQuery.maybeSingle();
+        if (retryData) return mapPartner(retryData as DBPartner);
+      }
       // Table may not exist yet or record not found — fall back to static data
       if (!data) {
         const found = staticPartners.find(p => isId ? p.id === Number(idOrSlug) : (p as any).slug === idOrSlug) as any;

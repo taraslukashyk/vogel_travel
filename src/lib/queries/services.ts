@@ -56,13 +56,27 @@ export function useService(idOrSlug: number | string) {
   return useQuery({
     queryKey: ['service', idOrSlug],
     queryFn: async (): Promise<any | null> => {
-      const query = supabase.from('services').select('*');
+      let query = supabase.from('services').select('*');
       if (isId) {
-        query.eq('id', Number(idOrSlug));
+        query = query.eq('id', Number(idOrSlug));
       } else {
-        query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
+        query = query.or(`slug.eq."${idOrSlug}",slug_en.eq."${idOrSlug}"`);
       }
-      const { data } = await query.maybeSingle();
+      
+      const { data, error } = await query.maybeSingle();
+      
+      // If we got an error about missing column, retry without slug_en
+      if (error && error.message.includes('slug_en')) {
+        const fallbackQuery = supabase.from('services').select('*');
+        if (isId) {
+          fallbackQuery.eq('id', Number(idOrSlug));
+        } else {
+          fallbackQuery.eq('slug', idOrSlug);
+        }
+        const { data: retryData } = await fallbackQuery.maybeSingle();
+        if (retryData) return mapService(retryData as DBService);
+      }
+
       if (!data) {
         const found = staticServices.find(s => isId ? s.id === Number(idOrSlug) : (s as any).slug === idOrSlug) as any;
         return found ?? null;
