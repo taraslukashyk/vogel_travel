@@ -1,0 +1,1 @@
+import{a as i}from"./index-DJvib7ka.js";function o(){const{currentLang:s}=i(),e=s==="en";return{t:(n,r)=>{if(!n)return"";if(e){const t=`${r}_en`;if(t in n&&n[t])return n[t]}return n[r]||""},sections:n=>n?e&&n.sections_en&&n.sections_en.length>0?n.sections_en:n.sections||[]:[],currentLang:s,isEn:e}}export{o as u};
