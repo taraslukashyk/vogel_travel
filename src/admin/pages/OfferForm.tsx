@@ -284,7 +284,16 @@ export default function OfferForm() {
 
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
   const isUA = activeTab === 'ua';
-  const { handleTranslate } = useFormTranslation(form, setForm, isUA);
+  const { handleTranslate, handleTranslateAll, isTranslating } = useFormTranslation(form, setForm, isUA);
+
+  const translatableFields = [
+    'hotel',
+    'location',
+    'description',
+    'image_alt',
+    'seo_title',
+    'seo_description'
+  ];
   // Gallery helpers
   const addGalleryImage = () => setGallery(prev => [...prev, { image: '', caption: '', caption_en: '', alt: '', alt_en: '', _id: `gal-${prev.length}` }]);
   const updateGalleryImage = (index: number, updates: Partial<GalleryImage>) => {
@@ -305,7 +314,12 @@ export default function OfferForm() {
     <div className="min-h-screen pb-20 relative">
       <div className="sticky top-[64px] lg:top-0 z-[25] bg-gray-50/95 backdrop-blur-sm -mx-4 lg:-mx-6 px-4 lg:px-6 pt-4 pb-1 mb-6 border-b border-gray-200/50 shadow-sm transition-all duration-300">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">{isNew ? 'Нова пропозиція' : 'Редагувати пропозицію'}</h1>
-        <LanguageTabs activeTab={activeTab} onChange={setActiveTab} />
+        <LanguageTabs 
+          activeTab={activeTab} 
+          onChange={setActiveTab} 
+          onTranslateAll={() => handleTranslateAll(translatableFields)}
+          isTranslating={isTranslating}
+        />
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-6 max-w-3xl">
