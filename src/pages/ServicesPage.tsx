@@ -139,7 +139,7 @@ const ServicesPage = () => {
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
-          src="/vogel_travel/about-video.mp4"
+          src="/about-video.mp4"
           autoPlay muted loop playsInline
         />
         {/* Light gradient overlay to brighten the video edges */}

@@ -135,7 +135,7 @@ export default function BlogForm() {
                 placeholder="yak-vibrati-tur"
                 required
               />
-              <p className="text-xs text-gray-400 mt-1">vogel_travel/blog/<strong>{form.slug || 'slug'}</strong></p>
+              <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/blog/<strong>{form.slug || 'slug'}</strong></p>
             </FormField>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

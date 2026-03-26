@@ -156,7 +156,7 @@ export default function PartnerForm() {
             placeholder="four-seasons"
             required
           />
-          <p className="text-xs text-gray-400 mt-1">vogel_travel/partners/<strong>{form.slug || 'slug'}</strong></p>
+          <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/partners/<strong>{form.slug || 'slug'}</strong></p>
         </FormField>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

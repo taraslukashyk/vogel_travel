@@ -144,7 +144,7 @@ export default function ServiceForm() {
             placeholder="premium-rentals"
             required
           />
-          <p className="text-xs text-gray-400 mt-1">vogel_travel/services/<strong>{form.slug || 'slug'}</strong></p>
+          <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/services/<strong>{form.slug || 'slug'}</strong></p>
         </FormField>
 
         <FormField label="Зображення" required tooltip="Основне фото для сервісу. Рекомендований розмір 800x600 px.">

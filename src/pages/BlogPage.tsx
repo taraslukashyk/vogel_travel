@@ -104,7 +104,7 @@ const BlogPage = () => {
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
-          src="/vogel_travel/about-video.mp4"
+          src="/about-video.mp4"
           autoPlay muted loop playsInline
         />
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />

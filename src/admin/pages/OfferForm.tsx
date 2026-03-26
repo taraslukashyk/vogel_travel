@@ -250,7 +250,7 @@ export default function OfferForm() {
                   placeholder="dusit-thani-maldives"
                   required
                 />
-                <p className="text-xs text-gray-400 mt-1">vogel_travel/offers/<strong>{form.slug || 'slug'}</strong></p>
+                <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/offers/<strong>{form.slug || 'slug'}</strong></p>
               </FormField>
 
               <FormField label="Локація" required tooltip="Місто, курорт або країна.">
