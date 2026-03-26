@@ -7,82 +7,108 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+    // Parse body first
+    let message = ''
+    try {
+      const body = await req.json()
+      message = body.message || ''
+    } catch {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid JSON body' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
-    // 1. Fetch settings (secrets)
-    const { data: settings, error: settingsError } = await supabaseClient
+    if (!message) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Message is required' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Use service role key — Supabase injects SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY automatically
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SERVICE_ROLE_KEY') ?? ''
+
+    if (!supabaseUrl || !supabaseKey) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `Missing env vars. URL: ${!!supabaseUrl}, KEY: ${!!supabaseKey}` 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    // Fetch telegram settings
+    const { data: settings, error: settingsError } = await supabase
       .from('settings')
       .select('telegram_bot_token, telegram_chat_id')
       .eq('id', 1)
       .single()
 
-    if (settingsError || !settings?.telegram_bot_token || !settings?.telegram_chat_id) {
-      console.error('Settings fetch error:', settingsError)
+    if (settingsError) {
       return new Response(
-        JSON.stringify({ error: 'Telegram configuration is missing' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ 
+          success: false, 
+          error: `DB error: ${settingsError.message}` 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 2. Parse request body
-    const { message } = await req.json()
-    if (!message) {
+    if (!settings?.telegram_bot_token || !settings?.telegram_chat_id) {
       return new Response(
-        JSON.stringify({ error: 'Message is required' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ 
+          success: false, 
+          error: 'Telegram Token або Chat ID не заповнені в налаштуваннях сайту' 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 3. Send to Telegram
-    const telegramResponse = await fetch(`https://api.telegram.org/bot${settings.telegram_bot_token}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: settings.telegram_chat_id,
-        text: message,
-        parse_mode: 'HTML',
-      }),
-    })
-
-    const result = await telegramResponse.json()
-    if (!telegramResponse.ok) {
-        console.error('Telegram API error:', result)
-        throw new Error(result.description || 'Failed to send telegram message')
-    }
-
-    return new Response(
-      JSON.stringify({ success: true, result }),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    // Send to Telegram
+    const tgRes = await fetch(
+      `https://api.telegram.org/bot${settings.telegram_bot_token}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: settings.telegram_chat_id,
+          text: message,
+          parse_mode: 'HTML',
+        }),
       }
     )
 
-  } catch (error) {
-    console.error('Error in send-telegram-notification:', error)
+    const tgData = await tgRes.json()
+
+    if (!tgRes.ok) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `Telegram API: ${tgData.description || 'Unknown error'}` 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      JSON.stringify({ success: true }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+
+  } catch (err) {
+    return new Response(
+      JSON.stringify({ success: false, error: String(err) }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 })

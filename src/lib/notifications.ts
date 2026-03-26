@@ -8,18 +8,18 @@ export const sendTelegramNotification = async (message: string) => {
 
     if (error) {
       console.error('Edge Function error:', error);
-      return false;
+      return { success: false, error: error.message || 'Помилка виконання функції' };
     }
 
     if (!data?.success) {
       console.error('Notification failed:', data?.error);
-      return false;
+      return { success: false, error: data?.error || 'Помилка Telegram API' };
     }
 
-    return true;
-  } catch (error) {
+    return { success: true };
+  } catch (error: any) {
     console.error('Error sending telegram notification:', error);
-    return false;
+    return { success: false, error: error.message || 'Невідома помилка' };
   }
 };
 

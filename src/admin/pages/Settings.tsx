@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Settings as SettingsIcon, Save, AlertCircle, CheckCircle2, Phone, Mail, MapPin, Instagram, Facebook, Send, MessageCircle, Bot } from 'lucide-react';
 import { getSettings, updateSettings } from '../../lib/queries/settings';
 import type { SiteSettings } from '../../lib/queries/settings';
+import { sendTelegramNotification } from '../../lib/notifications';
 
 
 export default function Settings() {
@@ -60,6 +61,34 @@ export default function Settings() {
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Помилка при збереженні');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleTestNotification = async () => {
+    if (!settings?.telegram_bot_token || !settings?.telegram_chat_id) {
+      setError('Спочатку введіть та збережіть токен та Chat ID');
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const testMessage = `<b>🧪 Тестове повідомлення</b>\nВаш бот Vogel Travel налаштований вірно!`;
+      const result = await sendTelegramNotification(testMessage);
+      
+      if (result.success) {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } else {
+        setError(`Помилка: ${result.error}`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Помилка при тестуванні');
     } finally {
       setSaving(false);
     }
@@ -259,6 +288,17 @@ export default function Settings() {
                 placeholder="ID вашого чату (напр. 123456789)"
               />
             </div>
+          </div>
+          <div className="px-6 pb-6 mt-[-1rem]">
+            <button
+              type="button"
+              onClick={handleTestNotification}
+              disabled={saving || !settings?.telegram_bot_token}
+              className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded transition-colors disabled:opacity-30"
+            >
+              <Send size={14} />
+              Перевірити роботу бота (Тест)
+            </button>
           </div>
         </section>
 

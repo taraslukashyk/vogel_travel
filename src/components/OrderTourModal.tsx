@@ -40,9 +40,9 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
 <b>💬 Побажання:</b> ${message || 'Без повідомлення'}
     `.trim();
 
-    const success = await sendTelegramNotification(telegramMessage);
+    const result = await sendTelegramNotification(telegramMessage);
     
-    if (success) {
+    if (result.success) {
       setIsSuccess(true);
       setContact('');
       setMessage('');
