@@ -1,6 +1,7 @@
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle, Globe } from 'lucide-react';
+import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle, Globe, Settings } from 'lucide-react';
+
 import { useState } from 'react';
 import logo from '../../assets/logo.svg';
 
@@ -62,6 +63,20 @@ export default function AdminLayout() {
         </nav>
 
         <div className="p-3 border-t border-gray-200">
+          <NavLink
+            to="/admin/settings"
+            onClick={() => setSidebarOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-2 ${
+                isActive
+                  ? 'bg-teal-50 text-teal-700'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`
+            }
+          >
+            <Settings size={18} />
+            Налаштування
+          </NavLink>
           <div className="text-xs text-gray-400 px-3 mb-2 truncate">{user?.email}</div>
           <button
             onClick={handleSignOut}
@@ -71,6 +86,7 @@ export default function AdminLayout() {
             Вийти
           </button>
         </div>
+
       </aside>
 
       {/* Main content */}

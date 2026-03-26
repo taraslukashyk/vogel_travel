@@ -25,6 +25,9 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useOffers } from '../lib/queries/offers';
 import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
+import { useSettings } from '../hooks/useSettings';
+import { sendTelegramNotification } from '../lib/notifications';
+
 
 const ContactsPage = () => {
   const { data: offers = [] } = useOffers();
@@ -41,6 +44,21 @@ const ContactsPage = () => {
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const { settings } = useSettings();
+
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    details: '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -94,11 +112,32 @@ const ContactsPage = () => {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prepare message for Telegram
+    const message = `
+<b>🔔 Нова заявка на бронювання!</b>
+
+<b>👤 Клієнт:</b> ${formData.firstName} ${formData.lastName}
+<b>📞 Телефон:</b> ${formData.phone}
+<b>📧 Email:</b> ${formData.email}
+
+<b>🏷️ Послуга:</b> ${selectedServiceId}
+<b>👥 Гостей:</b> ${persons}
+<b>💰 Сума:</b> ${totalAmount.toLocaleString()} UAH
+<b>💳 Оплата:</b> ${selectedPayment}
+
+<b>📝 Деталі:</b>
+${formData.details || 'не вказано'}
+    `.trim();
+
+    await sendTelegramNotification(message);
+    
     setShowSuccess(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
 
   const isFormValid = () => {
     return (
@@ -182,23 +221,24 @@ const ContactsPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Ім'я</label>
-                        <input required type="text" placeholder="Ваше ім'я" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder="Ваше ім'я" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Прізвище</label>
-                        <input required type="text" placeholder="Ваше прізвище" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder="Ваше прізвище" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Контактний номер</label>
-                        <input required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">E-mail адреса</label>
-                        <input required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
+
                   </div>
 
                   <div className="space-y-8">
@@ -265,8 +305,9 @@ const ContactsPage = () => {
 
                     <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Деталі або Побажання</label>
-                      <textarea rows={4} placeholder="Вкажіть бажані дати, готель або особливі вимоги до сервісу..." className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
+                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={4} placeholder="Вкажіть бажані дати, готель або особливі вимоги до сервісу..." className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
                     </div>
+
 
                     {totalAmount > 0 && (
                       <div className="bg-[#5cc8bd]/10 border border-[#5cc8bd]/20 rounded-sm p-8 flex justify-between items-center animate-in zoom-in-95 duration-300">
@@ -408,35 +449,36 @@ const ContactsPage = () => {
               </h3>
 
               <div className="space-y-10 font-inter relative z-10">
-                <a href="tel:+380504692882" className="flex items-center gap-6 group">
+                <a href={`tel:${settings?.phone_primary?.replace(/\s/g, '') || '+380504692882'}`} className="flex items-center gap-6 group">
                   <div className="w-14 h-14 bg-white/5 border border-white/5 rounded-sm flex items-center justify-center shrink-0 group-hover:bg-[#5cc8bd] group-hover:border-[#5cc8bd] transition-all duration-500 shadow-md">
                     <Phone className="w-6 h-6 text-[#5cc8bd] group-hover:text-black transition-colors" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-1.5">Mobile Line</p>
-                    <p className="text-lg font-extrabold text-white group-hover:text-[#5cc8bd] transition-colors tracking-tighter transition-colors">+38 050 469 2882</p>
+                    <p className="text-lg font-extrabold text-white group-hover:text-[#5cc8bd] transition-colors tracking-tighter transition-colors">{settings?.phone_primary || '+38 050 469 2882'}</p>
                   </div>
                 </a>
 
-                <a href="tel:+380444692882" className="flex items-center gap-6 group">
+                <a href={`tel:${settings?.phone_secondary?.replace(/\s/g, '') || '+380444692882'}`} className="flex items-center gap-6 group">
                   <div className="w-14 h-14 bg-white/5 border border-white/5 rounded-sm flex items-center justify-center shrink-0 group-hover:bg-[#5cc8bd] group-hover:border-[#5cc8bd] transition-all duration-500 shadow-md">
                     <Phone className="w-6 h-6 text-[#5cc8bd] group-hover:text-black transition-colors" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-1.5">Office Line</p>
-                    <p className="text-lg font-extrabold text-white group-hover:text-[#5cc8bd] transition-colors tracking-tighter transition-colors">+38 044 469 2882</p>
+                    <p className="text-lg font-extrabold text-white group-hover:text-[#5cc8bd] transition-colors tracking-tighter transition-colors">{settings?.phone_secondary || '+38 044 469 2882'}</p>
                   </div>
                 </a>
 
-                <a href="mailto:booking@vogel.travel" className="flex items-center gap-6 group">
+                <a href={`mailto:${settings?.email || 'booking@vogel.travel'}`} className="flex items-center gap-6 group">
                   <div className="w-14 h-14 bg-white/5 border border-white/5 rounded-sm flex items-center justify-center shrink-0 group-hover:bg-[#5cc8bd] group-hover:border-[#5cc8bd] transition-all duration-500 shadow-md">
                     <Mail className="w-6 h-6 text-[#5cc8bd] group-hover:text-white transition-colors" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-1.5">Direct Email</p>
-                    <p className="text-base font-bold text-white group-hover:text-[#5cc8bd] transition-colors break-all">booking@vogel.travel</p>
+                    <p className="text-base font-bold text-white group-hover:text-[#5cc8bd] transition-colors break-all">{settings?.email || 'booking@vogel.travel'}</p>
                   </div>
                 </a>
+
 
                 <div className="pt-4 space-y-8">
                   <div className="flex items-center gap-3 mb-2">
@@ -444,23 +486,24 @@ const ContactsPage = () => {
                     <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">Social Connect</h4>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href={settings?.instagram_url || 'https://www.instagram.com/vogel.family.travel/'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <Instagram className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Instagram</span>
                     </a>
-                    <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href={settings?.facebook_url || 'https://www.facebook.com/vogelfamilytravel/'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <Facebook className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Facebook</span>
                     </a>
-                    <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href={settings?.telegram_url || 'https://t.me/Taras_luka'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <Send className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Telegram</span>
                     </a>
-                    <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
+                    <a href={settings?.whatsapp_url || 'https://wa.me/380685032230'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group p-4 bg-white/5 border border-white/5 rounded-sm hover:bg-white/10 transition-all">
                       <MessageCircle className="w-5 h-5 text-white/20 group-hover:text-[#5cc8bd] transition-colors" />
                       <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">WhatsApp</span>
                     </a>
                   </div>
+
                 </div>
 
                 <div className="space-y-6 pt-4">
@@ -489,9 +532,10 @@ const ContactsPage = () => {
                     </a>
                     <div ref={mapContainer} className="w-full h-full grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
                     <div className="absolute inset-x-0 bottom-0 bg-zinc-950/90 backdrop-blur-sm py-2 px-3 flex justify-between items-center z-20">
-                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">Спортивна площа, 1А</span>
+                      <span className="text-[9px] font-black text-[#5cc8bd] uppercase tracking-widest">{settings?.address || 'Спортивна площа, 1А'}</span>
                       <MapPin className="w-3 h-3 text-white/40" />
                     </div>
+
                   </div>
                 </div>
               </div>

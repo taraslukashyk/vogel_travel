@@ -1,8 +1,12 @@
 import { Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
+import { useSettings } from '../hooks/useSettings';
+
 
 const Footer = () => {
+  const { settings } = useSettings();
+
   return (
     <footer className="w-full bg-black/60 backdrop-blur-[40px] text-white pt-24 pb-12 relative overflow-hidden font-montserrat border-t border-white/10 shadow-[0_-10px_50px_rgba(0,0,0,0.5)]">
 
@@ -21,22 +25,23 @@ const Footer = () => {
             </h2>
 
             <div className="flex flex-col gap-3 font-inter text-white/90 text-sm md:text-base leading-relaxed mb-8 xl:mb-0">
-              <a href="tel:+380504692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 050 469 2882</a>
-              <a href="tel:+380444692882" className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">+38 044 469 2882</a>
-              <a href="mailto:booking@vogel.travel" className="hover:text-white transition-colors text-white/70 w-fit">booking@vogel.travel</a>
+              <a href={`tel:${settings?.phone_primary?.replace(/\s/g, '') || '+380504692882'}`} className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">{settings?.phone_primary || '+38 050 469 2882'}</a>
+              <a href={`tel:${settings?.phone_secondary?.replace(/\s/g, '') || '+380444692882'}`} className="hover:text-white transition-colors text-lg tracking-wider font-semibold w-fit">{settings?.phone_secondary || '+38 044 469 2882'}</a>
+              <a href={`mailto:${settings?.email || 'booking@vogel.travel'}`} className="hover:text-white transition-colors text-white/70 w-fit">{settings?.email || 'booking@vogel.travel'}</a>
 
               <div className="mt-4">
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Спортивна+площа,+1А,+Київ"
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings?.address || 'Спортивна площа, 1А, Київ')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/50 hover:text-white transition-colors max-w-sm block leading-relaxed"
                 >
-                  Ми з радістю будемо раді бачити вас в офісі в бізнес-центрі "Гулівер" за адресою: <span className="underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">Спортивна площа, 1А</span>
+                  Ми з радістю будемо раді бачити вас в офісі в бізнес-центрі "Гулівер" за адресою: <span className="underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">{settings?.address || 'Спортивна площа, 1А'}</span>
                 </a>
                 <span className="text-white/80 font-semibold block mt-1">За попереднім записом!</span>
               </div>
             </div>
+
           </div>
 
           {/* Right Block: Newsletter & WhatsApp */}
@@ -51,11 +56,12 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row gap-8 items-start mb-8">
               {/* QR Code Placeholder */}
               <a
-                href="https://t.me/Taras_luka"
+                href={settings?.telegram_url || 'https://t.me/Taras_luka'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-40 h-40 bg-white p-2 rounded-sm shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500"
               >
+
                 {/* This represents a QR code */}
                 <div className="w-full h-full border-2 border-black border-dashed flex items-center justify-center opacity-80">
                   <div className="grid grid-cols-3 gap-1">
@@ -127,11 +133,12 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">Соцмережі</h4>
             <div className="flex items-center gap-6">
-              <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Instagram className="w-5 h-5" /></a>
-              <a href="https://www.facebook.com/vogelfamilytravel/" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Facebook className="w-5 h-5" /></a>
-              <a href="https://wa.me/380685032230" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
-              <a href="https://t.me/Taras_luka" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
+              <a href={settings?.instagram_url || 'https://www.instagram.com/vogel.family.travel/'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Instagram className="w-5 h-5" /></a>
+              <a href={settings?.facebook_url || 'https://www.facebook.com/vogelfamilytravel/'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Facebook className="w-5 h-5" /></a>
+              <a href={settings?.whatsapp_url || 'https://wa.me/380685032230'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
+              <a href={settings?.telegram_url || 'https://t.me/Taras_luka'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
             </div>
+
           </div>
         </div>
 
