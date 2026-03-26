@@ -119,25 +119,30 @@ export default function PartnerForm() {
       if (isNew) {
         const { data: maxOrder } = await supabase.from('partners').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
-        const { error } = await supabase.from('partners').insert({ 
+        const { data, error } = await supabase.from('partners').insert({ 
           ...payload, 
           slug_en: form.slug, // Sync English slug with Ukrainian
           sort_order 
-        });
+        }).select().single();
         if (error) throw error;
+        return data;
       } else {
         const { error } = await supabase.from('partners').update({ 
           ...payload, 
           slug_en: form.slug, // Sync English slug with Ukrainian
           updated_at: new Date().toISOString() 
         }).eq('id', Number(id));
-        if (error) throw error;
+      if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       qc.invalidateQueries({ queryKey: ['admin_partners'] });
       qc.invalidateQueries({ queryKey: ['partners'] });
-      navigate('/admin/partners');
+      if (isNew && data?.id) {
+        navigate(`/admin/partners/${data.id}`);
+      } else {
+        alert('Збережено успішно!');
+      }
     },
   });
 
