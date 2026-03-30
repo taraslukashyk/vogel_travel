@@ -87,22 +87,35 @@ function formatPct(n: number): string {
   return `${Math.round(n * 100)}%`;
 }
 
-const CHANNEL_LABELS: Record<string, string> = {
-  'Organic Search': 'Органічний пошук',
-  'Direct': 'Прямий',
-  'Organic Social': 'Соцмережі',
-  'Referral': 'Реферальний',
-  'Email': 'Email',
-  'Paid Search': 'Платний пошук',
-  'Display': 'Медійний',
-  'Affiliates': 'Партнери',
-  'Unassigned': 'Невизначено',
+const CHANNEL_LABELS: Record<string, { label: string; desc: string }> = {
+  'Organic Search': { label: 'Органічний пошук', desc: 'Переходи з пошукових систем (Google, Bing)' },
+  'Direct': { label: 'Прямий', desc: 'Прямий набір URL або збережені закладки' },
+  'Organic Social': { label: 'Соцмережі', desc: 'Природні переходи з Instagram, Facebook тощо' },
+  'Referral': { label: 'Реферальний', desc: 'Переходи за посиланнями на інших сайтах' },
+  'Email': { label: 'Email', desc: 'Переходи з електронних листів та розсилок' },
+  'Paid Search': { label: 'Платний пошук', desc: 'Заходи через платну контекстну рекламу' },
+  'Display': { label: 'Медійний', desc: 'Переходи з банерної реклами' },
+  'Affiliates': { label: 'Партнери', desc: 'Трафік через партнерські мережі' },
+  'Unassigned': { label: 'Невизначено', desc: 'Джерело не вдалося розпізнати або приховано' },
 };
 
 const DEVICE_LABELS: Record<string, { label: string; Icon: React.ElementType }> = {
   mobile: { label: 'Мобільні', Icon: Smartphone },
   desktop: { label: 'Десктоп', Icon: Monitor },
   tablet: { label: 'Планшети', Icon: Tablet },
+};
+
+const EVENT_LABELS: Record<string, { label: string; desc: string }> = {
+  'page_view': { label: 'Перегляд сторінки', desc: 'Завантаження або оновлення сторінки' },
+  'user_engagement': { label: 'Залученість', desc: 'Активний перегляд (понад 10 секунд)' },
+  'scroll': { label: 'Прокрутка', desc: 'Користувач досяг низу сторінки (90%)' },
+  'session_start': { label: 'Нова сесія', desc: 'Початок нового сеансу взаємодії' },
+  'first_visit': { label: 'Перший візит', desc: 'Користувач на сайті вперше' },
+  'form_start': { label: 'Взаємодія з формою', desc: 'Початок введення даних у форму' },
+  'form_submit': { label: 'Відправка форми', desc: 'Успішне відправлення форми заявок' },
+  'click': { label: 'Клік по посиланню', desc: 'Перехід за зовнішнім посиланням' },
+  'file_download': { label: 'Завантаження файлу', desc: 'Завантаження документа з сайту' },
+  'video_start': { label: 'Перегляд відео', desc: 'Запуск фонового відео' },
 };
 
 const DAYS_OPTIONS = [
@@ -216,9 +229,9 @@ export default function Analytics() {
       setData(result as AnalyticsData);
     } catch (err: any) {
       console.error('Analytics fetch error:', err);
-      setData({ 
-        configured: true, 
-        error: err.message || 'Не вдалося завантажити дані. Перевірте консоль (F12) або налаштування секретів.' 
+      setData({
+        configured: true,
+        error: err.message || 'Не вдалося завантажити дані. Перевірте консоль (F12) або налаштування секретів.'
       });
     } finally {
       setLoading(false);
@@ -251,11 +264,10 @@ export default function Analytics() {
               <button
                 key={opt.value}
                 onClick={() => setDays(opt.value as 7 | 30 | 90)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                  days === opt.value
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${days === opt.value
                     ? 'bg-white text-teal-700 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 {opt.label}
               </button>
@@ -280,7 +292,7 @@ export default function Analytics() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
           >
             <TrendingUp size={15} />
-            Розширена аналітика
+            Розширена аналітика на Google Analytics
             <ExternalLink size={13} className="opacity-70" />
           </a>
         </div>
@@ -309,30 +321,35 @@ export default function Analytics() {
             <>
               <KpiCard
                 label="Сесії"
+                desc="Кількість візитів на сайт"
                 value={formatNum(data!.kpis!.sessions)}
                 icon={BarChart2}
                 color="teal"
               />
               <KpiCard
                 label="Користувачі"
+                desc="Унікальні відвідувачі"
                 value={formatNum(data!.kpis!.users)}
                 icon={Users}
                 color="blue"
               />
               <KpiCard
                 label="Перегляди"
+                desc="Відкриті сторінки"
                 value={formatNum(data!.kpis!.pageViews)}
                 icon={Eye}
                 color="purple"
               />
               <KpiCard
                 label="Залученість"
+                desc="Активні сесії (>10с)"
                 value={formatPct(data!.kpis!.engagementRate)}
                 icon={MousePointerClick}
                 color="amber"
               />
               <KpiCard
-                label="Тривалість сесії"
+                label="Тривалість"
+                desc="Середній час користувача"
                 value={formatDuration(data!.kpis!.avgSessionDuration)}
                 icon={Clock}
                 color="rose"
@@ -361,14 +378,14 @@ export default function Analytics() {
                     const showLabel = i % Math.ceil(data!.dailyDynamics!.length / 6) === 0 || i === data!.dailyDynamics!.length - 1;
                     return (
                       <div key={i} className="relative flex-1 flex flex-col items-center justify-end h-full min-h-[200px] group">
-                        <div 
+                        <div
                           className="w-full bg-teal-100 hover:bg-teal-400 rounded-t-sm transition-all duration-300 relative"
                           style={{ height: `${heightPct}%`, minHeight: '4px' }}
                         >
                           {/* Tooltip */}
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10 pointer-events-none">
                             <span className="font-bold">{d.sessions}</span> візитів
-                            <br/>
+                            <br />
                             <span className="text-gray-400 text-[10px]">{d.date}</span>
                           </div>
                         </div>
@@ -394,23 +411,37 @@ export default function Analytics() {
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <h2 className="text-sm font-semibold text-gray-900 mb-5">Джерела трафіку</h2>
                 <div className="space-y-4">
-                  {data!.channels!.map((ch, i) => (
-                    <div key={i}>
-                      <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-gray-700 font-medium truncate mr-2">
-                          {CHANNEL_LABELS[ch.name] ?? ch.name}
-                        </span>
-                        <span className="text-gray-500 tabular-nums shrink-0">{formatNum(ch.sessions)}</span>
+                  {data!.channels!.map((ch, i) => {
+                    const channelInfo = CHANNEL_LABELS[ch.name] || { label: ch.name, desc: 'Інше джерело' };
+                    return (
+                      <div key={i} className="mb-4 last:mb-0">
+                        <div className="flex justify-between items-start mb-1.5">
+                          <div className="flex-1 pr-3">
+                            <p className="text-xs text-gray-800 font-medium truncate" title={`${channelInfo.label} (${ch.name})`}>
+                              {channelInfo.label} <span className="text-gray-400 font-normal ml-1">({ch.name})</span>
+                            </p>
+                            <p className="text-[10px] text-gray-500 truncate mt-0.5" title={channelInfo.desc}>
+                              {channelInfo.desc}
+                            </p>
+                          </div>
+                          <span className="text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md tabular-nums shrink-0">
+                            {formatNum(ch.sessions)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="h-1.5 flex-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-teal-500 rounded-full transition-all duration-500"
+                              style={{ width: `${ch.pct}%` }}
+                            />
+                          </div>
+                          <div className="text-[10px] w-6 flex-shrink-0 text-right text-gray-400 font-medium">
+                            {ch.pct}%
+                          </div>
+                        </div>
                       </div>
-                      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-teal-500 rounded-full transition-all duration-500"
-                          style={{ width: `${ch.pct}%` }}
-                        />
-                      </div>
-                      <div className="text-right text-[10px] text-gray-400 mt-0.5">{ch.pct}%</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -526,16 +557,24 @@ export default function Analytics() {
                   <h2 className="text-sm font-semibold text-gray-900">Події</h2>
                 </div>
                 <div className="space-y-0 divide-y divide-gray-50">
-                  {data!.events!.map((e, i) => (
-                    <div key={i} className="flex justify-between items-center py-2.5">
-                      <span className="text-xs text-gray-700 font-medium truncate pr-2" title={e.name}>
-                        {e.name}
-                      </span>
-                      <span className="text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md tabular-nums shrink-0">
-                        {formatNum(e.count)}
-                      </span>
-                    </div>
-                  ))}
+                  {data!.events!.map((e, i) => {
+                    const evt = EVENT_LABELS[e.name] || { label: e.name, desc: 'Системна або інша подія' };
+                    return (
+                      <div key={i} className="flex justify-between items-center py-2.5 group hover:bg-gray-50 -mx-2 px-2 rounded-lg transition-colors">
+                        <div className="flex-1 min-w-0 pr-3">
+                          <p className="text-xs text-gray-800 font-medium truncate" title={`${evt.label} (${e.name})`}>
+                            {evt.label} <span className="text-gray-400 font-normal ml-1">({e.name})</span>
+                          </p>
+                          <p className="text-[10px] text-gray-500 truncate" title={evt.desc}>
+                            {evt.desc}
+                          </p>
+                        </div>
+                        <span className="text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md tabular-nums shrink-0 group-hover:bg-teal-50 group-hover:text-teal-700 transition-colors">
+                          {formatNum(e.count)}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -549,32 +588,35 @@ export default function Analytics() {
 
 // --- KPI Card ---
 const COLOR_MAP: Record<string, { bg: string; icon: string; text: string }> = {
-  teal:   { bg: 'bg-teal-50',   icon: 'text-teal-600',   text: 'text-teal-700' },
-  blue:   { bg: 'bg-blue-50',   icon: 'text-blue-600',   text: 'text-blue-700' },
+  teal: { bg: 'bg-teal-50', icon: 'text-teal-600', text: 'text-teal-700' },
+  blue: { bg: 'bg-blue-50', icon: 'text-blue-600', text: 'text-blue-700' },
   purple: { bg: 'bg-purple-50', icon: 'text-purple-600', text: 'text-purple-700' },
-  amber:  { bg: 'bg-amber-50',  icon: 'text-amber-600',  text: 'text-amber-700' },
-  rose:   { bg: 'bg-rose-50',   icon: 'text-rose-600',   text: 'text-rose-700' },
+  amber: { bg: 'bg-amber-50', icon: 'text-amber-600', text: 'text-amber-700' },
+  rose: { bg: 'bg-rose-50', icon: 'text-rose-600', text: 'text-rose-700' },
 };
 
 function KpiCard({
   label,
+  desc,
   value,
   icon: Icon,
   color,
 }: {
   label: string;
+  desc?: string;
   value: string;
   icon: React.ElementType;
   color: string;
 }) {
   const c = COLOR_MAP[color] ?? COLOR_MAP.teal;
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-5 hover:shadow-md transition-shadow group relative" title={desc}>
       <div className={`w-9 h-9 rounded-lg ${c.bg} flex items-center justify-center mb-3`}>
         <Icon size={18} className={c.icon} />
       </div>
       <div className="text-2xl font-bold text-gray-900 tabular-nums leading-tight">{value}</div>
-      <div className={`text-xs font-medium ${c.text} mt-1`}>{label}</div>
+      <div className={`text-xs font-semibold ${c.text} mt-1`}>{label}</div>
+      {desc && <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">{desc}</div>}
     </div>
   );
 }
