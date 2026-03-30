@@ -21,7 +21,11 @@ const Hero = () => {
         muted
         loop
         playsInline
-        preload="none"
+        preload="auto"
+        onLoadedData={() => {
+          window.__VOGEL_VIDEO_READY__ = true;
+          console.log("Hero video ready");
+        }}
       />
 
       {/* Gradient overlay for text readability */}

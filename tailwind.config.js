@@ -20,6 +20,7 @@ export default {
       },
       animation: {
         'infinite-scroll': 'infinite-scroll 25s linear infinite',
+        'spin-slow': 'spin 8s linear infinite',
       },
       keyframes: {
         'infinite-scroll': {

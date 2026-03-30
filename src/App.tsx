@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams, Outlet } from 'react-router-dom';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -37,10 +37,61 @@ const Analytics = lazy(() => import('./admin/pages/Analytics'));
 
 
 // Loading fallback component
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-  </div>
+const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: { progress?: number, isVideoWaiting?: boolean, isFadingOut?: boolean }) => {
+  const [internalProgress, setInternalProgress] = useState(0);
+
+  useEffect(() => {
+    if (progress === undefined) {
+      const interval = setInterval(() => {
+        setInternalProgress(prev => (prev >= 90 ? 90 : prev + 1));
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [progress]);
+
+  const displayProgress = progress !== undefined ? progress : (isVideoWaiting ? 98 : internalProgress);
+
+  return (
+    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] backdrop-blur-3xl transition-opacity duration-1000 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className="relative flex flex-col items-center">
+        {/* Background radial glow */}
+        <div className="absolute inset-0 bg-primary/10 blur-[160px] rounded-full scale-150 animate-pulse"></div>
+        
+        {/* Logo container with glass effect */}
+        <div className="relative z-10 p-4">
+          <img 
+            src="/favicon%20copy.svg" 
+            alt="Vogel Travel Logo" 
+            className="w-72 h-72 md:w-96 md:h-96 object-contain animate-spin-slow will-change-transform"
+            style={{ 
+              animationTimingFunction: 'linear',
+              transformStyle: 'preserve-3d',
+              backfaceVisibility: 'hidden',
+            }}
+          />
+        </div>
+
+        {/* Minimalist Progress Bar */}
+        <div className="mt-20 w-96 h-[3px] bg-white/5 relative overflow-hidden rounded-full">
+          <div 
+            className="absolute inset-y-0 left-0 bg-primary transition-all duration-700 ease-out shadow-[0_0_20px_rgba(92,200,189,0.4)]"
+            style={{ width: `${displayProgress}%` }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Define custom keyframes for the progress bar
+const LoaderStyles = () => (
+  <style>{`
+    @keyframes progress-move {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }
+  `}</style>
 );
 
 const AdminLoader = () => (
@@ -65,14 +116,83 @@ function LanguageHandler() {
   return <PublicLayout />;
 }
 
+// Global state listener for video
+declare global {
+  interface Window {
+    __VOGEL_VIDEO_READY__?: boolean;
+  }
+}
+
 function App() {
   const { i18n } = useTranslation();
-  
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isVideoWaiting, setIsVideoWaiting] = useState(false);
+
+  useEffect(() => {
+    // Start progress simulation
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 95) return prev;
+        const increment = Math.max(0.2, (98 - prev) / 25);
+        return Math.min(prev + increment + (Math.random() * 0.5), 98);
+      });
+    }, 150);
+
+    const finishLoading = () => {
+      const isHome = window.location.pathname === '/' || window.location.pathname.match(/\/(ua|en)\/?$/);
+      
+      if (isHome && !window.__VOGEL_VIDEO_READY__) {
+        setIsVideoWaiting(true);
+        const checkVideo = setInterval(() => {
+          if (window.__VOGEL_VIDEO_READY__) {
+            clearInterval(checkVideo);
+            setProgress(100);
+            setTimeout(() => {
+              setIsFadingOut(true);
+              setTimeout(() => setIsInitialLoading(false), 1000);
+            }, 800);
+          }
+        }, 100);
+        return;
+      } else {
+        setProgress(100);
+        setTimeout(() => {
+          setIsFadingOut(true);
+          setTimeout(() => setIsInitialLoading(false), 1000);
+        }, 800);
+      }
+    };
+
+    const handleLoad = () => {
+      finishLoading();
+    };
+
+    if (document.readyState === 'complete') {
+      handleLoad();
+    } else {
+      window.addEventListener('load', handleLoad);
+      return () => {
+        window.removeEventListener('load', handleLoad);
+        clearInterval(interval);
+      };
+    }
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Router basename={import.meta.env.BASE_URL}>
+      <LoaderStyles />
+      
+      {/* The Loader as an overlay to avoid deadlock */}
+      {isInitialLoading && (
+        <PageLoader progress={progress} isVideoWaiting={isVideoWaiting} isFadingOut={isFadingOut} />
+      )}
+
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* Public routes with Header/Footer and language prefix */}
           <Route path="/" element={<Navigate to={`/${i18n.language || 'ua'}`} replace />} />
           
           <Route path="/:lang" element={<LanguageHandler />}>
@@ -89,7 +209,6 @@ function App() {
             <Route path="contacts" element={<ContactsPage />} />
           </Route>
 
-          {/* Admin routes without Header/Footer */}
           <Route path="/admin/login" element={
             <Suspense fallback={<AdminLoader />}><AdminLogin /></Suspense>
           } />
@@ -117,14 +236,12 @@ function App() {
             <Route path="help" element={<AdminHelp />} />
             <Route path="settings" element={<Settings />} />
           </Route>
-
         </Routes>
       </Suspense>
     </Router>
   )
 }
 
-// Layout wrapper for public pages
 function PublicLayout() {
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/30 flex flex-col">

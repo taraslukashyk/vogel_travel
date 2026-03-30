@@ -62,7 +62,10 @@ const AboutPage = () => {
           muted
           loop
           playsInline
-          preload="none"
+          preload="auto"
+          onLoadedData={() => {
+            window.__VOGEL_VIDEO_READY__ = true;
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
