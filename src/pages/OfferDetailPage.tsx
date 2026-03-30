@@ -128,7 +128,7 @@ const OfferDetailPage = () => {
 
         {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
         <div
-          className="w-full lg:w-[60%] relative z-20 h-48 lg:h-auto overflow-hidden cursor-zoom-in group"
+          className="w-full lg:w-[60%] relative z-20 h-40 md:h-48 lg:h-auto overflow-hidden cursor-zoom-in group"
           onClick={() => openLightbox(offer.image)}
         >
           <img
@@ -155,23 +155,23 @@ const OfferDetailPage = () => {
             <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/30 via-transparent to-transparent" />
           </div>
 
-          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
+          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-8 md:py-12 lg:py-24 w-full">
             {/* Back button */}
             <Link
               to={l('/offers')}
-              className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"
+              className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] mb-6 md:mb-10 group font-montserrat"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               {tr('offers.all_offers')}
             </Link>
 
             <div className="flex flex-col text-white">
-              <div className="flex items-center gap-3 text-[#5cc8bd] text-[13px] font-black uppercase tracking-[0.4em] mb-6 font-montserrat">
-                <Tag className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-[#5cc8bd] text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] mb-4 md:mb-6 font-montserrat">
+                <Tag className="w-3 h-3 md:w-4 md:h-4" />
                 <span>{offerLocation}</span>
               </div>
 
-              <h1 className="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.2] mb-10 text-white drop-shadow-sm">
+              <h1 className="font-serif italic text-2xl md:text-4xl lg:text-5xl leading-[1.2] mb-6 md:mb-10 text-white drop-shadow-sm">
                 {offerHotel}
               </h1>
 
@@ -180,51 +180,51 @@ const OfferDetailPage = () => {
               </p>
 
               {/* Data Grid with Accents */}
-              <div className="grid grid-cols-1 gap-4 mb-10 font-montserrat">
-                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-5 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
-                  <div className="w-10 h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
-                    <CalendarClock className="w-4 h-4" strokeWidth={2.5} />
+              <div className="grid grid-cols-1 gap-3 md:gap-4 mb-6 md:mb-10 font-montserrat">
+                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-3.5 md:p-5 flex items-center gap-4 md:gap-5 group hover:bg-white/10 transition-all duration-300">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
+                    <CalendarClock className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.book_by')}</span>
-                    <span className="text-base font-bold tracking-wide">{offerBookBy}</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.book_by')}</span>
+                    <span className="text-sm md:text-base font-bold tracking-wide">{offerBookBy}</span>
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-5 flex items-center gap-5 group hover:bg-white/10 transition-all duration-300">
-                  <div className="w-10 h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
-                    <CalendarDays className="w-4 h-4" strokeWidth={2.5} />
+                <div className="bg-white/5 backdrop-blur-xl rounded-sm border border-white/10 p-3.5 md:p-5 flex items-center gap-4 md:gap-5 group hover:bg-white/10 transition-all duration-300">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] border border-[#5cc8bd]/20">
+                    <CalendarDays className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.stay_period')}</span>
-                    <span className="text-base font-bold tracking-wide whitespace-nowrap">{offerStayFrom} — {offerStayTo}</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.stay_period')}</span>
+                    <span className="text-sm md:text-base font-bold tracking-wide whitespace-nowrap">{offerStayFrom} — {offerStayTo}</span>
                   </div>
                 </div>
               </div>
 
               {offerDiscount && (
-                <div className="flex items-center gap-4 mb-12">
-                  <div className="bg-[#5cc8bd] text-white font-montserrat font-black text-2xl px-8 py-2 rounded-sm shadow-2xl">
+                <div className="flex items-center gap-4 mb-8 md:mb-12">
+                  <div className="bg-[#5cc8bd] text-white font-montserrat font-black text-xl md:text-2xl px-6 md:px-8 py-2 rounded-sm shadow-2xl">
                     {offerDiscount}
                   </div>
-                  <span className="text-white/40 font-montserrat text-[10px] font-black uppercase tracking-[0.3em]">
+                  <span className="text-white/40 font-montserrat text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">
                     {tr('offers.exclusive')}
                   </span>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-row gap-3 font-montserrat">
+              <div className="flex flex-row gap-2 font-montserrat">
                 <button 
                   onClick={() => setIsContactModalOpen(true)}
-                  className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                  className="flex-1 py-3.5 md:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[12px] md:text-lg lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
                 >
-                  <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
+                  <MessageSquare className="w-4 h-4 " strokeWidth={2.5} />
                   <span>{tr('offers.order_manager')}</span>
                 </button>
                 <button
                   onClick={handleShare}
-                  className="w-14 lg:w-16 h-14 lg:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
+                  className="w-12 md:w-16 h-12 md:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
                 >
                   <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
                 </button>
