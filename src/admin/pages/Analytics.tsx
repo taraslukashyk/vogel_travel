@@ -253,8 +253,10 @@ export default function Analytics() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Аналітика</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Google Analytics 4 — vogel.travel</p>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Аналітика</h1>
+          <p className="text-sm text-gray-500 mt-1 max-w-lg leading-relaxed">
+            Тут зібрано лише основні показники. Повна статистика доступна у вашому кабінеті Google Analytics.
+          </p>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
