@@ -288,7 +288,7 @@ export default function Analytics() {
 
           {/* External link to GA4 */}
           <a
-            href="https://analytics.google.com"
+            href="https://analytics.google.com/analytics/web/#/p529870904/reports/intelligenthome"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
