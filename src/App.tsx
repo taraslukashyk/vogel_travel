@@ -33,6 +33,7 @@ const SeoList = lazy(() => import('./admin/pages/SeoList'));
 const SeoForm = lazy(() => import('./admin/pages/SeoForm'));
 const AdminHelp = lazy(() => import('./admin/pages/AdminHelp'));
 const Settings = lazy(() => import('./admin/pages/Settings'));
+const Analytics = lazy(() => import('./admin/pages/Analytics'));
 
 
 // Loading fallback component
@@ -112,6 +113,7 @@ function App() {
             <Route path="partners/:id" element={<PartnerForm />} />
             <Route path="seo" element={<SeoList />} />
             <Route path="seo/:id" element={<SeoForm />} />
+            <Route path="analytics" element={<Analytics />} />
             <Route path="help" element={<AdminHelp />} />
             <Route path="settings" element={<Settings />} />
           </Route>
