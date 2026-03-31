@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useBlogPosts } from '../lib/queries/blog';
 import SEOHead from '../components/SEOHead';
+import aboutPoster from '../assets/about-bg.png';
 import OptimizedImage from '../components/OptimizedImage';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
@@ -123,10 +124,12 @@ const BlogPage = () => {
       <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
-          src="/about-video.mp4"
+          poster={aboutPoster}
           autoPlay muted loop playsInline
-          preload="none"
-        />
+          preload="metadata"
+        >
+          <source src="/about-video.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
       </div>
 

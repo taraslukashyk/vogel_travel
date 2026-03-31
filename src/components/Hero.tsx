@@ -4,6 +4,8 @@ import BirdCursorEffect from './BirdCursorEffect';
 import OrderTourModal from './OrderTourModal';
 import { useTranslation } from 'react-i18next';
 
+import heroPoster from '../assets/hero-bg.png';
+
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
@@ -13,20 +15,24 @@ const Hero = () => {
       <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
       <BirdCursorEffect />
 
-      {/* Background Video */}
+      {/* Background Video with Poster fallback */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/hero-video.webm"
+        poster={heroPoster}
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         onLoadedData={() => {
           window.__VOGEL_VIDEO_READY__ = true;
           console.log("Hero video ready");
         }}
-      />
+      >
+        <source src="/hero-video.webm" type="video/webm" />
+        {/* Fallback for browsers that don't support WebM (like older iOS Safari) */}
+        {/* <source src="/hero-video.mp4" type="video/mp4" /> */}
+      </video>
 
       {/* Gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20 pointer-events-none" />

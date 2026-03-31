@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ListChecks, Key, Clock, Target, UserCheck, ShieldCheck } from 'lucide-react';
 import logo from '../assets/logo.svg';
+import aboutPoster from '../assets/about-bg.png';
 import SEOHead from '../components/SEOHead';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
@@ -57,16 +58,18 @@ const AboutPage = () => {
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <video
           className="w-full h-full object-cover opacity-20"
-          src="/about-video.mp4"
+          poster={aboutPoster}
           autoPlay
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
           onLoadedData={() => {
             window.__VOGEL_VIDEO_READY__ = true;
           }}
-        />
+        >
+          <source src="/about-video.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
 

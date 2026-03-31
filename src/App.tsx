@@ -53,7 +53,7 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
   const displayProgress = progress !== undefined ? progress : (isVideoWaiting ? 98 : internalProgress);
 
   return (
-    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] backdrop-blur-3xl transition-opacity duration-1000 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] transition-opacity duration-1000 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="relative flex flex-col items-center">
         {/* Background radial glow */}
         <div className="absolute inset-0 bg-primary/10 blur-[160px] rounded-full scale-150 animate-pulse"></div>
@@ -63,7 +63,7 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
           <img 
             src="/favicon%20copy.svg" 
             alt="Vogel Travel Logo" 
-            className="w-72 h-72 md:w-96 md:h-96 object-contain animate-spin-slow will-change-transform"
+            className="w-56 h-56 md:w-96 md:h-96 object-contain animate-spin-slow will-change-transform"
             style={{ 
               animationTimingFunction: 'linear',
               transformStyle: 'preserve-3d',
@@ -146,8 +146,17 @@ function App() {
       
       if (isHome && !window.__VOGEL_VIDEO_READY__) {
         setIsVideoWaiting(true);
+        
+        // Safety timeout: if video doesn't load in 3.5 seconds, Force fade out
+        const safetyTimeout = setTimeout(() => {
+          clearInterval(checkVideo);
+          setIsFadingOut(true);
+          setTimeout(() => setIsInitialLoading(false), 1000);
+        }, 3500);
+
         const checkVideo = setInterval(() => {
           if (window.__VOGEL_VIDEO_READY__) {
+            clearTimeout(safetyTimeout);
             clearInterval(checkVideo);
             setProgress(100);
             setTimeout(() => {
