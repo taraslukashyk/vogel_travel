@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2, Info, Wand2, Languages, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Languages, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { slugify } from '../../lib/utils/slugify';
 import { translateText } from '../utils/translate';

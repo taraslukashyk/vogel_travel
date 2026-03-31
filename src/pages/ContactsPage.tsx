@@ -173,17 +173,17 @@ ${formData.details || 'не вказано'}
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
       </div>
 
-      <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pt-40 pb-24 font-inter">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pt-24 md:pt-40 pb-12 md:pb-24 font-inter">
 
         {/* Header */}
-        <section className="mb-20 text-center md:text-left">
+        <section className="mb-12 md:mb-20 text-center md:text-left">
           <span className="text-[#5cc8bd] text-[10px] font-black uppercase tracking-[0.4em] mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">
             {t('contacts.title')}
           </span>
-          <h1 className="font-montserrat text-5xl md:text-7xl lg:text-[88px] font-extrabold uppercase tracking-tight leading-[0.9] mb-8 text-white animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 italic">
+          <h1 className="font-montserrat text-4xl sm:text-5xl md:text-7xl lg:text-[88px] font-extrabold uppercase tracking-tight leading-[0.9] mb-6 md:mb-8 text-white animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 italic">
             {t('contacts.hero_title')} <br /> <span className="text-white/20 not-italic">{t('contacts.hero_subtitle')}</span>
           </h1>
-          <p className="font-inter text-white/50 text-lg md:text-xl max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
+          <p className="font-inter text-white/50 text-base md:text-xl max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-700 delay-200">
             {t('contacts.hero_description')}
           </p>
         </section>
@@ -211,40 +211,40 @@ ${formData.details || 'не вказано'}
               </div>
             ) : (
               <div className="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl backdrop-blur-xl group transition-all duration-500 hover:bg-white/10">
-                <div className="bg-white/5 px-8 md:px-12 py-10 border-b border-white/10">
-                  <h2 className="font-montserrat text-2xl font-bold uppercase text-white flex items-center gap-5 tracking-wide mb-2">
-                    <span className="w-2 h-8 bg-[#5cc8bd]" />
+                <div className="bg-white/5 px-6 md:px-12 py-6 md:py-10 border-b border-white/10">
+                  <h2 className="font-montserrat text-xl md:text-2xl font-bold uppercase text-white flex items-center gap-4 md:gap-5 tracking-wide mb-1 md:mb-2">
+                    <span className="w-1.5 md:w-2 h-6 md:h-8 bg-[#5cc8bd]" />
                     {t('contacts.form_title')}
                   </h2>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 ml-7">
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/30 ml-5.5 md:ml-7">
                     {t('contacts.form_subtitle')}
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-12">
-                  <div className="space-y-8">
+                <form onSubmit={handleSubmit} className="p-6 md:p-12 space-y-8 md:space-y-12">
+                  <div className="space-y-6 md:space-y-8">
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
                       <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.personal_data')}</h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.first_name')}</label>
-                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder={t('contacts.first_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder={t('contacts.first_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.last_name')}</label>
-                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder={t('contacts.last_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder={t('contacts.last_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.phone_label')}</label>
-                        <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.email_label')}</label>
-                        <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
 
@@ -255,14 +255,14 @@ ${formData.details || 'не вказано'}
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
                       <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.trip_composition')}</h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.service_label')}</label>
                         <div className="relative">
                           <select
                             value={selectedServiceId}
                             onChange={(e) => setSelectedServiceId(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
+                            className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
                             <option value="" className="bg-zinc-900 text-white">{t('contacts.service_placeholder')}</option>
                             <optgroup label="Tours" className="bg-zinc-950 text-white">
@@ -284,13 +284,13 @@ ${formData.details || 'не вказано'}
                           <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 w-4 h-4 rotate-90" />
                         </div>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2 md:space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.persons_label')}</label>
                         <div className="relative">
                           <select
                             value={persons}
                             onChange={(e) => setPersons(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
+                            className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
                             <option value="1" className="bg-zinc-900 text-white">1 {t('contacts.person_unit')}</option>
                             <option value="2" className="bg-zinc-900 text-white">2 {t('contacts.persons_unit')}</option>
@@ -304,14 +304,14 @@ ${formData.details || 'не вказано'}
                     </div>
 
                     {selectedServiceId === 'custom' && (
-                      <div className="space-y-3 animate-in slide-in-from-top-4 duration-300">
+                      <div className="space-y-2 md:space-y-3 animate-in slide-in-from-top-4 duration-300">
                         <label className="text-[10px] font-black uppercase tracking-widest text-[#5cc8bd] ml-1">Сума згідно з інвойсом (UAH)</label>
                         <input
                           type="number"
                           value={customAmount}
                           onChange={(e) => setCustomAmount(e.target.value)}
                           placeholder="0.00"
-                          className="w-full bg-white/10 border border-[#5cc8bd]/30 rounded-sm px-6 py-5 text-xl font-bold text-white focus:outline-none focus:border-[#5cc8bd] transition-all"
+                          className="w-full bg-white/10 border border-[#5cc8bd]/30 rounded-sm px-5 py-4 md:px-6 md:py-5 text-lg md:text-xl font-bold text-white focus:outline-none focus:border-[#5cc8bd] transition-all"
                         />
                       </div>
                     )}
@@ -327,21 +327,21 @@ ${formData.details || 'не вказано'}
                           }}
                         />
                       </div>
-                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={4} placeholder={t('contacts.details_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
+                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={3} placeholder={t('contacts.details_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
                     </div>
 
 
                     {totalAmount > 0 && (
-                      <div className="bg-[#5cc8bd]/10 border border-[#5cc8bd]/20 rounded-sm p-8 flex justify-between items-center animate-in zoom-in-95 duration-300">
-                        <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.total_to_pay')}</p>
-                          <p className="text-white/40 text-[11px] uppercase tracking-widest font-bold">
+                      <div className="bg-[#5cc8bd]/10 border border-[#5cc8bd]/20 rounded-sm p-5 md:p-8 flex justify-between items-center animate-in zoom-in-95 duration-300">
+                        <div className="space-y-0.5 md:space-y-1">
+                          <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.total_to_pay')}</p>
+                          <p className="text-white/40 text-[9px] md:text-[11px] uppercase tracking-widest font-bold">
                             {t('contacts.final_amount_note')}
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="font-montserrat text-4xl font-extrabold text-white tracking-tighter">{totalAmount.toLocaleString()}</span>
-                          <span className="text-[#5cc8bd] text-sm ml-3 font-black uppercase tracking-widest">UAH</span>
+                          <span className="font-montserrat text-2xl md:text-4xl font-extrabold text-white tracking-tighter">{totalAmount.toLocaleString()}</span>
+                          <span className="text-[#5cc8bd] text-xs md:text-sm ml-2 md:ml-3 font-black uppercase tracking-widest">UAH</span>
                         </div>
                       </div>
                     )}
@@ -362,17 +362,17 @@ ${formData.details || 'не вказано'}
                           key={method.id}
                           type="button"
                           onClick={() => setSelectedPayment(method.id)}
-                          className={`flex flex-col items-center gap-4 p-8 rounded-sm border transition-all group ${selectedPayment === method.id
+                          className={`flex flex-col items-center gap-3 p-5 sm:p-8 rounded-sm border transition-all group ${selectedPayment === method.id
                               ? 'bg-[#5cc8bd]/20 border-[#5cc8bd] text-white'
                               : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/10 hover:border-white/20'
                             }`}
                         >
-                          <div className={`p-4 rounded-full transition-all ${selectedPayment === method.id ? 'bg-[#5cc8bd] text-black shadow-lg shadow-[#5cc8bd]/30' : 'bg-white/5 text-white/20 border border-white/5'}`}>
+                          <div className={`p-3 md:p-4 rounded-full transition-all ${selectedPayment === method.id ? 'bg-[#5cc8bd] text-black shadow-lg shadow-[#5cc8bd]/30' : 'bg-white/5 text-white/20 border border-white/5'}`}>
                             {method.icon}
                           </div>
                           <div className="text-center">
-                            <p className={`text-xs font-black uppercase tracking-[0.2em] mb-1 transition-colors ${selectedPayment === method.id ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>{method.name}</p>
-                            <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">{method.sub}</p>
+                            <p className={`text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-0.5 md:mb-1 transition-colors ${selectedPayment === method.id ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>{method.name}</p>
+                            <p className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest opacity-40">{method.sub}</p>
                           </div>
                         </button>
                       ))}
@@ -436,7 +436,7 @@ ${formData.details || 'не вказано'}
               </div>
             )}
 
-            <section className="bg-white/5 border border-white/10 rounded-sm overflow-hidden group backdrop-blur-xl transition-all duration-500 hover:bg-white/10 p-10 md:p-14">
+            <section className="bg-white/5 border border-white/10 rounded-sm overflow-hidden group backdrop-blur-xl transition-all duration-500 hover:bg-white/10 p-6 md:p-14">
               <div className="flex flex-col md:flex-row gap-12 items-center">
                 <div className="flex-1 space-y-8">
                   <div className="mb-0 p-4 bg-white/5 inline-block rounded-sm transition-transform duration-500 group-hover:scale-110 border border-white/5">
@@ -463,7 +463,7 @@ ${formData.details || 'не вказано'}
 
           {/* Sidebar */}
           <aside className="space-y-8">
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-sm p-10 space-y-12 sticky top-32 shadow-2xl overflow-hidden hover:bg-white/10 transition-all duration-500">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-sm p-6 md:p-10 space-y-10 md:space-y-12 sticky top-32 shadow-2xl overflow-hidden hover:bg-white/10 transition-all duration-500">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#5cc8bd]/5 blur-3xl rounded-full" />
 
               <h3 className="font-montserrat text-xl font-bold uppercase text-white tracking-[0.2em] border-b border-white/5 pb-8 relative z-10">
