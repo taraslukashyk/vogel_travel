@@ -29,6 +29,7 @@ import { useSettings } from '../hooks/useSettings';
 import { sendTelegramNotification } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
+import SpeechButton from '../components/SpeechButton';
 
 
 const ContactsPage = () => {
@@ -316,7 +317,16 @@ ${formData.details || 'не вказано'}
                     )}
 
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.details_label')}</label>
+                      <div className="flex items-center justify-between ml-1">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">{t('contacts.details_label')}</label>
+                        <SpeechButton
+                          lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
+                          onResult={(text) => {
+                            const prev = formData.details;
+                            handleInputChange({ target: { name: 'details', value: prev ? prev + ' ' + text : text } } as React.ChangeEvent<HTMLTextAreaElement>);
+                          }}
+                        />
+                      </div>
                       <textarea name="details" value={formData.details} onChange={handleInputChange} rows={4} placeholder={t('contacts.details_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-6 py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
                     </div>
 

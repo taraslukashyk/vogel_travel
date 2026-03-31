@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { X, ArrowRight, Send, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import SpeechButton from './SpeechButton';
 import { useOffers } from '../lib/queries/offers';
 import { Link } from 'react-router-dom';
 import { sendTelegramNotification } from '../lib/notifications';
@@ -174,8 +175,8 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                 </div>
               ) : (
                 <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-                  <div className="flex-shrink-0 text-center md:text-left hidden lg:block">
-                    <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-1">
+                  <div className="flex-shrink-0 text-center md:text-left hidden lg:flex flex-col justify-center h-[64px]">
+                    <h3 className="text-white font-montserrat font-bold text-lg uppercase tracking-widest mb-0.5">
                       {t('modals.order_tour.wish_title')}
                     </h3>
                     <p className="text-white/30 text-[10px] uppercase font-bold tracking-[0.15em]">
@@ -183,9 +184,9 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                     </p>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full items-end">
-                    <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                      <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                  <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-3 md:gap-4 w-full">
+                    <div className="w-full lg:flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                         {t('modals.order_tour.contact_label')}
                       </label>
                       <input
@@ -199,24 +200,30 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                       />
                     </div>
 
-                    <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
-                      <label className="text-[8px] md:text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
+                    <div className="w-full lg:flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3.5 md:p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                         {t('modals.order_tour.comment_label')}
                       </label>
-                      <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder={t('modals.order_tour.comment_placeholder')}
-                        className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
-                        disabled={isSubmitting}
-                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          placeholder={t('modals.order_tour.comment_placeholder')}
+                          className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
+                          disabled={isSubmitting}
+                        />
+                        <SpeechButton
+                          lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
+                          onResult={(text) => setMessage((prev) => prev ? prev + ' ' + text : text)}
+                        />
+                      </div>
                     </div>
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-xs md:text-[12px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 py-4 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-auto lg:h-[58px] disabled:opacity-50"
+                      className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-xs md:text-[12px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 h-[64px] shadow-lg shrink-0 w-full lg:w-auto disabled:opacity-50"
                     >
                       <div className="flex items-center justify-center gap-3">
                         <span>{isSubmitting ? t('modals.order_tour.submitting') : t('modals.order_tour.submit')}</span>

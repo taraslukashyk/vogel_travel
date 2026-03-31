@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Send, CheckCircle2, X } from 'lucide-react';
+import SpeechButton from './SpeechButton';
 import { sendTelegramNotification } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
@@ -84,7 +85,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-4 w-full">
-                  <div className="flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                  <div className="flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
                     <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                       {t('modals.contact.contact_label')}
                     </label>
@@ -99,18 +100,24 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                     />
                   </div>
 
-                  <div className="flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors">
+                  <div className="flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
                     <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
                       {t('modals.contact.comment_label')}
                     </label>
-                    <input
-                      type="text"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder={t('modals.contact.comment_placeholder')}
-                      className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/20"
-                      disabled={isSubmitting}
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder={t('modals.contact.comment_placeholder')}
+                        className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/20"
+                        disabled={isSubmitting}
+                      />
+                      <SpeechButton
+                        lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
+                        onResult={(text) => setMessage((prev) => prev ? prev + ' ' + text : text)}
+                      />
+                    </div>
                   </div>
 
                   <button 
