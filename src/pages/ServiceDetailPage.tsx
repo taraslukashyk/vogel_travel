@@ -134,7 +134,7 @@ const ServiceDetailPage = () => {
             <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/30 via-transparent to-transparent" />
           </div>
 
-          <div className="relative z-10 px-6 md:px-12 lg:px-16 py-12 lg:py-24 w-full">
+          <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-24 pb-12 lg:pt-40 lg:pb-24 w-full">
             <Link
               to={l('/services')}
               className="inline-flex items-center gap-2 text-white/50 hover:text-[#5cc8bd] transition-all text-xs font-bold uppercase tracking-[0.3em] mb-10 group font-montserrat"

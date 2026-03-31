@@ -50,82 +50,81 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
     <div
       ref={ref}
       id={`offer-${slug}`}
-      className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32"
+      className="opacity-0 translate-y-10 transition-all duration-700 ease-out scroll-mt-32 h-full"
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
-      <article className="group bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
-        {/* Image */}
-        <div className="relative h-56 overflow-hidden">
-          <OptimizedImage
-            src={offer.image}
-            alt={t(offer, 'image_alt') || hotelName}
-            className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <Link to={l(`/offers/${slug}`)} className="block h-full group">
+        <article className="bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 md:hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
+          {/* Image */}
+          <div className="relative h-56 overflow-hidden">
+            <OptimizedImage
+              src={offer.image}
+              alt={t(offer, 'image_alt') || hotelName}
+              className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-          {/* Discount badge — glassmorphism */}
-          {discountVal && (
-            <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
-              {discountVal}
-            </div>
-          )}
-
-          {/* Location tag at bottom of image */}
-          <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
-            <Tag className="w-3 h-3" strokeWidth={1.5} />
-            {locationName}
-          </div>
-        </div>
-
-        {/* Card body */}
-        <div className="flex-1 p-7 flex flex-col gap-5">
-          {/* Hotel name */}
-          <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
-            {hotelName}
-          </h2>
-
-          {/* Details */}
-          <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
-            {/* Book by */}
-            <div className="flex items-center gap-3 text-white/60 py-3">
-              <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
-              <span className="font-inter text-[14px] font-light">
-                {tr('offers.book_by')} <strong className="text-white/90 font-medium">{bookBy}</strong>
-              </span>
-            </div>
-
-            {/* Stay period */}
-            <div className="flex items-center gap-3 text-white/60 py-3">
-              <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
-              <span className="font-inter text-[14px] font-light">
-                {tr('offers.stay_period')}{' '}
-                <strong className="text-white/90 font-medium">
-                  {stayFrom} — {stayTo}
-                </strong>
-              </span>
-            </div>
-
-            {/* Discount row */}
+            {/* Discount badge — glassmorphism */}
             {discountVal && (
-              <div className="flex items-center justify-between py-3">
-                <span className="font-inter text-[14px] text-white/50 font-light">{tr('common.discount')}</span>
-                <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
-                  {discountVal}
-                </span>
+              <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
+                {discountVal}
               </div>
             )}
+
+            {/* Location tag at bottom of image */}
+            <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
+              <Tag className="w-3 h-3" strokeWidth={1.5} />
+              {locationName}
+            </div>
           </div>
 
-          {/* CTA button */}
-          <Link 
-            to={l(`/offers/${slug}`)}
-            className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 hover:bg-white hover:text-black transition-all duration-500 rounded-sm text-center block"
-          >
-            {tr('common.details')}
-          </Link>
-        </div>
-      </article>
+          {/* Card body */}
+          <div className="flex-1 p-7 flex flex-col gap-5">
+            {/* Hotel name */}
+            <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
+              {hotelName}
+            </h2>
+
+            {/* Details */}
+            <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
+              {/* Book by */}
+              <div className="flex items-center gap-3 text-white/60 py-3">
+                <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
+                <span className="font-inter text-[14px] font-light">
+                  {tr('offers.book_by')} <strong className="text-white/90 font-medium">{bookBy}</strong>
+                </span>
+              </div>
+
+              {/* Stay period */}
+              <div className="flex items-center gap-3 text-white/60 py-3">
+                <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
+                <span className="font-inter text-[14px] font-light">
+                  {tr('offers.stay_period')}{' '}
+                  <strong className="text-white/90 font-medium">
+                    {stayFrom} — {stayTo}
+                  </strong>
+                </span>
+              </div>
+
+              {/* Discount row */}
+              {discountVal && (
+                <div className="flex items-center justify-between py-3">
+                  <span className="font-inter text-[14px] text-white/50 font-light">{tr('common.discount')}</span>
+                  <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
+                    {discountVal}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* CTA row (visual button) */}
+            <div className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 group-hover:bg-white group-hover:text-black transition-all duration-500 rounded-sm text-center block">
+              {tr('common.details')}
+            </div>
+          </div>
+        </article>
+      </Link>
     </div>
   );
 };

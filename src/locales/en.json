@@ -156,6 +156,8 @@
     "trip_composition": "Trip Composition",
     "service_label": "Select Destination / Service",
     "service_placeholder": "Choose service...",
+    "adults_label": "Number of adults",
+    "children_label": "Number of children (under 16)",
     "persons_label": "Number of Guests",
     "service_custom": "Custom Invoice",
     "person_unit": "person",

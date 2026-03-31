@@ -18,13 +18,16 @@ import {
   MapPin,
   ChevronRight,
   Lock,
-  Cookie
+  Cookie,
+  Search,
+  LayoutGrid
 } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useOffers } from '../lib/queries/offers';
 import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
+import OptimizedImage from '../components/OptimizedImage';
 import { useSettings } from '../hooks/useSettings';
 import { sendTelegramNotification } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
@@ -40,8 +43,12 @@ const ContactsPage = () => {
   const { data: services = [] } = useServices();
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState('');
-  const [persons, setPersons] = useState('1');
+  const [adults, setAdults] = useState('1');
+  const [children, setChildren] = useState('0');
   const [customAmount, setCustomAmount] = useState('');
+  const [isServicePickerOpen, setIsServicePickerOpen] = useState(false);
+  const [serviceSearch, setServiceSearch] = useState('');
+  const [serviceFilter, setServiceFilter] = useState<'all' | 'offers' | 'services'>('all');
   const [showSuccess, setShowSuccess] = useState(false);
   const [isOfferAccepted, setIsOfferAccepted] = useState(false);
   const [isPrivacyAccepted, setIsPrivacyAccepted] = useState(false);
@@ -106,8 +113,9 @@ const ContactsPage = () => {
     const isOffer = offers.find(o => `offer-${o.slug}` === selectedServiceId);
     const basePrice = isOffer ? 5000 : 2000; // Mock base prices
 
-    const personsCount = persons === '5+' ? 5 : parseInt(persons);
-    return basePrice * personsCount;
+    const adultsCount = adults === '5+' ? 5 : parseInt(adults);
+    const childrenCount = children === '5+' ? 5 : parseInt(children);
+    return basePrice * (adultsCount + childrenCount);
   };
 
   const totalAmount = calculateTotal();
@@ -117,6 +125,27 @@ const ContactsPage = () => {
     setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
   };
+
+  const getSelectedService = () => {
+    if (!selectedServiceId) return null;
+    if (selectedServiceId === 'custom') return { id: 'custom', title: t('contacts.service_custom') || 'Custom Invoice', image: null };
+    
+    if (selectedServiceId.startsWith('offer-')) {
+      const slug = selectedServiceId.replace('offer-', '');
+      const offer = offers.find(o => o.slug === slug);
+      if (offer) return { ...offer, title: currentLang === 'en' && offer.hotel_en ? offer.hotel_en : offer.hotel };
+    }
+    
+    if (selectedServiceId.startsWith('service-')) {
+      const slug = selectedServiceId.replace('service-', '');
+      const service = services.find(s => s.slug === slug);
+      if (service) return { ...service, title: currentLang === 'en' && service.title_en ? service.title_en : service.title };
+    }
+    
+    return null;
+  };
+
+  const selectedService = getSelectedService();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,7 +159,8 @@ const ContactsPage = () => {
 <b>📧 Email:</b> ${formData.email}
 
 <b>🏷️ Послуга:</b> ${selectedServiceId}
-<b>👥 Гостей:</b> ${persons}
+<b>👥 Дорослі:</b> ${adults}
+<b>👶 Діти (до 16):</b> ${children}
 <b>💰 Сума:</b> ${totalAmount.toLocaleString()} UAH
 <b>💳 Оплата:</b> ${selectedPayment}
 
@@ -250,7 +280,6 @@ ${formData.details || 'не вказано'}
                         <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
                       </div>
                     </div>
-
                   </div>
 
                   <div className="space-y-8">
@@ -258,48 +287,79 @@ ${formData.details || 'не вказано'}
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
                       <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.trip_composition')}</h3>
                     </div>
+
+                    {/* Full Width Service Picker */}
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.service_label')}</label>
+                      <button
+                        type="button"
+                        onClick={() => setIsServicePickerOpen(true)}
+                        className={`w-full text-left bg-white/5 border border-white/10 rounded-sm overflow-hidden transition-all hover:bg-white/10 group ${selectedService ? 'border-[#5cc8bd]/30' : 'border-white/10'}`}
+                      >
+                        {selectedService ? (
+                          <div className="flex items-center gap-4 p-4 md:p-6">
+                            <div className="w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden bg-white/5 shrink-0 border border-white/5">
+                              {selectedService.image ? (
+                                <OptimizedImage src={selectedService.image} alt={selectedService.title} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[#5cc8bd]">
+                                  <FileText className="w-8 h-8" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[10px] font-black uppercase tracking-widest text-[#5cc8bd] mb-1">
+                                {selectedServiceId === 'custom' ? 'Invoice' : selectedServiceId.startsWith('offer-') ? t('search.categories.offers') : t('search.categories.services')}
+                              </p>
+                              <h4 className="text-white font-montserrat font-bold text-lg md:text-xl truncate tracking-tight">{selectedService.title}</h4>
+                            </div>
+                            <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-between p-6 md:p-8">
+                            <span className="text-white/40 font-medium">{t('contacts.service_placeholder')}</span>
+                            <div className="bg-white/10 p-2 rounded-full">
+                              <ChevronRight className="w-5 h-5 text-white/40 rotate-90" />
+                            </div>
+                          </div>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Side by side guests */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.service_label')}</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.adults_label') || (currentLang === 'ua' ? 'Кількість дорослих' : 'Number of adults')}</label>
                         <div className="relative">
                           <select
-                            value={selectedServiceId}
-                            onChange={(e) => setSelectedServiceId(e.target.value)}
+                            value={adults}
+                            onChange={(e) => setAdults(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
-                            <option value="" className="bg-zinc-900 text-white">{t('contacts.service_placeholder')}</option>
-                            <optgroup label="Tours" className="bg-zinc-950 text-white">
-                              {offers.map(offer => (
-                                <option key={`offer-${offer.id}`} value={`offer-${offer.slug}`} className="bg-zinc-950 text-white">
-                                  {currentLang === 'en' && offer.hotel_en ? offer.hotel_en : offer.hotel}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <optgroup label="Services" className="bg-zinc-950 text-white">
-                              {services.map(service => (
-                                <option key={`service-${service.id}`} value={`service-${service.slug}`} className="bg-zinc-950 text-white">
-                                  {currentLang === 'en' && service.title_en ? service.title_en : service.title}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <option value="custom" className="bg-zinc-900 text-white">{t('contacts.service_custom') || 'Custom Invoice'}</option>
+                            <option value="1" className="bg-zinc-900 text-white">1 {currentLang === 'ua' ? 'дорослий' : 'adult'}</option>
+                            <option value="2" className="bg-zinc-900 text-white">2 {currentLang === 'ua' ? 'дорослих' : 'adults'}</option>
+                            <option value="3" className="bg-zinc-900 text-white">3 {currentLang === 'ua' ? 'дорослих' : 'adults'}</option>
+                            <option value="4" className="bg-zinc-900 text-white">4 {currentLang === 'ua' ? 'дорослих' : 'adults'}</option>
+                            <option value="5+" className="bg-zinc-900 text-white">5+ {currentLang === 'ua' ? '(група)' : '(group)'}</option>
                           </select>
                           <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 w-4 h-4 rotate-90" />
                         </div>
                       </div>
+
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.persons_label')}</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.children_label') || (currentLang === 'ua' ? 'Кількість дітей молодші 16 років' : 'Children under 16')}</label>
                         <div className="relative">
                           <select
-                            value={persons}
-                            onChange={(e) => setPersons(e.target.value)}
+                            value={children}
+                            onChange={(e) => setChildren(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all appearance-none cursor-pointer"
                           >
-                            <option value="1" className="bg-zinc-900 text-white">1 {t('contacts.person_unit')}</option>
-                            <option value="2" className="bg-zinc-900 text-white">2 {t('contacts.persons_unit')}</option>
-                            <option value="3" className="bg-zinc-900 text-white">3 {t('contacts.persons_unit')}</option>
-                            <option value="4" className="bg-zinc-900 text-white">4 {t('contacts.persons_unit')}</option>
-                            <option value="5+" className="bg-zinc-900 text-white">{t('contacts.persons_group')}</option>
+                            <option value="0" className="bg-zinc-900 text-white">0 {currentLang === 'ua' ? 'дітей' : 'children'}</option>
+                            <option value="1" className="bg-zinc-900 text-white">1 {currentLang === 'ua' ? 'дитина' : 'child'}</option>
+                            <option value="2" className="bg-zinc-900 text-white">2 {currentLang === 'ua' ? 'дитини' : 'children'}</option>
+                            <option value="3" className="bg-zinc-900 text-white">3 {currentLang === 'ua' ? 'дитини' : 'children'}</option>
+                            <option value="4" className="bg-zinc-900 text-white">4 {currentLang === 'ua' ? 'дитини' : 'children'}</option>
+                            <option value="5+" className="bg-zinc-900 text-white">5+ {currentLang === 'ua' ? '(група)' : '(group)'}</option>
                           </select>
                           <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 w-4 h-4 rotate-90" />
                         </div>
@@ -589,6 +649,117 @@ ${formData.details || 'не вказано'}
           </aside>
         </div>
       </div>
+
+      {/* Service Picker Modal */}
+      {isServicePickerOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setIsServicePickerOpen(false)} />
+          <div className="relative bg-zinc-900/50 border border-white/10 rounded-sm max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+            
+            {/* Modal Header */}
+            <div className="p-6 md:p-8 border-b border-white/5 bg-white/5">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-montserrat text-xl font-bold uppercase text-white tracking-[0.3em]">
+                  {t('contacts.service_label')}
+                </h2>
+                <button
+                  onClick={() => setIsServicePickerOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center border border-white/10 rounded-full text-white/40 hover:bg-white hover:text-black transition-all"
+                >
+                  <div className="text-xl font-light">&times;</div>
+                </button>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <input
+                    type="text"
+                    value={serviceSearch}
+                    onChange={(e) => setServiceSearch(e.target.value)}
+                    placeholder={t('common.search')}
+                    className="w-full bg-white/5 border border-white/10 rounded-sm pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all"
+                  />
+                </div>
+                <div className="flex bg-white/5 border border-white/10 rounded-sm p-1">
+                  {(['all', 'offers', 'services'] as const).map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setServiceFilter(filter)}
+                      className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all ${
+                        serviceFilter === filter ? 'bg-white text-black' : 'text-white/40 hover:text-white'
+                      }`}
+                    >
+                      {filter === 'all' ? 'All' : filter === 'offers' ? t('search.categories.offers') : t('search.categories.services')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Special cases first */}
+                {serviceFilter === 'all' && !serviceSearch && (
+                  <button
+                    onClick={() => {
+                      setSelectedServiceId('custom');
+                      setIsServicePickerOpen(false);
+                    }}
+                    className={`flex items-center gap-4 p-4 rounded-sm border transition-all ${
+                      selectedServiceId === 'custom' ? 'bg-[#5cc8bd]/20 border-[#5cc8bd] text-white' : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-sm bg-white/5 border border-white/5 flex items-center justify-center text-[#5cc8bd] shrink-0">
+                      <FileText className="w-6 h-6" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#5cc8bd] mb-0.5">Special</p>
+                      <p className="text-sm font-bold uppercase tracking-wide">{t('contacts.service_custom') || 'Custom Invoice'}</p>
+                    </div>
+                  </button>
+                )}
+
+                {/* Filtered combined list */}
+                {[
+                  ...offers.map(o => ({ ...o, type: 'offer', id_val: `offer-${o.slug}`, title_val: currentLang === 'en' && o.hotel_en ? o.hotel_en : o.hotel })),
+                  ...services.map(s => ({ ...s, type: 'service', id_val: `service-${s.slug}`, title_val: currentLang === 'en' && s.title_en ? s.title_en : s.title }))
+                ]
+                  .filter(item => {
+                    const matchesSearch = item.title_val.toLowerCase().includes(serviceSearch.toLowerCase());
+                    const matchesFilter = serviceFilter === 'all' || (serviceFilter === 'offers' && item.type === 'offer') || (serviceFilter === 'services' && item.type === 'service');
+                    return matchesSearch && matchesFilter;
+                  })
+                  .map(item => (
+                    <button
+                      key={item.id_val}
+                      onClick={() => {
+                        setSelectedServiceId(item.id_val);
+                        setIsServicePickerOpen(false);
+                      }}
+                      className={`flex items-center gap-4 p-4 rounded-sm border transition-all ${
+                        selectedServiceId === item.id_val ? 'bg-[#5cc8bd]/20 border-[#5cc8bd] text-white' : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/10'
+                      }`}
+                    >
+                      <div className="w-16 h-16 rounded-sm overflow-hidden bg-white/5 border border-white/5 shrink-0">
+                        <OptimizedImage src={item.image} alt={item.title_val} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="text-left min-w-0">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-[#5cc8bd] mb-0.5 opacity-60">
+                          {item.type === 'offer' ? t('search.categories.offers') : t('search.categories.services')}
+                        </p>
+                        <p className="text-sm font-bold uppercase tracking-tight truncate">{item.title_val}</p>
+                      </div>
+                    </button>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activeModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300">

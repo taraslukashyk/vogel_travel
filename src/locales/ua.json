@@ -156,6 +156,8 @@
     "trip_composition": "Склад подорожі",
     "service_label": "Обрати напрямок / Послугу",
     "service_placeholder": "Оберіть послугу...",
+    "adults_label": "Кількість дорослих",
+    "children_label": "Кількість дітей молодші 16 років",
     "persons_label": "Кількість гостей",
     "service_custom": "Індивідуальний розрахунок",
     "person_unit": "людина",
