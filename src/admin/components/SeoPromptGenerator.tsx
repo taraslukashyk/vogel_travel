@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Copy, Wand2, Loader2, Check, Download, Upload } from 'lucide-react';
-import type { DBOffer, DBBlogPost, DBSeoMeta } from '../../lib/types';
+import type { DBOffer, DBBlogPost, DBSeoMeta, DBService } from '../../lib/types';
 
 export default function SeoPromptGenerator() {
   const [loading, setLoading] = useState(false);
@@ -19,10 +19,12 @@ export default function SeoPromptGenerator() {
         { data: offers },
         { data: blogPosts },
         { data: seoMeta },
+        { data: services },
       ] = await Promise.all([
         supabase.from('offers').select('*'),
         supabase.from('blog_posts').select('*'),
         supabase.from('seo_meta').select('*'),
+        supabase.from('services').select('*'),
       ]);
 
       const dataToFill = {
@@ -52,6 +54,15 @@ export default function SeoPromptGenerator() {
           current_seo_title: b.seo_title || '',
           current_seo_description: b.seo_description || '',
           image_alt: b.image_alt || '',
+          action: "FILL_MISSING_SEO_AND_ALT"
+        })),
+        services: (services as DBService[])?.map(s => ({
+          id: s.id,
+          title: s.title,
+          content_preview: s.description?.slice(0, 200) || '',
+          current_seo_title: s.seo_title || '',
+          current_seo_description: s.seo_description || '',
+          image_alt: s.image_alt || '',
           action: "FILL_MISSING_SEO_AND_ALT"
         }))
       };
@@ -115,7 +126,10 @@ ${JSON.stringify(dataToFill, null, 2)}
           if (page.keywords !== undefined) updateData.keywords = page.keywords;
           
           if (Object.keys(updateData).length > 0) {
-            updates.push(supabase.from('seo_meta').update(updateData).eq('page_path', page.page_path));
+            updates.push(
+              supabase.from('seo_meta').update(updateData).eq('page_path', page.page_path)
+                .then(({ error }) => { if (error) throw error; })
+            );
           }
         }
       }
@@ -132,7 +146,10 @@ ${JSON.stringify(dataToFill, null, 2)}
           if (offer.image_alt !== undefined) updateData.image_alt = offer.image_alt;
 
           if (Object.keys(updateData).length > 0) {
-            updates.push(supabase.from('offers').update(updateData).eq('id', offer.id));
+            updates.push(
+              supabase.from('offers').update(updateData).eq('id', offer.id)
+                .then(({ error }) => { if (error) throw error; })
+            );
           }
         }
       }
@@ -149,7 +166,30 @@ ${JSON.stringify(dataToFill, null, 2)}
           if (post.image_alt !== undefined) updateData.image_alt = post.image_alt;
 
           if (Object.keys(updateData).length > 0) {
-            updates.push(supabase.from('blog_posts').update(updateData).eq('id', post.id));
+            updates.push(
+              supabase.from('blog_posts').update(updateData).eq('id', post.id)
+                .then(({ error }) => { if (error) throw error; })
+            );
+          }
+        }
+      }
+
+      // Оновлюємо services
+      if (Array.isArray(parsed.services)) {
+        for (const s of parsed.services) {
+          if (!s.id) continue;
+          const updateData: any = {};
+          if (s.current_seo_title !== undefined) updateData.seo_title = s.current_seo_title;
+          if (s.seo_title !== undefined) updateData.seo_title = s.seo_title;
+          if (s.current_seo_description !== undefined) updateData.seo_description = s.current_seo_description;
+          if (s.seo_description !== undefined) updateData.seo_description = s.seo_description;
+          if (s.image_alt !== undefined) updateData.image_alt = s.image_alt;
+
+          if (Object.keys(updateData).length > 0) {
+            updates.push(
+              supabase.from('services').update(updateData).eq('id', s.id)
+                .then(({ error }) => { if (error) throw error; })
+            );
           }
         }
       }
@@ -161,7 +201,7 @@ ${JSON.stringify(dataToFill, null, 2)}
 
     } catch (err: any) {
       console.error('Save SEO error:', err);
-      alert('Помилка імпорту! Переконайтеся, що ви вставили валідний JSON. ' + err.message);
+      alert('Помилка імпорту! Відмова БД або неправильний формат: ' + (err.message || JSON.stringify(err)));
     } finally {
       setIsSaving(false);
     }
@@ -234,7 +274,7 @@ ${JSON.stringify(dataToFill, null, 2)}
               <textarea
                 value={jsonInput}
                 onChange={(e) => setJsonInput(e.target.value)}
-                placeholder='{"pages": [...], "offers": [...], "blog_posts": [...] }'
+                placeholder='{"pages": [...], "offers": [...], "blog_posts": [...], "services": [...] }'
                 className="w-full h-48 p-4 mb-4 text-sm font-mono text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
               

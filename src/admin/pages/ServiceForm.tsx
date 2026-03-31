@@ -12,6 +12,12 @@ import { useFormTranslation } from '../hooks/useFormTranslation';
 import { Plus, Trash2 } from 'lucide-react';
 import type { DBService, DBServiceItem, DBSection } from '../../lib/types';
 
+const syncItems = (source: DBServiceItem[] | null | undefined, target: DBServiceItem[] | null | undefined): DBServiceItem[] => {
+  const src = Array.isArray(source) ? source : [];
+  const tgt = Array.isArray(target) ? target : [];
+  return src.map((_, index) => tgt[index] || { label: '', text: '' });
+};
+
 const emptyService = {
   // UA
   title: '',
@@ -78,7 +84,7 @@ export default function ServiceForm() {
         title_en: existing.title_en || '',
         description_en: existing.description_en || '',
         type_en: existing.type_en || 'Service',
-        items_en: existing.items_en || [],
+        items_en: syncItems(existing.items, existing.items_en),
         sections_en: syncSections(existing.sections || [], existing.sections_en || []),
         slug_en: existing.slug_en || '',
         seo_title_en: existing.seo_title_en || '',
@@ -139,10 +145,31 @@ export default function ServiceForm() {
   const set = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
   const updateItem = (index: number, field: keyof DBServiceItem, value: string) => {
-    const key = activeTab === 'ua' ? 'items' : 'items_en';
-    const items = [...(form[key] as DBServiceItem[])];
-    items[index] = { ...items[index], [field]: value };
-    set(key, items);
+    if (activeTab === 'ua') {
+      const items = [...form.items];
+      items[index] = { ...items[index], [field]: value };
+      setForm(prev => ({ ...prev, items, items_en: syncItems(items, prev.items_en) }));
+    } else {
+      const items_en = [...form.items_en];
+      items_en[index] = { ...items_en[index], [field]: value };
+      setForm(prev => ({ ...prev, items_en, items: syncItems(items_en, prev.items) }));
+    }
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setForm(prev => {
+      const newItems = prev.items.filter((_, i) => i !== index);
+      const newItemsEn = prev.items_en.filter((_, i) => i !== index);
+      return { ...prev, items: newItems, items_en: newItemsEn };
+    });
+  };
+
+  const handleAddItem = () => {
+    setForm(prev => ({
+      ...prev,
+      items: [...prev.items, { label: '', text: '' }],
+      items_en: [...prev.items_en, { label: '', text: '' }],
+    }));
   };
 
   const isUA = activeTab === 'ua';
@@ -245,21 +272,18 @@ export default function ServiceForm() {
                   value={item.label}
                   onChange={(e) => updateItem(i, 'label', e.target.value)}
                   className={inputClass}
-                  placeholder={isUA ? "Назва" : "Label"}
+                  placeholder={isUA ? "Назва" : (form.items[i]?.label || "Label")}
                 />
                 <input
                   type="text"
                   value={item.text}
                   onChange={(e) => updateItem(i, 'text', e.target.value)}
                   className={`${inputClass} flex-1`}
-                  placeholder={isUA ? "Опис" : "Text"}
+                  placeholder={isUA ? "Опис" : (form.items[i]?.text || "Text")}
                 />
                 <button
                   type="button"
-                  onClick={() => {
-                    const key = isUA ? 'items' : 'items_en';
-                    set(key, (form[key] as DBServiceItem[]).filter((_, j) => j !== i));
-                  }}
+                  onClick={() => handleRemoveItem(i)}
                   className="text-red-400 hover:text-red-600 shrink-0"
                 >
                   <Trash2 size={16} />
@@ -268,10 +292,7 @@ export default function ServiceForm() {
             ))}
             <button
               type="button"
-              onClick={() => {
-                const key = isUA ? 'items' : 'items_en';
-                set(key, [...(form[key] as DBServiceItem[]), { label: '', text: '' }]);
-              }}
+              onClick={handleAddItem}
               className="flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
             >
               <Plus size={14} /> Додати підпункт
