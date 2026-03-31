@@ -160,6 +160,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Blob> {
     footStyles: {
       fillColor: [255, 255, 255],
       textColor: [0, 0, 0],
+      lineWidth: 0,
     },
     columnStyles: {
       0: { halign: 'center', cellWidth: 10 },
@@ -191,8 +192,10 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Blob> {
 
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(9);
-  doc.text('Виписав(ла):', pageWidth / 2 - 10, y);
-  doc.line(pageWidth / 2 + 15, y, pageWidth / 2 + 60, y);
+  doc.setTextColor(80, 80, 80);
+  doc.text('Виписав(ла):', 125, y);
+  doc.setDrawColor(0);
+  doc.line(150, y, 195, y);
 
   return doc.output('blob');
 }

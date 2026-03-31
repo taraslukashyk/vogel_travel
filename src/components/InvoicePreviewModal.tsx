@@ -42,7 +42,7 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={onClose} />
-      <div className="relative bg-zinc-900/50 border border-white/10 rounded-sm max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+      <div className="relative bg-zinc-900/50 border border-white/10 rounded-sm max-w-[1000px] w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
 
         {/* Modal Header */}
         <div className="p-6 md:p-8 border-b border-white/5 bg-white/5 flex justify-between items-center">
@@ -68,8 +68,8 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
         </div>
 
         {/* Invoice Preview - white background */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-zinc-800/50">
-          <div className="bg-white text-black p-8 md:p-12 rounded shadow-lg max-w-[210mm] mx-auto text-sm leading-relaxed font-sans">
+        <div className="flex-1 overflow-auto p-4 md:p-12 bg-zinc-800/50 flex justify-center">
+          <div className="bg-white text-black p-[15mm] shadow-2xl w-[210mm] min-h-[297mm] h-fit flex-shrink-0 text-[12px] leading-normal font-sans">
 
             {/* Warning text */}
             <p className="text-[9px] text-gray-500 text-center mb-4 leading-tight">
@@ -79,23 +79,23 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
             </p>
 
             {/* Payment order sample */}
-            <h3 className="text-center text-sm font-bold mb-3">Зразок заповнення платіжного доручення</h3>
-            <div className="border border-black p-4 mb-6 text-xs space-y-2">
+            <h3 className="text-center text-[11px] font-bold mb-3 uppercase tracking-wider">Зразок заповнення платіжного доручення</h3>
+            <div className="border border-black p-4 mb-8 text-[10px] space-y-2 relative">
               <div className="flex gap-2">
                 <span className="text-gray-600 w-28 shrink-0">Отримувач</span>
                 <span className="font-bold">{COMPANY.name}</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-gray-600 w-28 shrink-0">Код</span>
-                <span className="font-bold border border-black px-2 py-0.5">{COMPANY.edrpou}</span>
+                <span className="font-bold border border-black px-3 py-0.5">{COMPANY.edrpou}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Банк отримувача</span>
                 <span className="text-gray-600">КРЕДИТ рах. №</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-end">
                 <span className="font-bold">{COMPANY.bank}</span>
-                <span className="font-bold border border-black px-2 py-0.5">{COMPANY.iban}</span>
+                <span className="font-bold border border-black px-3 py-0.5">{COMPANY.iban}</span>
               </div>
             </div>
 
@@ -129,19 +129,19 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
             </div>
 
             {/* Table */}
-            <table className="w-full border-collapse border border-black text-xs mb-4">
+            <table className="w-full border-collapse border border-black text-[10px] mb-6">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="border border-black p-2 text-center w-8">№</th>
+                <tr className="bg-gray-50/50">
+                  <th className="border border-black p-2 text-center w-10">№</th>
                   <th className="border border-black p-2 text-center">Товари (роботи, послуги)</th>
                   <th className="border border-black p-2 text-center w-16">Кіл-сть</th>
-                  <th className="border border-black p-2 text-center w-12">Од.</th>
-                  <th className="border border-black p-2 text-center w-24">Ціна</th>
-                  <th className="border border-black p-2 text-center w-24">Сума</th>
+                  <th className="border border-black p-2 text-center w-14">Од.</th>
+                  <th className="border border-black p-2 text-center w-28">Ціна</th>
+                  <th className="border border-black p-2 text-center w-28">Сума</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr className="h-10">
                   <td className="border border-black p-2 text-center">1</td>
                   <td className="border border-black p-2">{invoiceData.serviceDescription}</td>
                   <td className="border border-black p-2 text-center">1</td>
@@ -151,10 +151,10 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
                 </tr>
               </tbody>
               <tfoot>
-                <tr>
-                  <td colSpan={4} className="border border-black p-2"></td>
-                  <td className="border border-black p-2 text-right font-bold">Всього:</td>
-                  <td className="border border-black p-2 text-right font-bold">{formattedAmount}</td>
+                <tr className="border-t-2 border-black">
+                  <td colSpan={4} className="p-2"></td>
+                  <td className="p-2 text-right font-bold">Всього:</td>
+                  <td className="p-2 text-right font-bold">{formattedAmount}</td>
                 </tr>
               </tfoot>
             </table>
@@ -169,9 +169,9 @@ const InvoicePreviewModal = ({ isOpen, onClose, invoiceData, pdfBlob }: InvoiceP
 
             {/* Signature line */}
             <hr className="border-black mb-4" />
-            <div className="flex items-center justify-center gap-4 text-xs">
-              <span>Виписав(ла):</span>
-              <span className="border-b border-black w-48 inline-block">&nbsp;</span>
+            <div className="flex items-center justify-end gap-3 text-[11px] mt-12 mb-4">
+              <span className="text-gray-600 italic">Виписав(ла):</span>
+              <span className="border-b border-black w-56 inline-block">&nbsp;</span>
             </div>
           </div>
         </div>
