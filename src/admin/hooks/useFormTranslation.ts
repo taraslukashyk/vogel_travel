@@ -100,6 +100,50 @@ export function useFormTranslation(form: any, setForm: (updater: (prev: any) => 
         }
       }
 
+      // 3. Translate items if they exist (for ServiceForm)
+      const itemsKey = isUA ? 'items' : 'items_en';
+      const sourceItemsKey = isUA ? 'items_en' : 'items';
+      const items = form[sourceItemsKey];
+
+      if (items && Array.isArray(items)) {
+        const translatedItems = JSON.parse(JSON.stringify(items));
+        for (let i = 0; i < translatedItems.length; i++) {
+          const item = translatedItems[i];
+          if (item.label && typeof item.label === 'string') {
+            item.label = await translateText(item.label, from, to);
+            setForm(prev => ({ ...prev, [itemsKey]: [...translatedItems] }));
+            await new Promise(r => setTimeout(r, 400));
+          }
+          if (item.text && typeof item.text === 'string') {
+            item.text = await translateText(item.text, from, to);
+            setForm(prev => ({ ...prev, [itemsKey]: [...translatedItems] }));
+            await new Promise(r => setTimeout(r, 400));
+          }
+        }
+      }
+
+      // 4. Translate gallery if it exists (for OfferForm)
+      const galleryKey = isUA ? 'gallery' : 'gallery_en';
+      const sourceGalleryKey = isUA ? 'gallery_en' : 'gallery';
+      const gallery = form[sourceGalleryKey];
+
+      if (gallery && Array.isArray(gallery)) {
+        const translatedGallery = JSON.parse(JSON.stringify(gallery));
+        for (let i = 0; i < translatedGallery.length; i++) {
+          const item = translatedGallery[i];
+          if (item.caption && typeof item.caption === 'string') {
+            item.caption = await translateText(item.caption, from, to);
+            setForm(prev => ({ ...prev, [galleryKey]: [...translatedGallery] }));
+            await new Promise(r => setTimeout(r, 400));
+          }
+          if (item.alt && typeof item.alt === 'string') {
+            item.alt = await translateText(item.alt, from, to);
+            setForm(prev => ({ ...prev, [galleryKey]: [...translatedGallery] }));
+            await new Promise(r => setTimeout(r, 400));
+          }
+        }
+      }
+
       alert('Переклад завершено!');
     } catch (error) {
       console.error('Translation error:', error);

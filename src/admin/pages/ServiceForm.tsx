@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, Trash2, Info, Wand2, Languages, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { slugify } from '../../lib/utils/slugify';
+import { translateText } from '../utils/translate';
 import FormField, { inputClass, btnPrimary, btnSecondary } from '../components/FormField';
 import ImageUploader from '../components/ImageUploader';
 import SectionEditor from '../components/SectionEditor';
 import { syncSections } from '../utils/sectionSync';
 import LanguageTabs from '../components/LanguageTabs';
 import { useFormTranslation } from '../hooks/useFormTranslation';
-import { Plus, Trash2 } from 'lucide-react';
 import type { DBService, DBServiceItem, DBSection } from '../../lib/types';
 
 const syncItems = (source: DBServiceItem[] | null | undefined, target: DBServiceItem[] | null | undefined): DBServiceItem[] => {
@@ -54,6 +55,7 @@ export default function ServiceForm() {
   const qc = useQueryClient();
   const [form, setForm] = useState(emptyService);
   const [activeTab, setActiveTab] = useState<'ua' | 'en'>('ua');
+  const [translatingItemIndex, setTranslatingItemIndex] = useState<number | null>(null);
 
   const { data: existing } = useQuery({
     queryKey: ['admin_service', id],
@@ -179,12 +181,43 @@ export default function ServiceForm() {
     }));
   };
 
+  const handleTranslateItem = async (index: number) => {
+    if (translatingItemIndex !== null) return;
+    const from = activeTab === 'ua' ? 'en' : 'uk';
+    const to = activeTab === 'ua' ? 'uk' : 'en';
+    const sourceItems = activeTab === 'ua' ? form.items_en : form.items;
+    const sourceItem = sourceItems[index];
+
+    if (!sourceItem) return;
+
+    setTranslatingItemIndex(index);
+    try {
+      const translatedLabel = sourceItem.label ? await translateText(sourceItem.label, from, to) : '';
+      const translatedText = sourceItem.text ? await translateText(sourceItem.text, from, to) : '';
+
+      if (activeTab === 'ua') {
+        const items = [...form.items];
+        items[index] = { label: translatedLabel, text: translatedText };
+        setForm(prev => ({ ...prev, items, items_en: syncItems(items, prev.items_en) }));
+      } else {
+        const items_en = [...form.items_en];
+        items_en[index] = { label: translatedLabel, text: translatedText };
+        setForm(prev => ({ ...prev, items_en, items: syncItems(items_en, prev.items) }));
+      }
+    } catch (error) {
+      console.error('Item translation error:', error);
+    } finally {
+      setTranslatingItemIndex(null);
+    }
+  };
+
   const isUA = activeTab === 'ua';
   const { handleTranslate, handleTranslateAll, isTranslating } = useFormTranslation(form, setForm, isUA);
 
   const translatableFields = [
     'title',
     'description',
+    'image_alt',
     'type',
     'seo_title',
     'seo_description'
@@ -288,13 +321,28 @@ export default function ServiceForm() {
                   className={`${inputClass} flex-1`}
                   placeholder={isUA ? "Опис" : (form.items[i]?.text || "Text")}
                 />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveItem(i)}
-                  className="text-red-400 hover:text-red-600 shrink-0"
-                >
-                  <Trash2 size={16} />
-                </button>
+                <div className="flex flex-col gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleTranslateItem(i)}
+                    disabled={translatingItemIndex === i}
+                    className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-teal-600 hover:bg-teal-50 rounded border border-teal-200 transition-colors disabled:opacity-50"
+                  >
+                    {translatingItemIndex === i ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <Languages size={12} />
+                    )}
+                    {translatingItemIndex === i ? '...' : 'Перекласти'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem(i)}
+                    className="p-1 text-red-400 hover:text-red-500 hover:bg-red-50 rounded self-end"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             ))}
             <button
