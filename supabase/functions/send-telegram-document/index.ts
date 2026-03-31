@@ -66,19 +66,26 @@ serve(async (req) => {
       )
     }
 
-    // Decode base64 to binary
-    const binaryStr = atob(documentBase64)
+    // Decode base64 using a safer way for Deno
+    const binaryStr = atob(documentBase64.replace(/\s/g, ''))
     const bytes = new Uint8Array(binaryStr.length)
     for (let i = 0; i < binaryStr.length; i++) {
       bytes[i] = binaryStr.charCodeAt(i)
     }
 
-    // Send document via Telegram sendDocument (multipart/form-data)
+    // Telegram caption limit is 1024 characters.
+    // If we use HTML, we should be careful not to cut tags.
+    // For simplicity and safety, we'll slice and try to keep it under limit.
+    const safeCaption = message.length > 1024 ? message.substring(0, 1021) + "..." : message;
+
     const formData = new FormData()
     formData.append('chat_id', settings.telegram_chat_id)
-    formData.append('caption', message.substring(0, 1024)) // Telegram caption limit
+    formData.append('caption', safeCaption)
     formData.append('parse_mode', 'HTML')
-    formData.append('document', new Blob([bytes], { type: 'application/pdf' }), filename)
+    
+    // Create a File object which works well with fetch/formData in Deno
+    const file = new File([bytes], filename, { type: 'application/pdf' })
+    formData.append('document', file)
 
     const tgRes = await fetch(
       `https://api.telegram.org/bot${settings.telegram_bot_token}/sendDocument`,
@@ -89,7 +96,11 @@ serve(async (req) => {
 
     if (!tgRes.ok) {
       return new Response(
-        JSON.stringify({ success: false, error: `Telegram API: ${tgData.description || 'Unknown error'}` }),
+        JSON.stringify({ 
+          success: false, 
+          error: `Telegram API Error: ${tgData.description || 'Unknown error'}`,
+          details: tgData
+        }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
