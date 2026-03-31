@@ -10,7 +10,6 @@ import {
   FileText,
   ShieldCheck,
   Undo2,
-  Copy,
   Check,
   CreditCard,
   Building,
@@ -20,7 +19,9 @@ import {
   Lock,
   Cookie,
   Search,
-  LayoutGrid
+  Smartphone,
+  QrCode,
+  Wallet
 } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -29,11 +30,15 @@ import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import OptimizedImage from '../components/OptimizedImage';
 import { useSettings } from '../hooks/useSettings';
-import { sendTelegramNotification } from '../lib/notifications';
+import { sendTelegramNotification, sendTelegramDocument } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
 import aboutPoster from '../assets/about-bg.png';
 import SpeechButton from '../components/SpeechButton';
+import InvoicePreviewModal from '../components/InvoicePreviewModal';
+import { generateInvoicePDF, type InvoiceData } from '../lib/invoice/generateInvoicePDF';
+import { numberToWordsUA } from '../lib/utils/numberToWordsUA';
+import { generateInvoiceNumber, formatUkrainianDate } from '../lib/utils/invoiceNumber';
 
 
 const ContactsPage = () => {
@@ -53,7 +58,10 @@ const ContactsPage = () => {
   const [isOfferAccepted, setIsOfferAccepted] = useState(false);
   const [isPrivacyAccepted, setIsPrivacyAccepted] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [ _, setCopiedField] = useState<string | null>(null);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const [invoicePdfBlob, setInvoicePdfBlob] = useState<Blob | null>(null);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -120,12 +128,6 @@ const ContactsPage = () => {
 
   const totalAmount = calculateTotal();
 
-  const handleCopy = (text: string, field: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
-
   const getSelectedService = () => {
     if (!selectedServiceId) return null;
     if (selectedServiceId === 'custom') return { id: 'custom', title: t('contacts.service_custom') || 'Custom Invoice', image: null };
@@ -175,7 +177,7 @@ ${formData.details || 'не вказано'}
   };
 
 
-  const isFormValid = () => {
+  const isOnlinePaymentValid = () => {
     return (
       isOfferAccepted &&
       isPrivacyAccepted &&
@@ -183,6 +185,110 @@ ${formData.details || 'не вказано'}
       selectedServiceId &&
       (selectedServiceId !== 'custom' || parseFloat(customAmount) > 0)
     );
+  };
+
+  const isInvoiceValid = () => {
+    return (
+      isOfferAccepted &&
+      isPrivacyAccepted &&
+      selectedServiceId &&
+      formData.firstName.trim() &&
+      formData.lastName.trim() &&
+      (selectedServiceId !== 'custom' || parseFloat(customAmount) > 0)
+    );
+  };
+
+  const handleInvoicePayment = async () => {
+    if (!isInvoiceValid()) return;
+    setIsGeneratingInvoice(true);
+
+    try {
+      const invoiceNum = generateInvoiceNumber();
+      const contractNum = invoiceNum;
+      const dateStr = formatUkrainianDate();
+      const clientName = `${formData.firstName} ${formData.lastName}`;
+
+      let type: InvoiceData['type'] = 'custom';
+      let serviceDescription = '';
+      let unit = 'Посл.';
+
+      if (selectedServiceId.startsWith('offer-')) {
+        type = 'offer';
+        const slug = selectedServiceId.replace('offer-', '');
+        const offer = offers.find(o => o.slug === slug);
+        if (offer) {
+          const location = offer.location || '';
+          const stayFrom = offer.stay_from || '';
+          const stayTo = offer.stay_to || '';
+          serviceDescription = `Туристичні послуги по бронюванню # ${contractNum}, ${location}, ${stayFrom}-${stayTo}`;
+          unit = 'Доб.';
+        }
+      } else if (selectedServiceId.startsWith('service-')) {
+        type = 'service';
+        const slug = selectedServiceId.replace('service-', '');
+        const service = services.find(s => s.slug === slug);
+        if (service) {
+          serviceDescription = `Консьєрж-послуга: ${service.title} # ${contractNum}`;
+          unit = 'Посл.';
+        }
+      } else if (selectedServiceId === 'custom') {
+        serviceDescription = `Туристичні послуги згідно домовленості # ${contractNum}`;
+        unit = 'Посл.';
+      }
+
+      const amount = totalAmount;
+      const amountInWords = numberToWordsUA(amount);
+
+      const data: InvoiceData = {
+        invoiceNumber: invoiceNum,
+        contractNumber: contractNum,
+        date: dateStr,
+        clientName,
+        type,
+        serviceDescription,
+        unit,
+        amount,
+        amountInWords,
+      };
+
+      const pdfBlob = await generateInvoicePDF(data);
+      setInvoiceData(data);
+      setInvoicePdfBlob(pdfBlob);
+      setShowInvoiceModal(true);
+
+      // Send to Telegram with PDF
+      const message = `
+<b>🧾 Нова заявка — оплата по інвойсу!</b>
+
+<b>👤 Клієнт:</b> ${clientName}
+<b>📞 Телефон:</b> ${formData.phone}
+<b>📧 Email:</b> ${formData.email}
+
+<b>🏷️ Послуга:</b> ${serviceDescription}
+<b>👥 Дорослі:</b> ${adults}
+<b>👶 Діти (до 16):</b> ${children}
+<b>💰 Сума:</b> ${amount.toLocaleString()} UAH
+<b>💳 Оплата:</b> Інвойс
+
+<b>📝 Деталі:</b>
+${formData.details || 'не вказано'}
+      `.trim();
+
+      // Convert blob to base64
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < uint8Array.length; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+      }
+      const pdfBase64 = btoa(binary);
+
+      await sendTelegramDocument(message, pdfBase64, `invoice-${invoiceNum}.pdf`);
+    } catch (error) {
+      console.error('Invoice generation error:', error);
+    } finally {
+      setIsGeneratingInvoice(false);
+    }
   };
 
   return (
@@ -415,59 +521,30 @@ ${formData.details || 'не вказано'}
                       <div className="w-5 h-[1px] bg-[#5cc8bd]" />
                       <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30">{t('contacts.payment_method')}</h3>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">
                       {[
-                        { id: 'liqpay', name: 'LiqPay', sub: 'Apple / Google Pay', icon: <CreditCard className="w-5 h-5" /> },
-                        { id: 'wayforpay', name: 'WayForPay', sub: 'Карти будь-яких банків', icon: <Lock className="w-5 h-5" /> },
-                        { id: 'transfer', name: 'Invoice', sub: 'Реквізити компанії', icon: <FileText className="w-5 h-5" /> },
+                        { id: 'googlepay', name: 'Google Pay', icon: <Wallet className="w-5 h-5" /> },
+                        { id: 'applepay', name: 'Apple Pay', icon: <Smartphone className="w-5 h-5" /> },
+                        { id: 'monopay', name: 'MonoPay QR', icon: <QrCode className="w-5 h-5" /> },
+                        { id: 'liqpay', name: 'Приват24 / LiqPay', icon: <CreditCard className="w-5 h-5" /> },
+                        { id: 'card', name: currentLang === 'ua' ? 'Картка вручну' : 'Manual card', icon: <Lock className="w-5 h-5" /> },
                       ].map((method) => (
                         <button
                           key={method.id}
                           type="button"
                           onClick={() => setSelectedPayment(method.id)}
-                          className={`flex flex-col items-center gap-3 p-5 sm:p-8 rounded-sm border transition-all group ${selectedPayment === method.id
+                          className={`flex flex-col items-center gap-2 md:gap-3 p-4 sm:p-6 rounded-sm border transition-all group ${selectedPayment === method.id
                               ? 'bg-[#5cc8bd]/20 border-[#5cc8bd] text-white'
                               : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/10 hover:border-white/20'
                             }`}
                         >
-                          <div className={`p-3 md:p-4 rounded-full transition-all ${selectedPayment === method.id ? 'bg-[#5cc8bd] text-black shadow-lg shadow-[#5cc8bd]/30' : 'bg-white/5 text-white/20 border border-white/5'}`}>
+                          <div className={`p-3 rounded-full transition-all ${selectedPayment === method.id ? 'bg-[#5cc8bd] text-black shadow-lg shadow-[#5cc8bd]/30' : 'bg-white/5 text-white/20 border border-white/5'}`}>
                             {method.icon}
                           </div>
-                          <div className="text-center">
-                            <p className={`text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-0.5 md:mb-1 transition-colors ${selectedPayment === method.id ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>{method.name}</p>
-                            <p className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest opacity-40">{method.sub}</p>
-                          </div>
+                          <p className={`text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] text-center leading-tight transition-colors ${selectedPayment === method.id ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>{method.name}</p>
                         </button>
                       ))}
                     </div>
-
-                    {selectedPayment && (
-                      <div className="p-8 bg-black/40 border border-white/5 rounded-sm animate-in slide-in-from-top-4 duration-300">
-                        {selectedPayment === 'liqpay' && <p className="text-sm text-white/50 leading-relaxed italic">{t('contacts.payment_liqpay_desc')}</p>}
-                        {selectedPayment === 'wayforpay' && <p className="text-sm text-white/50 leading-relaxed italic">{t('contacts.payment_wayforpay_desc')}</p>}
-                        {selectedPayment === 'transfer' && (
-                          <div className="space-y-5">
-                            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.official_requisites')}</h4>
-                            <div className="space-y-1">
-                              {[
-                                { label: 'ТОВ', value: 'Vogel Family Travel' },
-                                { label: 'IBAN', value: 'UA21 3117 9600 0000 0026 0025 1234' },
-                              ].map((row) => (
-                                <div key={row.label} className="flex justify-between items-center py-4 border-b border-white/5 last:border-0">
-                                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{row.label}</span>
-                                  <div className="flex items-center gap-4">
-                                    <span className="text-sm font-bold text-white tracking-wide">{row.value}</span>
-                                    <button type="button" onClick={() => handleCopy(row.value, row.label)} className="p-2 bg-white/5 border border-white/10 rounded-sm hover:bg-[#5cc8bd] hover:text-black transition-all">
-                                      <Copy className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
 
                   <div className="pt-8 space-y-5">
@@ -489,12 +566,23 @@ ${formData.details || 'не вказано'}
                     ))}
                   </div>
 
-                  <button
-                    disabled={!isFormValid()}
-                    className="w-full py-6 bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] rounded-sm hover:bg-[#5cc8bd] transition-all disabled:opacity-20 mt-8 shadow-2xl active:scale-[0.98]"
-                  >
-                    {t('contacts.pay_btn')}
-                  </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                    <button
+                      type="submit"
+                      disabled={!isOnlinePaymentValid()}
+                      className="py-6 bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] rounded-sm hover:bg-[#5cc8bd] transition-all disabled:opacity-20 shadow-2xl active:scale-[0.98]"
+                    >
+                      {t('contacts.pay_online_btn')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleInvoicePayment}
+                      disabled={!isInvoiceValid() || isGeneratingInvoice}
+                      className="py-6 bg-transparent border-2 border-white/20 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-sm hover:bg-white/10 hover:border-[#5cc8bd] transition-all disabled:opacity-20 shadow-2xl active:scale-[0.98]"
+                    >
+                      {isGeneratingInvoice ? (t('contacts.invoice_generating') || '...') : t('contacts.pay_invoice_btn')}
+                    </button>
+                  </div>
                 </form>
               </div>
             )}
@@ -797,6 +885,15 @@ ${formData.details || 'не вказано'}
             </div>
           </div>
         </div>
+      )}
+
+      {showInvoiceModal && invoiceData && (
+        <InvoicePreviewModal
+          isOpen={showInvoiceModal}
+          onClose={() => setShowInvoiceModal(false)}
+          invoiceData={invoiceData}
+          pdfBlob={invoicePdfBlob}
+        />
       )}
     </main>
   );
