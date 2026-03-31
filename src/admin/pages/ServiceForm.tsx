@@ -128,6 +128,7 @@ export default function ServiceForm() {
       if (isNew && data?.id) {
         navigate(`/admin/services/${data.id}`);
       } else {
+        qc.invalidateQueries({ queryKey: ['admin_service', id] });
         alert('Збережено успішно!');
       }
     },

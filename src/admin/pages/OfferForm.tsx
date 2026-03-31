@@ -259,6 +259,7 @@ export default function OfferForm() {
       if (isNew && data?.id) {
         navigate(`/admin/offers/${data.id}`);
       } else {
+        qc.invalidateQueries({ queryKey: ['admin_offer', id] });
         alert('Збережено успішно!');
       }
     },

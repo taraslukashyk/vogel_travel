@@ -123,6 +123,7 @@ export default function BlogForm() {
       if (isNew && data?.id) {
         navigate(`/admin/blog/${data.id}`);
       } else {
+        qc.invalidateQueries({ queryKey: ['admin_blog_post', id] });
         alert('Збережено успішно!');
       }
     },

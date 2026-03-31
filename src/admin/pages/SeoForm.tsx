@@ -88,6 +88,7 @@ export default function SeoForm() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin_seo'] });
       qc.invalidateQueries({ queryKey: ['seo_meta'] });
+      qc.invalidateQueries({ queryKey: ['admin_seo_entry', id] });
       alert('Збережено успішно!');
     },
   });

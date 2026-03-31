@@ -141,6 +141,7 @@ export default function PartnerForm() {
       if (isNew && data?.id) {
         navigate(`/admin/partners/${data.id}`);
       } else {
+        qc.invalidateQueries({ queryKey: ['admin_partner', id] });
         alert('Збережено успішно!');
       }
     },
