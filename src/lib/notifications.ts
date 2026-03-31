@@ -7,7 +7,7 @@ export const sendTelegramDocument = async (message: string, pdfBase64: string, f
     });
 
     if (error) {
-      console.error('Edge Function error:', error);
+      console.error('Edge Function invocation error:', error);
       return { success: false, error: error.message || 'Помилка виконання функції' };
     }
 
@@ -30,7 +30,7 @@ export const sendTelegramNotification = async (message: string) => {
     });
 
     if (error) {
-      console.error('Edge Function error:', error);
+      console.error('Edge Function invocation error:', error);
       return { success: false, error: error.message || 'Помилка виконання функції' };
     }
 

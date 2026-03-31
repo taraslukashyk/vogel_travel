@@ -39,6 +39,7 @@ import InvoicePreviewModal from '../components/InvoicePreviewModal';
 import { generateInvoicePDF, type InvoiceData } from '../lib/invoice/generateInvoicePDF';
 import { numberToWordsUA } from '../lib/utils/numberToWordsUA';
 import { generateInvoiceNumber, formatUkrainianDate } from '../lib/utils/invoiceNumber';
+import { escapeHTML } from '../lib/utils/html';
 
 
 const ContactsPage = () => {
@@ -147,12 +148,6 @@ const ContactsPage = () => {
     return null;
   };
 
-  const escapeHTML = (text: string) => {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  };
 
   const selectedService = getSelectedService();
 

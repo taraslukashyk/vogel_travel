@@ -7,6 +7,7 @@ import { sendTelegramNotification } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
+import { escapeHTML } from '../lib/utils/html';
 
 interface OrderTourModalProps {
   isOpen: boolean;
@@ -44,8 +45,8 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
     const telegramMessage = `
 <b>📩 ${isUA ? 'Новий запит на тур' : 'New Tour Request'} (Modal)</b>
 
-<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${contact}
-<b>💬 ${isUA ? 'Побажання' : 'Wishes'}:</b> ${message || (isUA ? 'Без повідомлення' : 'No message')}
+<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${escapeHTML(contact)}
+<b>💬 ${isUA ? 'Побажання' : 'Wishes'}:</b> ${message ? escapeHTML(message) : (isUA ? 'Без повідомлення' : 'No message')}
     `.trim();
 
     const result = await sendTelegramNotification(telegramMessage);

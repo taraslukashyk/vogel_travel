@@ -53,6 +53,7 @@ serve(async (req) => {
       .single()
 
     if (settingsError) {
+      console.error('Database error fetching settings:', settingsError)
       return new Response(
         JSON.stringify({ success: false, error: `DB error: ${settingsError.message}` }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -4,6 +4,7 @@ import SpeechButton from './SpeechButton';
 import { sendTelegramNotification } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
+import { escapeHTML } from '../lib/utils/html';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -37,8 +38,8 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
     const telegramMessage = `
 <b>📩 ${isUA ? "Новий запит на зворотній зв'язок" : "New Feedback Request"} (Modal)</b>
 
-<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${contact}
-<b>💬 ${isUA ? 'Повідомлення' : 'Message'}:</b> ${message || (isUA ? 'Без повідомлення' : 'No message')}
+<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${escapeHTML(contact)}
+<b>💬 ${isUA ? 'Повідомлення' : 'Message'}:</b> ${message ? escapeHTML(message) : (isUA ? 'Без повідомлення' : 'No message')}
     `.trim();
 
     const result = await sendTelegramNotification(telegramMessage);
