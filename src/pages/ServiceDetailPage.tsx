@@ -95,7 +95,7 @@ const ServiceDetailPage = () => {
   const prevImg = () => setCurrentImg(prev => (prev - 1 + imageSections.length) % imageSections.length);
 
   return (
-    <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen">
+    <main className="w-full bg-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-x-hidden">
       <SEOHead
         pagePath={`/${currentLang}/services/${slug}`}
         title={t(service, 'seo_title') || `${title} — Vogel Family Travel`}

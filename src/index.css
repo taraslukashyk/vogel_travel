@@ -6,7 +6,7 @@
 
 @layer base {
   html, body {
-    @apply w-full;
+    @apply w-full overflow-x-hidden;
     position: relative;
   }
   body {

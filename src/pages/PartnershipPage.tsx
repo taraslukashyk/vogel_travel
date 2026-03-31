@@ -34,7 +34,7 @@ const PartnershipPage = () => {
     }));
 
   return (
-    <div className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px]">
+    <main className="w-full bg-black min-h-screen text-white pt-[76px] xl:pt-[85px] overflow-x-hidden">
       <SEOHead 
         pagePath={`/${currentLang}/partners`} 
         fallbackTitle={tr('nav.partners') + " — Vogel Family Travel"} 
@@ -172,7 +172,7 @@ const PartnershipPage = () => {
       </section>
 
       <FinalQuote />
-    </div>
+    </main>
   );
 };
 

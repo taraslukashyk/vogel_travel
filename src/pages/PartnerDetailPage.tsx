@@ -65,7 +65,7 @@ const PartnerDetailPage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
+    <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20 overflow-x-hidden">
       <SEOHead
         pagePath={`/${currentLang}/partners/${slug}`}
         title={t(partner, 'seo_title') || `${name} — Vogel Family Travel`}

@@ -82,7 +82,7 @@ const ArticlePage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20">
+    <main className="min-h-screen bg-zinc-200/50 text-gray-900 selection:bg-[#5cc8bd]/20 overflow-x-hidden">
       <SEOHead
         pagePath={`/${currentLang}/blog/${slug}`}
         title={t(post, 'seo_title') || `${title} — Vogel Family Travel`}
