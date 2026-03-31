@@ -17,7 +17,6 @@ export default defineConfig({
           // Heavy libraries
           'vendor-map': ['maplibre-gl'],
           'vendor-icons': ['lucide-react'],
-          'vendor-animation': ['gsap'],
           // Admin panel (only loads when navigating to /admin)
           'vendor-admin-editor': ['@tiptap/react', '@tiptap/starter-kit'],
           'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],

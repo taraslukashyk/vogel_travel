@@ -36,7 +36,7 @@ const Hero = () => {
 
         {/* Mobile: Logo */}
         <div className="lg:hidden flex justify-center w-full mb-2">
-          <img src={logo} alt="Vogel Logo" className="w-[216px] sm:w-[288px] h-auto object-contain opacity-90 drop-shadow-2xl" />
+          <img src={logo} alt="Vogel Logo" width={288} height={288} className="w-[216px] sm:w-[288px] h-auto object-contain opacity-90 drop-shadow-2xl" />
         </div>
 
         {/* Text Content */}
@@ -63,7 +63,7 @@ const Hero = () => {
 
         {/* Desktop: Huge Logo Ornament */}
         <div className="hidden lg:flex flex-col items-end justify-center h-full pointer-events-none">
-          <img src={logo} alt="Vogel Logo Ornament" className="w-[648px] xl:w-[828px] object-contain opacity-80 drop-shadow-2xl" />
+          <img src={logo} alt="Vogel Logo Ornament" width={828} height={828} className="w-[648px] xl:w-[828px] object-contain opacity-80 drop-shadow-2xl" />
         </div>
 
       </div>

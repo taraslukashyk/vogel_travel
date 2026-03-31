@@ -62,7 +62,7 @@ const AboutPage = () => {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           onLoadedData={() => {
             window.__VOGEL_VIDEO_READY__ = true;
           }}

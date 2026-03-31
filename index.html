@@ -13,11 +13,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://www.googletagmanager.com" />
 
-  <!-- Google Fonts: loaded with display=swap to avoid render-blocking -->
+  <!-- Google Fonts: async non-blocking load (eliminates render-blocking resource) -->
   <link
+    rel="preload"
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700;800&family=Marck+Script&display=swap"
-    rel="stylesheet"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
   />
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700;800&family=Marck+Script&display=swap"
+      rel="stylesheet"
+    />
+  </noscript>
 
   <!-- Google Analytics (deferred to not block paint) -->
   <script defer src="https://www.googletagmanager.com/gtag/js?id=G-B1Z12S3RX7"></script>
