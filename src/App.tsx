@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load public page components
 const Home = lazy(() => import('./pages/Home'));
@@ -191,7 +192,8 @@ function App() {
         <PageLoader progress={progress} isVideoWaiting={isVideoWaiting} isFadingOut={isFadingOut} />
       )}
 
-      <Suspense fallback={<PageLoader />}>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Navigate to={`/${i18n.language || 'ua'}`} replace />} />
           
@@ -238,6 +240,7 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </Router>
   )
 }

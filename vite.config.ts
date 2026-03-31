@@ -11,16 +11,6 @@ export default defineConfig({
     cssMinify: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Public site core
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Heavy libraries
-          'vendor-map': ['maplibre-gl'],
-          'vendor-icons': ['lucide-react'],
-          // Admin panel (only loads when navigating to /admin)
-          'vendor-admin-editor': ['@tiptap/react', '@tiptap/starter-kit'],
-          'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
-        },
       },
     },
     chunkSizeWarningLimit: 1000,

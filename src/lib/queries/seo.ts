@@ -10,8 +10,8 @@ export function useSeoMeta(pagePath: string) {
         .from('seo_meta')
         .select('*')
         .eq('page_path', pagePath)
-        .single();
-      if (error && error.code !== 'PGRST116') throw error;
+        .maybeSingle();
+      if (error) throw error;
       return data as DBSeoMeta | null;
     },
     staleTime: 10 * 60 * 1000,
