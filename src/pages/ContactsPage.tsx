@@ -147,6 +147,13 @@ const ContactsPage = () => {
     return null;
   };
 
+  const escapeHTML = (text: string) => {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  };
+
   const selectedService = getSelectedService();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,23 +161,26 @@ const ContactsPage = () => {
     
     // Prepare message for Telegram
     const message = `
-<b>🔔 Нова заявка на бронювання!</b>
+<b>🔔 ${escapeHTML(t('contacts.new_request_btn') || 'Нова заявка!')}</b>
 
-<b>👤 Клієнт:</b> ${formData.firstName} ${formData.lastName}
-<b>📞 Телефон:</b> ${formData.phone}
-<b>📧 Email:</b> ${formData.email}
+<b>👤 ${escapeHTML(t('contacts.personal_data') || 'Клієнт')}:</b> ${escapeHTML(formData.firstName)} ${escapeHTML(formData.lastName)}
+<b>📞 Телефон:</b> ${escapeHTML(formData.phone)}
+<b>📧 Email:</b> ${escapeHTML(formData.email)}
 
-<b>🏷️ Послуга:</b> ${selectedServiceId}
+<b>🏷️ Послуга:</b> ${escapeHTML(selectedService?.title || selectedServiceId)}
 <b>👥 Дорослі:</b> ${adults}
 <b>👶 Діти (до 16):</b> ${children}
 <b>💰 Сума:</b> ${totalAmount.toLocaleString()} UAH
 <b>💳 Оплата:</b> ${selectedPayment}
 
 <b>📝 Деталі:</b>
-${formData.details || 'не вказано'}
+${escapeHTML(formData.details || 'не вказано')}
     `.trim();
 
-    await sendTelegramNotification(message);
+    const result = await sendTelegramNotification(message);
+    if (!result.success) {
+      console.error('Telegram notification error:', result.error);
+    }
     
     setShowSuccess(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -260,18 +270,18 @@ ${formData.details || 'не вказано'}
       const message = `
 <b>🧾 Нова заявка — оплата по інвойсу!</b>
 
-<b>👤 Клієнт:</b> ${clientName}
-<b>📞 Телефон:</b> ${formData.phone}
-<b>📧 Email:</b> ${formData.email}
+<b>👤 Клієнт:</b> ${escapeHTML(clientName)}
+<b>📞 Телефон:</b> ${escapeHTML(formData.phone)}
+<b>📧 Email:</b> ${escapeHTML(formData.email)}
 
-<b>🏷️ Послуга:</b> ${serviceDescription}
+<b>🏷️ Послуга:</b> ${escapeHTML(serviceDescription)}
 <b>👥 Дорослі:</b> ${adults}
 <b>👶 Діти (до 16):</b> ${children}
 <b>💰 Сума:</b> ${amount.toLocaleString()} UAH
 <b>💳 Оплата:</b> Інвойс
 
 <b>📝 Деталі:</b>
-${formData.details || 'не вказано'}
+${escapeHTML(formData.details || 'не вказано')}
       `.trim();
 
       // Convert blob to base64
@@ -283,7 +293,10 @@ ${formData.details || 'не вказано'}
       }
       const pdfBase64 = btoa(binary);
 
-      await sendTelegramDocument(message, pdfBase64, `invoice-${invoiceNum}.pdf`);
+      const result = await sendTelegramDocument(message, pdfBase64, `invoice-${invoiceNum}.pdf`);
+      if (!result.success) {
+        console.error('Telegram document error:', result.error);
+      }
     } catch (error) {
       console.error('Invoice generation error:', error);
     } finally {

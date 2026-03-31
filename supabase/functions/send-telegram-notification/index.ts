@@ -51,7 +51,6 @@ serve(async (req) => {
     const { data: settings, error: settingsError } = await supabase
       .from('settings')
       .select('telegram_bot_token, telegram_chat_id')
-      .eq('id', 1)
       .single()
 
     if (settingsError) {
