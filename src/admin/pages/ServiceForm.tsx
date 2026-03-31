@@ -97,12 +97,18 @@ export default function ServiceForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = { ...form };
+      // type_en and image_alt are currently missing from the DB schema, emitting them prevents PGRST204 errors
+      const { type_en, image_alt, ...validForm } = form;
+      
+      const payload = { ...validForm };
       if (isNew) {
         const { data: maxOrder } = await supabase.from('services').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
         const { data, error } = await supabase.from('services').insert({ ...payload, sort_order }).select().single();
-        if (error) throw error;
+        if (error) {
+          console.error("Insert error:", error);
+          throw error;
+        }
         return data;
       } else {
         const { error } = await supabase.from('services').update({ 
@@ -110,7 +116,10 @@ export default function ServiceForm() {
           slug_en: form.slug, // Sync English slug with Ukrainian
           updated_at: new Date().toISOString() 
         }).eq('id', Number(id));
-        if (error) throw error;
+        if (error) {
+          console.error("Update error:", error);
+          throw error;
+        }
       }
     },
     onSuccess: (data: any) => {
