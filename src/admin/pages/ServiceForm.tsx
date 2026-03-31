@@ -97,10 +97,7 @@ export default function ServiceForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // type_en and image_alt are currently missing from the DB schema, emitting them prevents PGRST204 errors
-      const { type_en, image_alt, ...validForm } = form;
-      
-      const payload = { ...validForm };
+      const payload = { ...form };
       if (isNew) {
         const { data: maxOrder } = await supabase.from('services').select('sort_order').order('sort_order', { ascending: false }).limit(1);
         const sort_order = (maxOrder?.[0]?.sort_order ?? -1) + 1;
