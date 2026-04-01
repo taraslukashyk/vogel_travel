@@ -204,7 +204,8 @@ ${escapeHTML(formData.details || 'не вказано')}
         });
 
         console.log('Sending voice, base64 length:', base64?.length);
-        const voiceRes = await sendTelegramVoice(`${t('contacts.new_request_btn')} (аудіо)`, base64, 'voice.ogg');
+        const voiceCaption = `${currentLang === 'ua' ? 'Голосове повідомлення від' : 'Voice message from'}: ${formData.firstName} ${formData.lastName}`;
+        const voiceRes = await sendTelegramVoice(voiceCaption, base64, 'voice.ogg', result.messageId);
         if (!voiceRes.success) {
           console.error('Telegram voice error:', voiceRes.error);
         }

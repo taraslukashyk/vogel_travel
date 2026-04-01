@@ -20,6 +20,7 @@ serve(async (req) => {
     message = body.message || ''
     audioBase64 = body.audio || ''
     filename = body.filename || 'voice.ogg'
+    const replyToMessageId = body.reply_to_message_id || null
 
     console.log('Received request:', { 
       hasMessage: !!message, 
@@ -77,6 +78,7 @@ serve(async (req) => {
     const formData = new FormData()
     formData.append('chat_id', settings.telegram_chat_id)
     if (message) formData.append('caption', message.substring(0, 1024))
+    if (replyToMessageId) formData.append('reply_to_message_id', replyToMessageId.toString())
     
     // Use generic 'audio' field instead of 'voice' to avoid Opus restriction
     const audioBlob = new Blob([bytes], { type: 'audio/ogg' })
@@ -99,6 +101,7 @@ serve(async (req) => {
       const formData2 = new FormData()
       formData2.append('chat_id', settings.telegram_chat_id)
       if (message) formData2.append('caption', message.substring(0, 1024))
+      if (replyToMessageId) formData2.append('reply_to_message_id', replyToMessageId.toString())
       
       const audioBlob2 = new Blob([bytes], { type: 'audio/ogg' })
       formData2.append('audio', audioBlob2, 'voice.ogg')

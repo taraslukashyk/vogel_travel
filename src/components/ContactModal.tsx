@@ -62,7 +62,8 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
           });
 
           console.log('Sending modal voice, base64 length:', base64?.length);
-          const voiceRes = await sendTelegramVoice(`${isUA ? 'Запит (аудіо)' : 'Feedback (audio)'}`, base64, 'voice.ogg');
+          const voiceCaption = `${isUA ? 'Голосове повідомлення від' : 'Voice message from'}: ${contact}`;
+          const voiceRes = await sendTelegramVoice(voiceCaption, base64, 'voice.ogg', result.messageId);
           if (!voiceRes.success) {
             console.error('Telegram voice error:', voiceRes.error);
           }

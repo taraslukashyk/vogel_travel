@@ -38,8 +38,8 @@ export const sendTelegramNotification = async (message: string) => {
       console.error('Notification failed:', data?.error);
       return { success: false, error: data?.error || 'Помилка Telegram API' };
     }
-
-    return { success: true };
+    
+    return { success: true, messageId: data.message_id };
   } catch (error: any) {
     console.error('Error sending telegram notification:', error);
     return { success: false, error: error.message || 'Невідома помилка' };
@@ -47,10 +47,10 @@ export const sendTelegramNotification = async (message: string) => {
 };
 
 
-export const sendTelegramVoice = async (message: string, audioBase64: string, filename: string) => {
+export const sendTelegramVoice = async (message: string, audioBase64: string, filename: string, replyToMessageId?: number) => {
   try {
     const { data, error } = await supabase.functions.invoke('send-telegram-voice', {
-      body: { message, audio: audioBase64, filename },
+      body: { message, audio: audioBase64, filename, reply_to_message_id: replyToMessageId },
     });
 
     if (error) {

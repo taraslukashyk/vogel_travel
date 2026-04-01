@@ -61,7 +61,8 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
           reader.onloadend = async () => {
             const base64data = reader.result as string;
             const base64 = base64data.split(',')[1];
-            const voiceRes = await sendTelegramVoice(`${isUA ? 'Запит на тур (аудіо)' : 'Tour request (audio)'}`, base64, 'voice.ogg');
+            const voiceCaption = `${isUA ? 'Голосове повідомлення від' : 'Voice message from'}: ${contact}`;
+            const voiceRes = await sendTelegramVoice(voiceCaption, base64, 'voice.ogg', result.messageId);
             if (!voiceRes.success) {
               console.error('Telegram voice error:', voiceRes.error);
             }
