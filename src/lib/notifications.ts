@@ -46,3 +46,26 @@ export const sendTelegramNotification = async (message: string) => {
   }
 };
 
+
+export const sendTelegramVoice = async (message: string, audioBase64: string, filename: string) => {
+  try {
+    const { data, error } = await supabase.functions.invoke('send-telegram-voice', {
+      body: { message, audio: audioBase64, filename },
+    });
+
+    if (error) {
+      console.error('Edge Function invocation error:', error);
+      return { success: false, error: error.message || 'Помилка виконання функції' };
+    }
+
+    if (!data?.success) {
+      console.error('Voice send failed:', data?.error);
+      return { success: false, error: data?.error || 'Помилка Telegram API' };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error sending telegram voice:', error);
+    return { success: false, error: error.message || 'Невідома помилка' };
+  }
+};

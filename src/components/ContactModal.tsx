@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Send, CheckCircle2, X } from 'lucide-react';
-import SpeechButton from './SpeechButton';
-import { sendTelegramNotification } from '../lib/notifications';
+import VoiceRecorder from './VoiceRecorder';
+import { sendTelegramNotification, sendTelegramVoice } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
 import { escapeHTML } from '../lib/utils/html';
@@ -18,6 +18,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
   const isUA = currentLang === 'ua';
   const [contact, setContact] = useState('');
   const [message, setMessage] = useState(initialMessage);
+  const voiceBlobRef = useRef<Blob | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -25,6 +26,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
   useEffect(() => {
     if (isOpen) {
       setMessage(initialMessage);
+      voiceBlobRef.current = null;
       setIsSuccess(false);
     }
   }, [isOpen, initialMessage]);
@@ -32,7 +34,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contact) return;
-
+    console.log('ContactModal submit, voiceRef:', voiceBlobRef.current);
     setIsSubmitting(true);
     
     const telegramMessage = `
@@ -45,9 +47,34 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
     const result = await sendTelegramNotification(telegramMessage);
     
     if (result.success) {
+      // Send voice if exists
+      if (voiceBlobRef.current) {
+        const blob = voiceBlobRef.current;
+        try {
+          const base64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const r = reader.result as string;
+              resolve(r.split(',')[1]);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+
+          console.log('Sending modal voice, base64 length:', base64?.length);
+          const voiceRes = await sendTelegramVoice(`${isUA ? 'Запит (аудіо)' : 'Feedback (audio)'}`, base64, 'voice.ogg');
+          if (!voiceRes.success) {
+            console.error('Telegram voice error:', voiceRes.error);
+          }
+        } catch (err) {
+          console.error('Error preparing voice message:', err);
+        }
+      }
+
       setIsSuccess(true);
       setContact('');
       setMessage('');
+      voiceBlobRef.current = null;
       setTimeout(() => {
         setIsSuccess(false);
         onClose();
@@ -114,10 +141,9 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                         className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/20"
                         disabled={isSubmitting}
                       />
-                      <SpeechButton
-                        lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
-                        onResult={(text) => setMessage((prev) => prev ? prev + ' ' + text : text)}
-                      />
+                      <div className="flex items-center border-l border-white/10 pl-2">
+                        <VoiceRecorder onRecordingComplete={(blob) => { voiceBlobRef.current = blob; console.log('Modal voice recorded, size:', blob.size); }} />
+                      </div>
                     </div>
                   </div>
 

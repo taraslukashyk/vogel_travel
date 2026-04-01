@@ -31,11 +31,11 @@ import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import OptimizedImage from '../components/OptimizedImage';
 import { useSettings } from '../hooks/useSettings';
-import { sendTelegramNotification, sendTelegramDocument } from '../lib/notifications';
+import { sendTelegramNotification, sendTelegramDocument, sendTelegramVoice } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
 import aboutPoster from '../assets/about-bg.png';
-import SpeechButton from '../components/SpeechButton';
+import VoiceRecorder from '../components/VoiceRecorder';
 import InvoicePreviewModal from '../components/InvoicePreviewModal';
 import { generateInvoicePDF, type InvoiceData } from '../lib/invoice/generateInvoicePDF';
 import { numberToWordsUA } from '../lib/utils/numberToWordsUA';
@@ -65,6 +65,7 @@ const ContactsPage = () => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const [invoicePdfBlob, setInvoicePdfBlob] = useState<Blob | null>(null);
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
+  const voiceBlobRef = useRef<Blob | null>(null);
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -162,6 +163,7 @@ const ContactsPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('handleSubmit called, voiceRef:', voiceBlobRef.current);
     
     // Prepare message for Telegram
     const message = `
@@ -186,7 +188,33 @@ ${escapeHTML(formData.details || 'не вказано')}
       console.error('Telegram notification error:', result.error);
     }
     
+    // Send voice if exists
+    console.log('voiceBlob at submit:', voiceBlobRef.current);
+    if (voiceBlobRef.current) {
+      const blob = voiceBlobRef.current;
+      try {
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = reader.result as string;
+            resolve(result.split(',')[1]);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+
+        console.log('Sending voice, base64 length:', base64?.length);
+        const voiceRes = await sendTelegramVoice(`${t('contacts.new_request_btn')} (аудіо)`, base64, 'voice.ogg');
+        if (!voiceRes.success) {
+          console.error('Telegram voice error:', voiceRes.error);
+        }
+      } catch (err) {
+        console.error('Error preparing voice message:', err);
+      }
+    }
+    
     setShowSuccess(true);
+    voiceBlobRef.current = null;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -505,15 +533,16 @@ ${escapeHTML(formData.details || 'не вказано')}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between ml-1">
                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40">{t('contacts.details_label')}</label>
-                        <SpeechButton
-                          lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
-                          onResult={(text) => {
-                            const prev = formData.details;
-                            handleInputChange({ target: { name: 'details', value: prev ? prev + ' ' + text : text } } as React.ChangeEvent<HTMLTextAreaElement>);
-                          }}
-                        />
+                        <VoiceRecorder onRecordingComplete={(blob) => { voiceBlobRef.current = blob; console.log('Voice recorded, size:', blob.size); }} />
                       </div>
-                      <textarea name="details" value={formData.details} onChange={handleInputChange} rows={3} placeholder={t('contacts.details_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" />
+                      <textarea 
+                        name="details" 
+                        value={formData.details} 
+                        onChange={handleInputChange} 
+                        rows={3} 
+                        placeholder={t('contacts.details_placeholder')} 
+                        className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" 
+                      />
                     </div>
 
 

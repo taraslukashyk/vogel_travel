@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
 import { X, ArrowRight, Send, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
-import SpeechButton from './SpeechButton';
+import VoiceRecorder from './VoiceRecorder';
 import { useOffers } from '../lib/queries/offers';
 import { Link } from 'react-router-dom';
-import { sendTelegramNotification } from '../lib/notifications';
+import { sendTelegramNotification, sendTelegramVoice } from '../lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
@@ -24,6 +24,7 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
   
   const [contact, setContact] = useState('');
   const [message, setMessage] = useState('');
+  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -52,9 +53,28 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
     const result = await sendTelegramNotification(telegramMessage);
     
     if (result.success) {
+      // Send voice if exists
+      if (voiceBlob) {
+        try {
+          const reader = new FileReader();
+          reader.readAsDataURL(voiceBlob);
+          reader.onloadend = async () => {
+            const base64data = reader.result as string;
+            const base64 = base64data.split(',')[1];
+            const voiceRes = await sendTelegramVoice(`${isUA ? 'Запит на тур (аудіо)' : 'Tour request (audio)'}`, base64, 'voice.ogg');
+            if (!voiceRes.success) {
+              console.error('Telegram voice error:', voiceRes.error);
+            }
+          };
+        } catch (err) {
+          console.error('Error preparing voice message:', err);
+        }
+      }
+
       setIsSuccess(true);
       setContact('');
       setMessage('');
+      setVoiceBlob(null);
       setTimeout(() => {
         setIsSuccess(false);
         onClose();
@@ -214,10 +234,9 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
                           className="w-full outline-none text-white font-inter font-semibold text-xs md:text-sm border-none p-0 bg-transparent placeholder-white/20"
                           disabled={isSubmitting}
                         />
-                        <SpeechButton
-                          lang={currentLang === 'ua' ? 'uk-UA' : 'en-US'}
-                          onResult={(text) => setMessage((prev) => prev ? prev + ' ' + text : text)}
-                        />
+                        <div className="flex items-center border-l border-white/10 pl-2">
+                          <VoiceRecorder onRecordingComplete={setVoiceBlob} />
+                        </div>
                       </div>
                     </div>
 
