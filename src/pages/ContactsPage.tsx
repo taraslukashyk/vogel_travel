@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Phone,
   Mail,
@@ -43,6 +44,7 @@ import { escapeHTML } from '../lib/utils/html';
 
 
 const ContactsPage = () => {
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { currentLang } = useLanguage();
   const { data: offers = [] } = useOffers();
@@ -75,6 +77,13 @@ const ContactsPage = () => {
     email: '',
     details: '',
   });
+
+  useEffect(() => {
+    const serviceParam = searchParams.get('service');
+    if (serviceParam) {
+      setSelectedServiceId(serviceParam);
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

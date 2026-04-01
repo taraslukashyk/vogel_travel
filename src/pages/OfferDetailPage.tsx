@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { useOffer } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 const OfferDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t: tr } = useTranslation();
   const { currentLang, l } = useLanguage();
   const { t, sections: getSections } = useLanguageContent();
@@ -216,7 +217,7 @@ const OfferDetailPage = () => {
               {/* Action Buttons */}
               <div className="flex flex-row gap-2 font-montserrat">
                 <button 
-                  onClick={() => setIsContactModalOpen(true)}
+                  onClick={() => navigate(l(`/contacts?service=offer-${slug}`))}
                   className="flex-1 py-3.5 md:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[12px] md:text-lg lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
                 >
                   <MessageSquare className="w-4 h-4 " strokeWidth={2.5} />

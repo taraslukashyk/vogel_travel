@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { useService } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 const ServiceDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { currentLang, l } = useLanguage();
   const { t, sections: getSections } = useLanguageContent();
   const { t: tr } = useTranslation();
@@ -171,7 +172,10 @@ const ServiceDetailPage = () => {
               )}
 
               <div className="flex flex-row gap-3 font-montserrat">
-                <button className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3">
+                <button 
+                  onClick={() => navigate(l(`/contacts?service=service-${slug}`))}
+                  className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                >
                   <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
                   <span>{tr('offers.order_manager')}</span>
                 </button>
