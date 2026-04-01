@@ -86,6 +86,7 @@ export default function SeoForm() {
         canonical_url: form.canonical_url || null,
         updated_at: new Date().toISOString(),
       };
+      delete (payload as any).slug;
       const { error } = await supabase.from('seo_meta').update(payload).eq('id', Number(id));
       if (error) throw error;
     },
