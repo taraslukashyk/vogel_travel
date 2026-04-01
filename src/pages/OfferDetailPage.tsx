@@ -129,7 +129,7 @@ const OfferDetailPage = () => {
 
         {/* Left Side: Hero Image (3/5, Edge-to-Edge) */}
         <div
-          className="w-full lg:w-[60%] relative z-20 h-40 md:h-48 lg:h-auto overflow-hidden cursor-zoom-in group"
+          className="w-full lg:w-[60%] relative z-20 h-60 md:h-72 lg:h-auto overflow-hidden cursor-zoom-in group"
           onClick={() => openLightbox(offer.image)}
         >
           <img
@@ -156,7 +156,7 @@ const OfferDetailPage = () => {
             <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/30 via-transparent to-transparent" />
           </div>
 
-          <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-24 pb-8 md:pt-28 md:pb-12 lg:pt-40 lg:pb-24 w-full">
+          <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-10 pb-8 md:pt-28 md:pb-12 lg:pt-40 lg:pb-24 w-full">
             {/* Back button */}
             <Link
               to={l('/offers')}
