@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import { Mic, Square, Trash2, Play, Pause } from 'lucide-react';
 
 interface VoiceRecorderProps {
