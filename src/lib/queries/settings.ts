@@ -10,6 +10,7 @@ export interface SiteSettings {
   instagram_url: string;
   facebook_url: string;
   telegram_url: string;
+  telegram_group_url?: string;
   whatsapp_url: string;
   telegram_bot_token?: string;
   telegram_chat_id?: string;

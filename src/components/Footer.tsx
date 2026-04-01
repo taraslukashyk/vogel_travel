@@ -1,4 +1,5 @@
 import { Instagram, Send, MessageCircle, Facebook } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import { useSettings } from '../hooks/useSettings';
@@ -57,20 +58,29 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row gap-8 items-start mb-8">
               {/* QR Code Placeholder */}
               <a
-                href={settings?.telegram_url || 'https://t.me/Taras_luka'}
+                href={settings?.telegram_group_url || 'https://t.me/VogelTravelGroup'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-40 h-40 bg-white p-2 rounded-sm shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500"
+                className="w-40 h-40 bg-white p-3 rounded-xl shrink-0 flex items-center justify-center group cursor-pointer hover:scale-105 transition-all duration-500 shadow-[0_10px_30px_rgba(255,255,255,0.1)] relative overflow-hidden"
               >
-
-                {/* This represents a QR code */}
-                <div className="w-full h-full border-2 border-black border-dashed flex items-center justify-center opacity-80">
-                  <div className="grid grid-cols-3 gap-1">
-                    {[...Array(9)].map((_, i) => (
-                      <div key={i} className="w-8 h-8 bg-black/20" />
-                    ))}
-                  </div>
-                </div>
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <QRCodeCanvas 
+                  value={settings?.telegram_group_url || 'https://t.me/VogelTravelGroup'}
+                  size={140}
+                  level="H"
+                  includeMargin={false}
+                  imageSettings={{
+                    src: logo,
+                    x: undefined,
+                    y: undefined,
+                    height: 24,
+                    width: 24,
+                    excavate: true,
+                  }}
+                  style={{ width: '100%', height: '100%' }}
+                />
               </a>
 
               <div className="flex flex-col justify-center py-2 text-left">
