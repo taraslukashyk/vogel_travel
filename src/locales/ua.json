@@ -139,7 +139,7 @@
   "contacts": {
     "title": "Контакти та Оплата",
     "hero_title": "Оплата послуг",
-    "hero_subtitle": "& Бронювання",
+    "hero_subtitle": "& Контакти",
     "hero_description": "Vogel Family Travel — це найвищий рівень сервісу. Ми на зв'язку 24/7 для наших клієнтів по всьому світу.",
     "success_title": "Дякуємо!",
     "success_description": "Вашу заявку прийнято до обробки. Пріоритетний менеджер сконтактує з вами протягом 15 хвилин.",
@@ -178,7 +178,7 @@
     "privacy_policy_link": "Політикою конфіденційності",
     "pay_btn": "Перейти до оплати",
     "pay_online_btn": "Перейти до оплати онлайн",
-    "pay_invoice_btn": "Оплатити по інвойсу",
+    "pay_invoice_btn": "Отримати інвойс",
     "invoice_preview_title": "Рахунок на оплату",
     "invoice_download_btn": "Завантажити PDF",
     "invoice_generating": "Генерація рахунку...",
