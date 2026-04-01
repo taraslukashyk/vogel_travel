@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, MessageCircle, X } from 'lucide-react';
 import { useService } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
+import ContactModal from '../components/ContactModal';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ const ServiceDetailPage = () => {
   const { data: service, isLoading } = useService(slug!);
 
   const [currentImg, setCurrentImg] = useState(0);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const minSwipeDistance = 50;
@@ -171,24 +173,40 @@ const ServiceDetailPage = () => {
                 </ul>
               )}
 
-              <div className="flex flex-row gap-3 font-montserrat">
+              <div className="flex flex-col gap-3 font-montserrat tracking-tight">
+                <div className="flex flex-row gap-3">
+                  <button 
+                    onClick={() => navigate(l(`/contacts?service=service-${slug}`))}
+                    className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                  >
+                    <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
+                    <span>{tr('offers.order_manager')}</span>
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="w-14 lg:w-16 h-14 lg:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
+                  >
+                    <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
+                  </button>
+                </div>
+
                 <button 
-                  onClick={() => navigate(l(`/contacts?service=service-${slug}`))}
-                  className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="w-full py-4 px-6 border border-white/20 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300 rounded-sm text-[12px] lg:text-[14px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3"
                 >
-                  <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
-                  <span>{tr('offers.order_manager')}</span>
-                </button>
-                <button
-                  onClick={handleShare}
-                  className="w-14 lg:w-16 h-14 lg:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
-                >
-                  <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
+                  <MessageCircle className="w-4 h-4 lg:w-5 lg:h-5 text-[#5cc8bd]" />
+                  <span>{tr('offers.clarify_details')}</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
+
+        <ContactModal 
+          isOpen={isContactModalOpen}
+          onClose={() => setIsContactModalOpen(false)}
+          initialMessage={`${tr('offers.interest_question')} ${title}`}
+        />
       </section>
 
       {/* ── Text & List Sections ── */}

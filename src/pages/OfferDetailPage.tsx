@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
-import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, X } from 'lucide-react';
+import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, MessageCircle, X } from 'lucide-react';
 import { useOffer } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
 import ContactModal from '../components/ContactModal';
@@ -215,19 +215,29 @@ const OfferDetailPage = () => {
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-row gap-2 font-montserrat">
+              <div className="flex flex-col gap-3 font-montserrat tracking-tight">
+                <div className="flex flex-row gap-2">
+                  <button 
+                    onClick={() => navigate(l(`/contacts?service=offer-${slug}`))}
+                    className="flex-1 py-3.5 md:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[12px] md:text-lg lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                  >
+                    <MessageSquare className="w-4 h-4 " strokeWidth={2.5} />
+                    <span>{tr('offers.order_manager')}</span>
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="w-12 md:w-16 h-12 md:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
+                  >
+                    <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
+                  </button>
+                </div>
+
                 <button 
-                  onClick={() => navigate(l(`/contacts?service=offer-${slug}`))}
-                  className="flex-1 py-3.5 md:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[12px] md:text-lg lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="w-full py-4 px-6 border border-white/20 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300 rounded-sm text-[11px] md:text-xs font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3"
                 >
-                  <MessageSquare className="w-4 h-4 " strokeWidth={2.5} />
-                  <span>{tr('offers.order_manager')}</span>
-                </button>
-                <button
-                  onClick={handleShare}
-                  className="w-12 md:w-16 h-12 md:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
-                >
-                  <Share2 className="w-5 h-5 transition-transform group-hover:rotate-12" strokeWidth={1.5} />
+                  <MessageCircle className="w-4 h-4 text-[#5cc8bd]" />
+                  <span>{tr('offers.clarify_details')}</span>
                 </button>
               </div>
             </div>
@@ -237,7 +247,7 @@ const OfferDetailPage = () => {
         <ContactModal 
           isOpen={isContactModalOpen}
           onClose={() => setIsContactModalOpen(false)}
-          initialMessage={`${tr('offers.interest_prefix')} ${offerHotel} (${offerLocation})`}
+          initialMessage={`${tr('offers.interest_question')} ${offerHotel} (${offerLocation})`}
         />
       </section>
 
