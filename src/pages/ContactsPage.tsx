@@ -81,10 +81,23 @@ const ContactsPage = () => {
 
   useEffect(() => {
     const serviceParam = searchParams.get('service');
+    const paymentParam = searchParams.get('payment');
+    
     if (serviceParam) {
       setSelectedServiceId(serviceParam);
+      // Small delay to ensure data is loaded for title/image
+      setTimeout(() => {
+        const formElement = document.getElementById('booking-form');
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 500);
     }
-  }, [searchParams]);
+    
+    if (paymentParam) {
+      setSelectedPayment(paymentParam);
+    }
+  }, [searchParams, offers, services]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -397,7 +410,7 @@ ${escapeHTML(formData.details || 'не вказано')}
                 </button>
               </div>
             ) : (
-              <div className="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl backdrop-blur-xl group transition-all duration-500 hover:bg-white/10">
+              <div id="booking-form" className="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl backdrop-blur-xl group transition-all duration-500 hover:bg-white/10">
                 <div className="bg-white/5 px-6 md:px-12 py-6 md:py-10 border-b border-white/10">
                   <h2 className="font-montserrat text-xl md:text-2xl font-bold uppercase text-white flex items-center gap-4 md:gap-5 tracking-wide mb-1 md:mb-2">
                     <span className="w-1.5 md:w-2 h-6 md:h-8 bg-[#5cc8bd]" />
@@ -416,22 +429,22 @@ ${escapeHTML(formData.details || 'не вказано')}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.first_name')}</label>
-                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder={t('contacts.first_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.first_name')}</label>
+                        <input name="firstName" value={formData.firstName} onChange={handleInputChange} required type="text" placeholder={t('contacts.first_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/40" />
                       </div>
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.last_name')}</label>
-                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder={t('contacts.last_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.last_name')}</label>
+                        <input name="lastName" value={formData.lastName} onChange={handleInputChange} required type="text" placeholder={t('contacts.last_name_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/40" />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.phone_label')}</label>
-                        <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.phone_label')}</label>
+                        <input name="phone" value={formData.phone} onChange={handleInputChange} required type="tel" placeholder="+380" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/40" />
                       </div>
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.email_label')}</label>
-                        <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/20" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.email_label')}</label>
+                        <input name="email" value={formData.email} onChange={handleInputChange} required type="email" placeholder="mail@example.com" className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all placeholder:text-white/40" />
                       </div>
                     </div>
                   </div>
@@ -444,7 +457,7 @@ ${escapeHTML(formData.details || 'не вказано')}
 
                     {/* Full Width Service Picker */}
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.service_label')}</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.service_label')}</label>
                       <button
                         type="button"
                         onClick={() => setIsServicePickerOpen(true)}
@@ -483,7 +496,7 @@ ${escapeHTML(formData.details || 'не вказано')}
                     {/* Side by side guests */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.adults_label') || (currentLang === 'ua' ? 'Кількість дорослих' : 'Number of adults')}</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.adults_label') || (currentLang === 'ua' ? 'Кількість дорослих' : 'Number of adults')}</label>
                         <div className="relative">
                           <select
                             value={adults}
@@ -501,7 +514,7 @@ ${escapeHTML(formData.details || 'не вказано')}
                       </div>
 
                       <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">{t('contacts.children_label') || (currentLang === 'ua' ? 'Кількість дітей молодші 16 років' : 'Children under 16')}</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-1">{t('contacts.children_label') || (currentLang === 'ua' ? 'Кількість дітей молодші 16 років' : 'Children under 16')}</label>
                         <div className="relative">
                           <select
                             value={children}
@@ -535,7 +548,7 @@ ${escapeHTML(formData.details || 'не вказано')}
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between ml-1">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">{t('contacts.details_label')}</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white/60">{t('contacts.details_label')}</label>
                         <VoiceRecorder onRecordingComplete={(blob) => { voiceBlobRef.current = blob; console.log('Voice recorded, size:', blob.size); }} />
                       </div>
                       <textarea 
@@ -544,7 +557,7 @@ ${escapeHTML(formData.details || 'не вказано')}
                         onChange={handleInputChange} 
                         rows={3} 
                         placeholder={t('contacts.details_placeholder')} 
-                        className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/20" 
+                        className="w-full bg-white/5 border border-white/10 rounded-sm px-5 py-4 md:px-6 md:py-5 text-sm font-medium text-white focus:outline-none focus:border-[#5cc8bd]/50 focus:bg-white/10 transition-all resize-none placeholder:text-white/40" 
                       />
                     </div>
 

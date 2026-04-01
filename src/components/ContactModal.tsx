@@ -16,7 +16,9 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
   const { t } = useTranslation();
   const { currentLang } = useLanguage();
   const isUA = currentLang === 'ua';
-  const [contact, setContact] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState(initialMessage);
   const voiceBlobRef = useRef<Blob | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,14 +35,23 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contact) return;
+    if (!name && !phone && !email) return;
     console.log('ContactModal submit, voiceRef:', voiceBlobRef.current);
     setIsSubmitting(true);
     
+    // Build contact info string
+    const contactParts = [];
+    if (name) contactParts.push(`${isUA ? "Ім'я" : "Name"}: ${name}`);
+    if (phone) contactParts.push(`${isUA ? "Телефон" : "Phone"}: ${phone}`);
+    if (email) contactParts.push(`Email: ${email}`);
+    const contactInfo = contactParts.join('\n');
+
     const telegramMessage = `
 <b>📩 ${isUA ? "Новий запит на зворотній зв'язок" : "New Feedback Request"} (Modal)</b>
 
-<b>👤 ${isUA ? 'Контакт' : 'Contact'}:</b> ${escapeHTML(contact)}
+<b>👤 ${isUA ? 'Контактні дані' : 'Contact Data'}:</b>
+${escapeHTML(contactInfo)}
+
 <b>💬 ${isUA ? 'Повідомлення' : 'Message'}:</b> ${message ? escapeHTML(message) : (isUA ? 'Без повідомлення' : 'No message')}
     `.trim();
 
@@ -62,7 +73,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
           });
 
           console.log('Sending modal voice, base64 length:', base64?.length);
-          const voiceCaption = `${isUA ? 'Голосове повідомлення від' : 'Voice message from'}: ${contact}`;
+          const voiceCaption = `${isUA ? 'Голосове повідомлення від' : 'Voice message from'}: ${name || phone || email}`;
           const voiceRes = await sendTelegramVoice(voiceCaption, base64, 'voice.ogg', result.messageId);
           if (!voiceRes.success) {
             console.error('Telegram voice error:', voiceRes.error);
@@ -73,7 +84,9 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
       }
 
       setIsSuccess(true);
-      setContact('');
+      setName('');
+      setPhone('');
+      setEmail('');
       setMessage('');
       voiceBlobRef.current = null;
       setTimeout(() => {
@@ -97,7 +110,7 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
 
       <div className={`relative w-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] origin-top ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-y-0 scale-x-[0.9] -translate-y-4 pointer-events-none'}`}>
         <div className="bg-black/90 backdrop-blur-3xl border-y border-white/10 py-12 shadow-2xl relative w-full">
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10 w-full">
             
             {isSuccess ? (
               <div className="flex flex-col items-center justify-center py-4 animate-in fade-in zoom-in duration-500">
@@ -106,9 +119,9 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                 <p className="text-white/60 text-center">{t('modals.contact.success_desc')}</p>
               </div>
             ) : (
-              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="flex flex-col gap-6">
                 <div className="flex-shrink-0 text-center md:text-left">
-                  <h2 className="text-xl md:text-3xl font-montserrat font-bold text-white mb-2 tracking-[0.05em] uppercase">
+                  <h2 className="text-xl md:text-3xl font-montserrat font-bold text-white mb-2 tracking-[0.05em] uppercase leading-none">
                     {t('modals.contact.title')}
                   </h2>
                   <p className="text-white/40 text-[11px] uppercase tracking-widest font-bold">
@@ -116,50 +129,91 @@ const ContactModal = ({ isOpen, onClose, initialMessage = '' }: ContactModalProp
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex-grow flex flex-col lg:flex-row gap-4 w-full">
-                  <div className="flex-[1.5] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
-                    <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                      {t('modals.contact.contact_label')}
-                    </label>
-                    <input
-                      type="text"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                      placeholder={t('modals.contact.contact_placeholder')}
-                      className="w-full outline-none text-white font-inter font-semibold text-sm md:text-base border-none p-0 bg-transparent placeholder-white/20"
-                      required
-                      disabled={isSubmitting}
-                    />
-                  </div>
+                <p className="text-[10px] uppercase tracking-widest text-[#5cc8bd] font-black -mb-2 border-l-2 border-[#5cc8bd] pl-3">
+                  {isUA ? "Заповніть хоча б одне поле для зв'язку" : "Fill in at least one contact field"}
+                </p>
 
-                  <div className="flex-[2] bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/30 transition-colors h-[64px]">
-                    <label className="text-[10px] uppercase text-white/40 font-montserrat font-bold tracking-[0.1em] mb-1">
-                      {t('modals.contact.comment_label')}
-                    </label>
-                    <div className="flex items-center gap-2">
+                <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-4 w-full items-start">
+                  <div className="flex-[3] grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                    <div className="bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/40 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/60 font-montserrat font-black tracking-[0.1em] mb-1">
+                        {isUA ? "Ім'я" : "Name"}
+                      </label>
                       <input
                         type="text"
+                        name="name"
+                        autoComplete="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full outline-none text-white font-inter font-semibold text-sm md:text-base border-none p-0 bg-transparent placeholder-white/30"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    <div className="bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/40 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/60 font-montserrat font-black tracking-[0.1em] mb-1">
+                        {isUA ? "Телефон" : "Phone"}
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        autoComplete="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+380..."
+                        className="w-full outline-none text-white font-inter font-semibold text-sm md:text-base border-none p-0 bg-transparent placeholder-white/30"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    <div className="bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/40 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/60 font-montserrat font-black tracking-[0.1em] mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="mail@example.com"
+                        className="w-full outline-none text-white font-inter font-semibold text-sm md:text-base border-none p-0 bg-transparent placeholder-white/30"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Comment Field and Voice Recorder Beside it */}
+                  <div className="flex-[2] w-full flex gap-3">
+                    <div className="flex-1 bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 relative flex flex-col justify-center focus-within:border-white/40 transition-colors h-[64px]">
+                      <label className="text-[10px] uppercase text-white/60 font-montserrat font-black tracking-[0.1em] mb-1">
+                        {t('modals.contact.comment_label')}
+                      </label>
+                      <input
+                        type="text"
+                        name="message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder={t('modals.contact.comment_placeholder')}
-                        className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/20"
+                        className="w-full outline-none text-white font-inter font-semibold text-sm border-none p-0 bg-transparent placeholder-white/30"
                         disabled={isSubmitting}
                       />
-                      <div className="flex items-center border-l border-white/10 pl-2">
-                        <VoiceRecorder onRecordingComplete={(blob) => { voiceBlobRef.current = blob; console.log('Modal voice recorded, size:', blob.size); }} />
-                      </div>
+                    </div>
+                    {/* Flexible Voice Recorder Block */}
+                    <div className="bg-white/5 border border-white/10 rounded-[2px] min-w-[64px] px-2 h-[64px] flex items-center justify-center hover:bg-white/10 transition-all duration-300 group relative">
+                      <VoiceRecorder onRecordingComplete={(blob) => { voiceBlobRef.current = blob; console.log('Modal voice recorded, size:', blob.size); }} />
                     </div>
                   </div>
 
+                  {/* Submit Button */}
                   <button 
                     type="submit"
-                    disabled={isSubmitting}
-                    className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-bold text-sm md:text-[13px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-10 py-5 lg:py-0 shadow-lg shrink-0 w-full lg:w-auto h-[64px] disabled:opacity-50"
+                    disabled={isSubmitting || (!name && !phone && !email)}
+                    className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-black text-xs md:text-[13px] h-[64px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-12 shadow-lg shrink-0 w-full lg:w-auto h-[64px] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                   >
-                    <div className="flex items-center justify-center gap-3">
-                      <span>{isSubmitting ? t('modals.contact.submitting') : t('modals.contact.submit')}</span>
-                      <Send className="w-4 h-4" />
-                    </div>
+                    <span>{isSubmitting ? t('modals.contact.submitting') : t('modals.contact.submit')}</span>
+                    <Send className="w-4 h-4" />
                   </button>
                 </form>
               </div>
