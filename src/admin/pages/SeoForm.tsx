@@ -72,6 +72,10 @@ export default function SeoForm() {
     mutationFn: async () => {
       const payload = {
         ...form,
+        title: form.title || null,
+        description: form.description || null,
+        title_en: form.title_en || null,
+        description_en: form.description_en || null,
         og_title: form.og_title || null,
         og_description: form.og_description || null,
         og_title_en: form.og_title_en || null,
