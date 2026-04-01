@@ -186,6 +186,8 @@ ${escapeHTML(formData.details || 'не вказано')}
     const result = await sendTelegramNotification(message);
     if (!result.success) {
       console.error('Telegram notification error:', result.error);
+      alert(currentLang === 'ua' ? 'Помилка відправки: ' + result.error : 'Error sending: ' + result.error);
+      return; 
     }
     
     // Send voice if exists

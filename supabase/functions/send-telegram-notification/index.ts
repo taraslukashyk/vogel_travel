@@ -87,8 +87,10 @@ serve(async (req) => {
     )
 
     const tgData = await tgRes.json()
+    console.log('Telegram sendMessage response:', JSON.stringify(tgData))
 
     if (!tgRes.ok) {
+      console.error('Telegram API error:', tgData.description)
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -98,10 +100,13 @@ serve(async (req) => {
       )
     }
 
+    const messageId = tgData.result?.message_id
+    console.log('Successfully sent message, ID:', messageId)
+
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message_id: tgData.result?.message_id 
+        message_id: messageId 
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )

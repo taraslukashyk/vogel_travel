@@ -80,6 +80,9 @@ const OrderTourModal = ({ isOpen, onClose }: OrderTourModalProps) => {
         setIsSuccess(false);
         onClose();
       }, 3000);
+    } else {
+      console.error('Telegram notification failed:', result.error);
+      alert(isUA ? 'Помилка відправки повідомлення: ' + result.error : 'Error sending message: ' + result.error);
     }
     
     setIsSubmitting(false);

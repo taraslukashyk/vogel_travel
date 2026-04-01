@@ -26,7 +26,8 @@ serve(async (req) => {
       hasMessage: !!message, 
       hasAudio: !!audioBase64, 
       audioLength: audioBase64?.length,
-      filename 
+      filename,
+      replyToMessageId
     })
 
     if (!audioBase64) {
