@@ -95,6 +95,10 @@ export default function SeoForm() {
       qc.invalidateQueries({ queryKey: ['admin_seo_entry', id] });
       alert('Збережено успішно!');
     },
+    onError: (error: any) => {
+      console.error('Save error:', error);
+      alert('Помилка збереження: ' + (error?.message || 'Невідома помилка'));
+    },
   });
 
   const deleteMutation = useMutation({
