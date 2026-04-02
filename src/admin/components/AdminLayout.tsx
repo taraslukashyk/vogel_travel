@@ -1,7 +1,8 @@
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Package, FileText, Briefcase, Search, LogOut, Menu, X, HelpCircle, Globe, Settings, ChevronLeft, ChevronRight, BarChart2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import logo from '../../assets/logo.svg';
 
 const navItems = [
@@ -34,8 +35,22 @@ export default function AdminLayout() {
     navigate('/admin/login');
   };
 
+  // Prevent Google Analytics tracking for admin paths
+  useEffect(() => {
+    const gaId = 'G-B1Z12S3RX7';
+    (window as any)[`ga-disable-${gaId}`] = true;
+    
+    // Cleanup: re-enable if user leaves admin (though in SPA it might stick)
+    return () => {
+      (window as any)[`ga-disable-${gaId}`] = false;
+    };
+  }, []);
+
   return (
     <div className="h-screen overflow-hidden bg-gray-50 flex font-inter">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
 import { inputClass, btnPrimary } from '../components/FormField';
 
@@ -24,8 +25,21 @@ export default function AdminLogin() {
     }
   };
 
+  // Prevent Google Analytics tracking for admin paths
+  useEffect(() => {
+    const gaId = 'G-B1Z12S3RX7';
+    (window as any)[`ga-disable-${gaId}`] = true;
+    
+    return () => {
+      (window as any)[`ga-disable-${gaId}`] = false;
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-6 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800">Vogel Travel</h1>
