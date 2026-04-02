@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://vogel-travel.com.ua/sitemap.xml
+Sitemap: https://nuzljtexciclocgcinjh.supabase.co/functions/v1/generate-sitemap
