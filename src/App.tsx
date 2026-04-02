@@ -61,7 +61,7 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
         {/* Logo container with glass effect */}
         <div className="relative z-10 p-4">
           <img 
-            src="/favicon%20copy.svg" 
+            src="/favicon.svg" 
             alt="Vogel Travel Logo" 
             className="w-56 h-56 md:w-96 md:h-96 object-contain animate-spin-slow will-change-transform"
             style={{ 
