@@ -63,7 +63,17 @@ const OrderTourModal = ({ isOpen, onClose, tourTitle: initialTourTitle = '' }: O
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name && !phone && !email) return;
+
+    // Validation
+    const phoneRegex = /^[+]?[\d\s\-\(\).]{10,20}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const isPValid = !phone || phoneRegex.test(phone);
+    const isEValid = !email || emailRegex.test(email);
+    const hasContact = phone || email;
+
+    if (!hasContact || !isPValid || !isEValid) return;
+
     setIsSubmitting(true);
 
     const contactParts = [];
@@ -202,7 +212,7 @@ ${escapeHTML(contactInfo)}
                 )}
 
                 <p className="text-[10px] uppercase tracking-widest text-[#5cc8bd] font-black -mb-2 border-l-2 border-[#5cc8bd] pl-3">
-                  {isUA ? "Заповніть хоча б одне поле для зв'язку" : "Fill in at least one contact field"}
+                  {isUA ? "Заповніть номер телефону або пошту для зв'язку" : "Fill in phone or email to contact you"}
                 </p>
 
                 {/* Unified Form Layout */}
@@ -269,7 +279,12 @@ ${escapeHTML(contactInfo)}
 
                   <button 
                     type="submit"
-                    disabled={isSubmitting || (!name && !phone && !email)}
+                    disabled={
+                      !!isSubmitting || 
+                      (!phone && !email) || 
+                      (!!phone && !/^[+]?[\d\s\-\(\).]{10,20}$/.test(phone)) || 
+                      (!!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                    }
                     className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-black text-xs md:text-[13px] h-[64px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-12 shadow-lg flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed group w-full lg:w-auto shrink-0"
                   >
                     <span>{isSubmitting ? t('modals.order_tour.submitting') : t('modals.order_tour.submit')}</span>

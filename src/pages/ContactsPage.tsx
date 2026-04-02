@@ -236,22 +236,30 @@ ${escapeHTML(formData.details || 'не вказано')}
 
 
   const isOnlinePaymentValid = () => {
+    const phoneRegex = /^[+]?[\d\s\-\(\).]{10,20}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return (
       isOfferAccepted &&
       isPrivacyAccepted &&
       selectedPayment &&
       selectedServiceId &&
+      phoneRegex.test(formData.phone) &&
+      emailRegex.test(formData.email) &&
       (selectedServiceId !== 'custom' || parseFloat(customAmount) > 0)
     );
   };
 
   const isInvoiceValid = () => {
+    const phoneRegex = /^[+]?[\d\s\-\(\).]{10,20}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return (
       isOfferAccepted &&
       isPrivacyAccepted &&
       selectedServiceId &&
       formData.firstName.trim() &&
       formData.lastName.trim() &&
+      phoneRegex.test(formData.phone) &&
+      emailRegex.test(formData.email) &&
       (selectedServiceId !== 'custom' || parseFloat(customAmount) > 0)
     );
   };
