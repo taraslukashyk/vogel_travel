@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { useSeoMeta } from '../lib/queries/seo';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface SEOHeadProps {
   /** Static page path for seo_meta table lookup (e.g. "/offers", "/blog") */
@@ -17,12 +18,26 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({ pagePath, title, description, ogImage, fallbackTitle, fallbackDescription }: SEOHeadProps) => {
-  const { data: seo } = useSeoMeta(pagePath || '__none__');
+  const { currentLang } = useLanguage();
+  
+  // Clean path for database lookup (strip language prefix)
+  // e.g. "/ua/offers" -> "/offers", "/en" -> "/"
+  const cleanPath = pagePath 
+    ? pagePath.replace(new RegExp(`^\\/${currentLang}`), '') || '/'
+    : '__none__';
 
-  const finalTitle = title || seo?.title || fallbackTitle || 'Vogel Family Travel';
-  const finalDescription = description || seo?.description || fallbackDescription || '';
-  const finalOgTitle = seo?.og_title || finalTitle;
-  const finalOgDescription = seo?.og_description || finalDescription;
+  const { data: seo } = useSeoMeta(cleanPath);
+
+  // Use language specific fields if available
+  const dbTitle = currentLang === 'en' ? (seo?.title_en || seo?.title) : seo?.title;
+  const dbDescription = currentLang === 'en' ? (seo?.description_en || seo?.description) : seo?.description;
+  const dbOgTitle = currentLang === 'en' ? (seo?.og_title_en || seo?.og_title) : seo?.og_title;
+  const dbOgDescription = currentLang === 'en' ? (seo?.og_description_en || seo?.og_description) : seo?.og_description;
+
+  const finalTitle = title || dbTitle || fallbackTitle || 'Vogel Family Travel';
+  const finalDescription = description || dbDescription || fallbackDescription || '';
+  const finalOgTitle = dbOgTitle || finalTitle;
+  const finalOgDescription = dbOgDescription || finalDescription;
   const finalOgImage = ogImage || seo?.og_image || '';
 
   return (
