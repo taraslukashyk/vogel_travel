@@ -107,7 +107,7 @@ ${JSON.stringify(dataToFill, null, 2)}
       setSaveSuccess(false);
 
       const parsed = JSON.parse(jsonInput);
-      
+
       const updates = [];
 
       // Оновлюємо pages (seo_meta)
@@ -124,7 +124,7 @@ ${JSON.stringify(dataToFill, null, 2)}
           if (page.current_og_description !== undefined) updateData.og_description = page.current_og_description;
           if (page.og_description !== undefined) updateData.og_description = page.og_description;
           if (page.keywords !== undefined) updateData.keywords = page.keywords;
-          
+
           if (Object.keys(updateData).length > 0) {
             updates.push(
               supabase.from('seo_meta').update(updateData).eq('page_path', page.page_path)
@@ -216,7 +216,7 @@ ${JSON.stringify(dataToFill, null, 2)}
         <div>
           <h2 className="text-xl font-semibold text-gray-800">Асистент штучного інтелекту для SEO</h2>
           <p className="text-sm text-gray-600 mt-1">
-            Цей інструмент автоматично збирає всі порожні або заповнені SEO-поля з усього сайту (сторінки, пропозиції, статті блогу). Штучний інтелект (ChatGPT, Claude) проаналізує актуальні туристичні тренди, складе привабливі заголовки, підбере правильні ключові слова та згенерує `alt`-тексти для зображень. Після імпорту даних усі поля автоматично оновляться на сайті. За потреби, ви зможете пробігтися по кожній пропозиції чи сторінці та підкоригувати згенеровані дані власноруч.
+            Цей інструмент автоматично збирає всі порожні або заповнені SEO-поля з усього сайту (сторінки, сервіси, пропозиції, статті блогу). Штучний інтелект (ChatGPT, Claude) проаналізує актуальні туристичні тренди, складе привабливі заголовки, підбере правильні ключові слова та згенерує `alt`-тексти для зображень. Після імпорту даних усі поля автоматично оновляться на сайті. За потреби, ви зможете пробігтися по кожній пропозиції чи сторінці та підкоригувати згенеровані дані власноруч.
           </p>
         </div>
       </div>
@@ -263,21 +263,21 @@ ${JSON.stringify(dataToFill, null, 2)}
                 <li>Використайте згенеровані дані для оновлення відповідних сторінок у нашій адмін-панелі.</li>
               </ol>
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-indigo-100">
               <div className="flex items-center gap-2 mb-4">
                 <Upload size={20} className="text-indigo-600" />
                 <h3 className="text-lg font-medium text-gray-800">2. Імпорт згенерованих даних</h3>
               </div>
               <p className="text-sm text-gray-600 mb-4">Вставте сюди JSON, який повернув АІ, та натисніть «Застосувати». Усі поля будуть автоматично оновлені на сайті.</p>
-              
+
               <textarea
                 value={jsonInput}
                 onChange={(e) => setJsonInput(e.target.value)}
                 placeholder='{"pages": [...], "offers": [...], "blog_posts": [...], "services": [...] }'
                 className="w-full h-48 p-4 mb-4 text-sm font-mono text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
-              
+
               <button
                 onClick={handleSaveJson}
                 disabled={isSaving || !jsonInput.trim()}
