@@ -14,6 +14,8 @@ import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } 
 import { CSS } from '@dnd-kit/utilities';
 import { useFormTranslation } from '../hooks/useFormTranslation';
 import { translateText } from '../utils/translate';
+import DateRangePicker from '../components/DateRangePicker';
+import DatePicker from '../components/DatePicker';
 import type { DBOffer, DBSection } from '../../lib/types';
 
 interface GalleryImage {
@@ -376,18 +378,60 @@ export default function OfferForm() {
                   placeholder={isUA ? form.location_en : form.location}
                 />
               </FormField>
-              <FormField label={isUA ? "Бронювання до" : "Book by"} required>
-                <input className={inputClass} value={form.book_by} onChange={(e) => set('book_by', e.target.value)} placeholder="12/04" required />
-              </FormField>
+              <div className="space-y-4">
+                <DatePicker 
+                  label={isUA ? "Бронювання зі знижкою до" : "Book with discount until"}
+                  value={form.book_by}
+                  onChange={(val) => set('book_by', val)}
+                  isUA={isUA}
+                  required
+                />
+              </div>
+
               <FormField label={isUA ? "Знижка" : "Discount"}>
-                <input className={inputClass} value={form.discount} onChange={(e) => set('discount', e.target.value)} placeholder="-60%" />
+                <div className="flex flex-col gap-3 bg-gray-50/50 p-4 rounded-xl border border-gray-200">
+                  <div className="flex items-center gap-4">
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="100" 
+                      step="5" 
+                      value={parseInt(form.discount.replace(/[^0-9]/g, '') || '0')}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        set('discount', val === '0' ? '' : `-${val}%`);
+                      }}
+                      className="flex-1 accent-[#5cc8bd] h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2">
+                       <input
+                        className={`${inputClass} !w-20 !py-1 text-center font-bold text-teal-700 bg-white border-teal-100`}
+                        value={form.discount}
+                        onChange={(e) => set('discount', e.target.value)}
+                        placeholder="-60%"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-between px-1">
+                    <span className="text-[10px] text-gray-400 font-medium">0%</span>
+                    <span className="text-[10px] text-gray-400 font-medium">50%</span>
+                    <span className="text-[10px] text-gray-400 font-medium">100%</span>
+                  </div>
+                </div>
               </FormField>
-              <FormField label={isUA ? "Перебування з" : "Stay from"} required>
-                <input className={inputClass} value={form.stay_from} onChange={(e) => set('stay_from', e.target.value)} placeholder="05/05" required />
-              </FormField>
-              <FormField label={isUA ? "Перебування до" : "Stay to"} required>
-                <input className={inputClass} value={form.stay_to} onChange={(e) => set('stay_to', e.target.value)} placeholder="30/09" required />
-              </FormField>
+
+              <div className="md:col-span-2 bg-gray-50/50 p-5 rounded-2xl border border-gray-200">
+                <DateRangePicker 
+                  label={isUA ? "Проживання зі знижкою в період" : "Accommodation with discount during"}
+                  from={form.stay_from}
+                  to={form.stay_to}
+                  onChange={({ from, to }) => {
+                    set('stay_from', from);
+                    set('stay_to', to);
+                  }}
+                  isUA={isUA}
+                />
+              </div>
             </div>
 
             {/* Main Image (Common) */}

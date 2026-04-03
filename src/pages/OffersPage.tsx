@@ -8,6 +8,7 @@ import OptimizedImage from '../components/OptimizedImage';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../lib/utils/dateUtils';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -89,22 +90,29 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
             {/* Details */}
             <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
               {/* Book by */}
-              <div className="flex items-center gap-3 text-white/60 py-3">
+              <div className="flex items-center gap-3 text-white/60 py-4">
                 <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
-                <span className="font-inter text-[14px] font-light">
-                  {tr('offers.book_by')} <strong className="text-white/90 font-medium">{bookBy}</strong>
-                </span>
+                <div className="flex flex-col gap-0.5 leading-tight">
+                  <span className="font-inter text-[11px] font-medium uppercase tracking-[0.05em] text-white/40">
+                    {tr('offers.book_by')}
+                  </span>
+                  <strong className="text-white/90 font-bold text-[15px] font-montserrat">
+                    {formatDate(bookBy)}
+                  </strong>
+                </div>
               </div>
 
               {/* Stay period */}
-              <div className="flex items-center gap-3 text-white/60 py-3">
+              <div className="flex items-center gap-3 text-white/60 py-4">
                 <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
-                <span className="font-inter text-[14px] font-light">
-                  {tr('offers.stay_period')}{' '}
-                  <strong className="text-white/90 font-medium">
-                    {stayFrom} — {stayTo}
+                <div className="flex flex-col gap-0.5 leading-tight">
+                  <span className="font-inter text-[11px] font-medium uppercase tracking-[0.05em] text-white/40">
+                    {tr('offers.stay_period')}
+                  </span>
+                  <strong className="text-white/90 font-bold text-[15px] font-montserrat">
+                    {formatDate(stayFrom)} — {formatDate(stayTo)}
                   </strong>
-                </span>
+                </div>
               </div>
 
               {/* Discount row */}

@@ -7,6 +7,7 @@ import ContactModal from '../components/ContactModal';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useLanguage } from '../hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../lib/utils/dateUtils';
 
 const OfferDetailPage = () => {
   const { slug } = useParams();
@@ -188,7 +189,7 @@ const OfferDetailPage = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.book_by')}</span>
-                    <span className="text-sm md:text-base font-bold tracking-wide">{offerBookBy}</span>
+                    <span className="text-sm md:text-base font-bold tracking-wide">{formatDate(offerBookBy)}</span>
                   </div>
                 </div>
 
@@ -198,7 +199,7 @@ const OfferDetailPage = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-[#5cc8bd] font-black mb-0.5">{tr('offers.stay_period')}</span>
-                    <span className="text-sm md:text-base font-bold tracking-wide whitespace-nowrap">{offerStayFrom} — {offerStayTo}</span>
+                    <span className="text-sm md:text-base font-bold tracking-wide whitespace-nowrap">{formatDate(offerStayFrom)} — {formatDate(offerStayTo)}</span>
                   </div>
                 </div>
               </div>
