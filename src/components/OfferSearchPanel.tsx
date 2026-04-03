@@ -132,9 +132,13 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
     return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
 
-  const set = useCallback(<K extends keyof FilterState>(key: K, val: FilterState[K]) => {
-    onChange({ ...filter, [key]: val });
+  const updateFilter = useCallback((updates: Partial<FilterState>) => {
+    onChange({ ...filter, ...updates });
   }, [filter, onChange]);
+
+  const set = useCallback(<K extends keyof FilterState>(key: K, val: FilterState[K]) => {
+    updateFilter({ [key]: val });
+  }, [updateFilter]);
 
   const guestSummary = useMemo(() => {
     const adultsStr = filter.adults === 1 
@@ -213,9 +217,9 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
       return cities.filter(city => city.toLowerCase().includes(s)).map(city => ({ name: city, countryName: filter.country, flag: c?.flag || '' }));
     }
     // If no country is selected, search in all cities
-    if (!searchCity) return allCities.slice(0, 20); // Show top 20 by default
+    if (!searchCity) return allCities; // Show all cities by default if no search
     const s = searchCity.toLowerCase();
-    return allCities.filter(city => city.name.toLowerCase().includes(s)).slice(0, 50);
+    return allCities.filter(city => city.name.toLowerCase().includes(s));
   }, [filter.country, searchCity, allCities, isUA]);
 
   return (
@@ -284,7 +288,11 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                     ) : filteredCountries.map(c => (
                       <button
                         key={c.code}
-                        onClick={() => { set('country', isUA ? c.name : c.name_en); set('city', ''); setActiveTab('city'); setSearchCountry(''); }}
+                        onClick={() => { 
+                          updateFilter({ country: isUA ? c.name : c.name_en, city: '' });
+                          setActiveTab('city'); 
+                          setSearchCountry(''); 
+                        }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:bg-[#5cc8bd]/10 hover:text-[#5cc8bd] transition-all group text-left"
                       >
                         <span className="text-xl group-hover:scale-125 transition-transform duration-300">{c.flag}</span>
@@ -755,35 +763,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           color: #5cc8bd;
           font-weight: 800;
         }
-        /* Start of range */
-        .calendar-premium-v2 .rdp-day_range_start {
-          background-color: #5cc8bd !important;
-          color: #000 !important;
-          font-weight: 900 !important;
-          border-radius: 8px 0 0 8px !important;
-        }
-        /* End of range */
-        .calendar-premium-v2 .rdp-day_range_end {
-          background-color: #5cc8bd !important;
-          color: #000 !important;
-          font-weight: 900 !important;
-          border-radius: 0 8px 8px 0 !important;
-        }
-        /* Single day (start == end) */
-        .calendar-premium-v2 .rdp-day_range_start.rdp-day_range_end {
-          border-radius: 8px !important;
-        }
-        /* Range middle */
-        .calendar-premium-v2 .rdp-day_range_middle {
-          background-color: rgba(92, 200, 189, 0.15) !important;
-          color: #c8f0ec !important;
-          border-radius: 0 !important;
-        }
-        /* Outside days hidden */
-        .calendar-premium-v2 .rdp-day_outside {
-          visibility: hidden;
-          pointer-events: none;
-        }
         .calendar-premium-v2 .rdp-month_caption {
           font-weight: 900;
           text-transform: uppercase;
@@ -793,6 +772,48 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           text-align: center;
           font-size: 13px;
         }
+
+        /* Essential v9 Range Styling */
+        .calendar-premium-v2 .rdp-selected {
+          background: none !important;
+        }
+
+        .calendar-premium-v2 .rdp-range_start .rdp-day_button {
+          background-color: #5cc8bd !important;
+          color: #000 !important;
+          font-weight: 900 !important;
+          border-radius: 8px 0 0 8px !important;
+          width: 100% !important;
+        }
+
+        .calendar-premium-v2 .rdp-range_end .rdp-day_button {
+          background-color: #5cc8bd !important;
+          color: #000 !important;
+          font-weight: 900 !important;
+          border-radius: 0 8px 8px 0 !important;
+          width: 100% !important;
+        }
+
+        .calendar-premium-v2 .rdp-range_middle {
+          background-color: rgba(92, 200, 189, 0.15) !important;
+        }
+
+        .calendar-premium-v2 .rdp-range_middle .rdp-day_button {
+          color: #c8f0ec !important;
+          width: 100% !important;
+          border-radius: 0 !important;
+        }
+
+        .calendar-premium-v2 .rdp-range_start.rdp-range_end .rdp-day_button {
+          border-radius: 8px !important;
+        }
+
+        /* Outside days hidden */
+        .calendar-premium-v2 .rdp-day_outside {
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+
         .calendar-premium-v2 .rdp-nav { display: none; }
         .calendar-premium-v2 .rdp-weekday {
           font-size: 9px;

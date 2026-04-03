@@ -207,23 +207,15 @@ const OffersPage = () => {
   const filteredOffers = applyFilter(offers, filter, isUA);
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace('#', '');
-      const element = document.getElementById(id);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-      }
-    } else {
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
   }, [location]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowScrollIndicator(false), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  const introRef = useScrollReveal();
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
@@ -246,8 +238,9 @@ const OffersPage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
       </div>
 
+
       {/* ── Hero Banner ── */}
-      <section className="relative w-full h-[70vh] min-h-[480px] overflow-hidden flex items-end">
+      <section className="relative w-full min-h-[640px] md:h-[85vh] overflow-hidden flex flex-col-reverse md:flex-col justify-start md:justify-between pt-24 md:pt-0">
         <OptimizedImage
           src="https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&q=80&w=1920"
           alt="Offers hero"
@@ -256,26 +249,50 @@ const OffersPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-32 w-full">
+        {/* ── Search / Filter Panel (Over Header/Hero) ── */}
+        <div className="relative z-20 pt-2 md:pt-32 pb-8">
+          <OfferSearchPanel filter={filter} onChange={setFilter} />
+        </div>
+
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-8 md:pb-20 w-full">
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
-            <span className="block text-white/30 text-2xl md:text-3xl mb-2">Vogel Family Travel</span>
-            <span className="block text-5xl md:text-7xl lg:text-[88px] text-white">
+            <span className="block text-white/30 text-xl md:text-2xl lg:text-3xl mb-1 md:mb-2">Vogel Family Travel</span>
+            <span className="block text-4xl md:text-7xl lg:text-[88px] text-white">
               {tr('nav.offers')}
             </span>
           </h1>
 
-          <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
+          <div className={`absolute bottom-6 md:bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
             <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">{currentLang === 'ua' ? 'Гортай' : 'Scroll'}</span>
             <div className="scroll-indicator"></div>
           </div>
         </div>
       </section>
 
-
-      {/* ── Search / Filter Panel ── */}
-      <div className="relative z-20 -mt-12 md:-mt-24">
-        <OfferSearchPanel filter={filter} onChange={setFilter} />
-      </div>
+      {/* ── Intro ── */}
+      <section className="relative z-10 bg-zinc-950 border-y border-white/5 py-14">
+        <div
+          ref={introRef}
+          className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+        >
+          <div>
+            <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white flex items-center gap-4 mb-6">
+              <span className="w-8 h-px bg-white/30" />
+              {tr('offers.title')}
+            </h2>
+            <p className="font-inter text-white/70 text-lg leading-relaxed">
+              {tr('offers.subtitle')}
+            </p>
+          </div>
+          <div>
+            <p className="font-inter text-white/50 text-base leading-relaxed border-l border-white/10 pl-8">
+              {currentLang === 'ua'
+                ? "Кожна пропозиція перевірена нашими менеджерами особисто. Ми гарантуємо відповідність заявленого рівня сервісу та захист інтересів клієнта на кожному етапі бронювання."
+                : "Each offer is personally verified by our managers. We guarantee compliance with the stated level of service and protection of client interests at every stage of booking."}
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ── Offer cards grid ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
