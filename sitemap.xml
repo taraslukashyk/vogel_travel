@@ -82,10 +82,10 @@
   <url><loc>https://www.vogel.travel/en/services/professional-support-and-travel-audit</loc><priority>0.7</priority></url>
   <url><loc>https://www.vogel.travel/ua/offers/four-seasons-seychelles</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/en/offers/four-seasons-seychelles</loc><priority>0.9</priority></url>
-  <url><loc>https://www.vogel.travel/ua/offers/atlantis-the-royal</loc><priority>0.9</priority></url>
-  <url><loc>https://www.vogel.travel/en/offers/atlantis-the-royal</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/ua/offers/dusit-thani-maldives</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/en/offers/dusit-thani-maldives</loc><priority>0.9</priority></url>
+  <url><loc>https://www.vogel.travel/ua/offers/atlantis-the-royal</loc><priority>0.9</priority></url>
+  <url><loc>https://www.vogel.travel/en/offers/atlantis-the-royal</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/ua/offers/four-seasons-resort-bali</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/en/offers/four-seasons-resort-bali</loc><priority>0.9</priority></url>
   <url><loc>https://www.vogel.travel/ua/offers/the-chedi-andermatt</loc><priority>0.9</priority></url>
