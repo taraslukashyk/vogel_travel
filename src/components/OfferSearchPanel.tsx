@@ -1,9 +1,16 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, Sparkles, MapPin, CalendarDays, Moon, Users, Send, CheckCircle2, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
-import { COUNTRIES, DEPARTURE_CITIES, DEPARTURE_CITIES_EN } from '../lib/data/countries';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { 
+  Search, Sparkles, MapPin, CalendarDays, Moon, Users, 
+  Send, CheckCircle2, Minus, Plus, 
+  ChevronRight, Loader2, Globe, ChevronDown
+} from 'lucide-react';
+import { COUNTRIES } from '../lib/data/countries';
 import { sendTelegramNotification } from '../lib/notifications';
 import { escapeHTML } from '../lib/utils/html';
 import { useLanguage } from '../hooks/useLanguage';
+import { DayPicker, type DateRange } from 'react-day-picker';
+import { uk, enUS } from 'date-fns/locale';
+import { format, parseISO } from 'date-fns';
 
 /* ── Types ── */
 export interface FilterState {
@@ -37,235 +44,50 @@ interface OfferSearchPanelProps {
   onChange: (f: FilterState) => void;
 }
 
-/* ── Helpers ── */
-const UA_MONTHS = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
-const UA_DAYS = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','НД'];
+/* ── UI Components ── */
 
-function parseDate(s: string): Date | null {
-  if (!s) return null;
-  const d = new Date(s);
-  return isNaN(d.getTime()) ? null : d;
-}
 
-function formatDisplay(s: string): string {
-  const d = parseDate(s);
-  if (!d) return '...';
-  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
-}
 
-function toIso(y: number, m: number, day: number): string {
-  return `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-}
-
-function getDaysInMonth(y: number, m: number): number {
-  return new Date(y, m+1, 0).getDate();
-}
-function getFirstWeekday(y: number, m: number): number {
-  // 0=Mon..6=Sun
-  const d = new Date(y, m, 1).getDay();
-  return (d + 6) % 7;
-}
-
-/* ── Calendar Popup ── */
-function CalendarPopup({ dateFrom, dateTo, onChange, onClose }: {
-  dateFrom: string; dateTo: string;
-  onChange: (from: string, to: string) => void;
-  onClose: () => void;
-}) {
-  const today = new Date();
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [selecting, setSelecting] = useState<'from' | 'to'>('from');
-  const [hoverDate, setHoverDate] = useState('');
-
-  const months: { y: number; m: number }[] = [];
-  for (let i = 0; i < 18; i++) {
-    const d = new Date(today.getFullYear(), today.getMonth() + i);
-    months.push({ y: d.getFullYear(), m: d.getMonth() });
-  }
-
-  const days = getDaysInMonth(viewYear, viewMonth);
-  const firstWd = getFirstWeekday(viewYear, viewMonth);
-
-  const inRange = (iso: string) => {
-    const f = dateFrom, t = dateTo || hoverDate;
-    if (!f) return false;
-    return iso > f && iso < t;
-  };
-
-  const handleDay = (iso: string) => {
-    if (selecting === 'from') {
-      onChange(iso, '');
-      setSelecting('to');
-    } else {
-      if (iso < dateFrom) {
-        onChange(iso, dateFrom);
-      } else {
-        onChange(dateFrom, iso);
-      }
-      setSelecting('from');
-      onClose();
-    }
-  };
-
-  return (
-    <div className="absolute top-full left-0 z-50 mt-2 bg-black/95 backdrop-blur-xl border border-white/10 rounded-sm shadow-2xl flex w-[520px] max-w-[95vw] overflow-hidden">
-      {/* Month list */}
-      <div className="w-32 border-r border-white/10 overflow-y-auto max-h-72 py-2 shrink-0">
-        {months.map(({ y, m }) => {
-          const active = y === viewYear && m === viewMonth;
-          return (
-            <button
-              key={`${y}-${m}`}
-              onClick={() => { setViewYear(y); setViewMonth(m); }}
-              className={`w-full text-left px-4 py-2 text-xs font-montserrat uppercase tracking-wider transition-colors ${active ? 'bg-[#5cc8bd]/20 text-[#5cc8bd] font-bold' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-            >
-              {y !== today.getFullYear() && m === 0 && <span className="block text-white/30 text-[9px] mb-0.5">{y}</span>}
-              {UA_MONTHS[m]}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Calendar grid */}
-      <div className="flex-1 p-4">
-        <div className="flex items-center justify-between mb-3">
-          <button onClick={() => { const d = new Date(viewYear, viewMonth - 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }} className="text-white/40 hover:text-white p-1"><ChevronLeft size={14} /></button>
-          <span className="font-montserrat font-bold text-white text-xs uppercase tracking-widest">{UA_MONTHS[viewMonth]} {viewYear}</span>
-          <button onClick={() => { const d = new Date(viewYear, viewMonth + 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }} className="text-white/40 hover:text-white p-1"><ChevronRight size={14} /></button>
-        </div>
-
-        <div className="grid grid-cols-7 gap-0.5 mb-1">
-          {UA_DAYS.map(d => (
-            <div key={d} className="text-center text-[9px] font-bold text-white/30 uppercase tracking-wider py-1">{d}</div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-0.5">
-          {Array.from({ length: firstWd }).map((_, i) => <div key={`e${i}`} />)}
-          {Array.from({ length: days }).map((_, i) => {
-            const day = i + 1;
-            const iso = toIso(viewYear, viewMonth, day);
-            const isFrom = iso === dateFrom;
-            const isTo = iso === dateTo;
-            const isIn = inRange(iso);
-            const isPast = iso < toIso(today.getFullYear(), today.getMonth(), today.getDate());
-            return (
-              <button
-                key={day}
-                disabled={isPast}
-                onMouseEnter={() => setHoverDate(iso)}
-                onMouseLeave={() => setHoverDate('')}
-                onClick={() => handleDay(iso)}
-                className={`w-full aspect-square text-xs font-inter font-semibold rounded-[2px] transition-all
-                  ${isPast ? 'text-white/15 cursor-not-allowed' : 'cursor-pointer'}
-                  ${isFrom || isTo ? 'bg-[#5cc8bd] text-white' : ''}
-                  ${isIn ? 'bg-[#5cc8bd]/20 text-white' : ''}
-                  ${!isFrom && !isTo && !isIn && !isPast ? 'text-white/70 hover:bg-white/10 hover:text-white' : ''}
-                `}
-              >
-                {day}
-              </button>
-            );
-          })}
-        </div>
-
-        {(dateFrom || dateTo) && (
-          <button
-            onClick={() => { onChange('', ''); setSelecting('from'); }}
-            className="mt-3 w-full text-[10px] uppercase tracking-widest text-white/30 hover:text-white/60 transition-colors font-bold"
-          >
-            Очистити дати
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ── Guests Popup ── */
-function GuestsPopup({ adults, children, childAges, onChange, onClose }: {
-  adults: number; children: number; childAges: number[];
-  onChange: (a: number, c: number, ages: number[]) => void;
-  onClose: () => void;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) onClose(); };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
-  }, [onClose]);
-
-  const setAdults = (n: number) => onChange(Math.max(1, n), children, childAges);
-  const setChildren = (n: number) => {
-    const c = Math.max(0, n);
-    const ages = Array.from({ length: c }, (_, i) => childAges[i] ?? 7);
-    onChange(adults, c, ages);
-  };
-  const setAge = (i: number, age: number) => {
-    const ages = [...childAges];
-    ages[i] = Math.min(15, Math.max(0, age));
-    onChange(adults, children, ages);
-  };
-
-  return (
-    <div ref={ref} className="absolute top-full left-0 z-50 mt-2 bg-black/95 backdrop-blur-xl border border-white/10 rounded-sm shadow-2xl p-5 w-64">
-      {/* Adults */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <p className="text-xs font-montserrat font-black uppercase tracking-widest text-white">Дорослі</p>
-          <p className="text-[10px] text-white/40">Вік 16+</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setAdults(adults - 1)} className="w-7 h-7 rounded-full border border-white/20 text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Minus size={12} /></button>
-          <span className="text-white font-bold w-5 text-center font-montserrat">{adults}</span>
-          <button onClick={() => setAdults(adults + 1)} className="w-7 h-7 rounded-full border border-white/20 text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Plus size={12} /></button>
-        </div>
-      </div>
-
-      {/* Children */}
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="text-xs font-montserrat font-black uppercase tracking-widest text-white">Діти</p>
-          <p className="text-[10px] text-white/40">Вік 0–15</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setChildren(children - 1)} className="w-7 h-7 rounded-full border border-white/20 text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Minus size={12} /></button>
-          <span className="text-white font-bold w-5 text-center font-montserrat">{children}</span>
-          <button onClick={() => setChildren(children + 1)} className="w-7 h-7 rounded-full border border-white/20 text-white/60 hover:border-[#5cc8bd] hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Plus size={12} /></button>
-        </div>
-      </div>
-
-      {/* Child ages */}
-      {childAges.map((age, i) => (
-        <div key={i} className="flex items-center justify-between mt-2 border-t border-white/5 pt-2">
-          <span className="text-[11px] text-white/50 font-inter">вік дитини:</span>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setAge(i, age - 1)} className="w-6 h-6 rounded-full border border-white/20 text-white/50 hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Minus size={10} /></button>
-            <span className="text-white font-bold w-4 text-center text-sm">{age}</span>
-            <button onClick={() => setAge(i, age + 1)} className="w-6 h-6 rounded-full border border-white/20 text-white/50 hover:text-[#5cc8bd] flex items-center justify-center transition-colors"><Plus size={10} /></button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ── Field Cell ── */
-const FieldCell = ({ label, icon, children, onClick, className = '' }: {
-  label: string; icon?: React.ReactNode; children: React.ReactNode;
-  onClick?: () => void; className?: string;
+const FieldZone = ({ 
+  label, icon: Icon, value, placeholder, onClick, active, subValue, 
+  canSearch, searchValue, onSearchChange 
+}: { 
+  label: string; icon: any; value: string; placeholder: string; onClick: () => void; active: boolean; subValue?: string;
+  canSearch?: boolean; searchValue?: string; onSearchChange?: (v: string) => void;
 }) => (
-  <div
-    onClick={onClick}
-    className={`bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 flex flex-col justify-center focus-within:border-white/40 hover:border-white/20 transition-colors h-[64px] relative ${onClick ? 'cursor-pointer' : ''} ${className}`}
+  <button
+    onClick={(e) => { e.stopPropagation(); onClick(); }}
+    className={`relative flex flex-col items-start px-6 py-5 rounded-xl transition-all duration-300 group min-h-[80px] w-full ${
+      active ? 'bg-white/15 ring-1 ring-white/30 shadow-[0_0_30px_rgba(255,255,255,0.08)]' : 'bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10'
+    }`}
   >
-    <label className="text-[10px] uppercase text-white/60 font-montserrat font-black tracking-[0.1em] mb-1 flex items-center gap-1.5 pointer-events-none">
-      {icon && <span className="opacity-60">{icon}</span>}
-      {label}
-    </label>
-    {children}
-  </div>
+    <div className="flex items-center gap-2 mb-2 pointer-events-none">
+      <Icon size={14} className={`${active ? 'text-[#5cc8bd]' : 'text-white/80 group-hover:text-white'} transition-colors`} />
+      <span className="text-[10px] uppercase font-montserrat font-black tracking-[0.2em] text-white/70 group-hover:text-white/90">
+        {label}
+      </span>
+    </div>
+    <div className="flex flex-col items-start overflow-hidden w-full text-left">
+      {active && canSearch ? (
+        <input 
+          autoFocus
+          className="w-full bg-transparent text-sm font-montserrat font-bold text-white border-none outline-none p-0 placeholder:text-white/40 animate-in fade-in duration-300"
+          value={searchValue}
+          onChange={(e) => onSearchChange?.(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          placeholder={value || placeholder}
+        />
+      ) : (
+        <span className={`text-sm font-montserrat font-bold truncate w-full ${value ? 'text-white' : 'text-white/40'}`}>
+          {value || placeholder}
+        </span>
+      )}
+      {subValue && !active && <span className="text-[10px] text-[#5cc8bd] font-semibold mt-0.5 truncate w-full">{subValue}</span>}
+    </div>
+    {active && (
+      <div className="absolute bottom-0 left-6 right-6 h-0.5 bg-[#5cc8bd] rounded-full shadow-[0_0_12px_rgba(92,200,189,0.8)]" />
+    )}
+  </button>
 );
 
 /* ── Main Component ── */
@@ -273,296 +95,720 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
   const { currentLang } = useLanguage();
   const isUA = currentLang === 'ua';
 
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [showGuests, setShowGuests] = useState(false);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [searchCountry, setSearchCountry] = useState('');
+  const [searchCity, setSearchCity] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [form, setForm] = useState({ name: '', phone: '', email: '' });
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
-  const calRef = useRef<HTMLDivElement>(null);
-  const guestsRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // Close calendar on outside click
+  const availableYears = useMemo(() => {
+    const y = new Date().getFullYear();
+    return [y, y + 1, y + 2];
+  }, []);
+
+  const monthsList = useMemo(() => {
+    const arr = [];
+    for (let i = 0; i < 12; i++) {
+      arr.push(new Date(calendarYear, i, 1));
+    }
+    return arr;
+  }, [calendarYear]);
+
+  // Close dropdowns on outside click
   useEffect(() => {
-    if (!showCalendar) return;
-    const h = (e: MouseEvent) => {
-      if (calRef.current && !calRef.current.contains(e.target as Node)) setShowCalendar(false);
+    const handleOutside = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setActiveTab(null);
+        setSearchCountry('');
+        setSearchCity('');
+      }
     };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
-  }, [showCalendar]);
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
 
   const set = useCallback(<K extends keyof FilterState>(key: K, val: FilterState[K]) => {
     onChange({ ...filter, [key]: val });
   }, [filter, onChange]);
 
-  const selectedCountry = COUNTRIES.find(c => isUA ? c.name === filter.country : c.name_en === filter.country);
-  const departureCities = isUA ? DEPARTURE_CITIES : DEPARTURE_CITIES_EN;
-  const guestSummary = filter.children > 0
-    ? `${filter.adults} + ${filter.children} ${isUA ? 'туристи' : 'tourists'}`
-    : `${filter.adults} ${isUA ? (filter.adults === 1 ? 'турист' : 'туристи') : (filter.adults === 1 ? 'tourist' : 'tourists')}`;
-  const dateSummary = filter.dateFrom
-    ? `${formatDisplay(filter.dateFrom)} — ${filter.dateTo ? formatDisplay(filter.dateTo) : '...'}`
-    : '...';
-
-  const phoneValid = !phone || /^[+]?[\d\s\-().]{10,20}$/.test(phone);
-  const emailValid = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const canSubmit = (!!phone || !!email) && phoneValid && emailValid && !isSubmitting;
+  const guestSummary = useMemo(() => {
+    const adultsStr = filter.adults === 1 
+      ? (isUA ? '1 дорослий' : '1 adult') 
+      : `${filter.adults} ${isUA ? 'дорослих' : 'adults'}`;
+    const childrenStr = filter.children > 0 
+      ? ` + ${filter.children} ${isUA ? (filter.children === 1 ? 'дит.' : 'дітей') : 'children'}` 
+      : '';
+    return adultsStr + childrenStr;
+  }, [filter.adults, filter.children, isUA]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if ((!form.phone && !form.email) || isSubmitting) return;
     setIsSubmitting(true);
 
-    const modeLabel = filter.mode === 'search'
-      ? (isUA ? 'Пошук із акційних турів' : 'Search from deals')
-      : (isUA ? 'Індивідуальний підбір' : 'Custom selection');
-
     const countryEntry = COUNTRIES.find(c => c.name === filter.country || c.name_en === filter.country);
-    const flagStr = countryEntry ? `${countryEntry.flag} ` : '';
+    const flagStr = countryEntry ? countryEntry.flag : '';
+
+    const modeLabel = filter.mode === 'search' 
+      ? (isUA ? '🔍 Пошук акцій' : '🔍 Deals Search') 
+      : (isUA ? '✨ Індивідуальний підбір' : '✨ Individual Quote');
+
+    const kidsAgesStr = filter.children > 0 
+      ? ` (вік: ${filter.childAges.slice(0, filter.children).join(', ')})` 
+      : '';
 
     const lines = [
-      `🔍 <b>${isUA ? 'Запит на підбір туру' : 'Tour selection request'}</b>`,
+      `<b>🔍 Запит на підбір туру</b>`,
+      `<b>Режим:</b> ${modeLabel}`,
+      filter.country ? `<b>Країна:</b> ${flagStr} ${escapeHTML(filter.country)}` : null,
+      filter.city ? `<b>Місто:</b> ${escapeHTML(filter.city)}` : null,
+      filter.nights ? `<b>Ночей:</b> ${filter.nights}` : null,
+      `<b>Гості:</b> Дорослі: ${filter.adults} | Діти: ${filter.children}${kidsAgesStr}`,
       '',
-      `<b>Режим:</b> ${escapeHTML(modeLabel)}`,
-      filter.departureCity ? `<b>${isUA ? 'Вирушаємо з' : 'Departing from'}:</b> ${escapeHTML(filter.departureCity)}` : null,
-      filter.country ? `<b>${isUA ? 'Країна' : 'Country'}:</b> ${flagStr}${escapeHTML(filter.country)}` : null,
-      filter.city ? `<b>${isUA ? 'Місто' : 'City'}:</b> ${escapeHTML(filter.city)}` : null,
-      (filter.dateFrom || filter.dateTo) ? `<b>${isUA ? 'Дати' : 'Dates'}:</b> ${escapeHTML(dateSummary)}` : null,
-      filter.nights !== '' ? `<b>${isUA ? 'Ночей' : 'Nights'}:</b> ${filter.nights}` : null,
-      `<b>${isUA ? 'Гості' : 'Guests'}:</b> ${isUA ? 'Дорослі' : 'Adults'}: ${filter.adults}${filter.children > 0 ? ` | ${isUA ? 'Діти' : 'Children'}: ${filter.children} (${isUA ? 'вік' : 'age'}: ${filter.childAges.join(', ')})` : ''}`,
-      '',
-      `<b>👤 ${isUA ? 'Клієнт' : 'Client'}:</b>`,
-      name ? `${isUA ? "Ім'я" : 'Name'}: ${escapeHTML(name)}` : null,
-      phone ? `${isUA ? 'Телефон' : 'Phone'}: ${escapeHTML(phone)}` : null,
-      email ? `Email: ${escapeHTML(email)}` : null,
+      `<b>👤 Клієнт:</b>`,
+      `Ім'я: ${escapeHTML(form.name || 'Anonymous')}`,
+      form.phone ? `Телефон: ${escapeHTML(form.phone)}` : null,
+      form.email ? `Email: ${escapeHTML(form.email)}` : null,
     ].filter(Boolean).join('\n');
 
     const result = await sendTelegramNotification(lines);
     if (result.success) {
       setIsSuccess(true);
-      setName('');
-      setPhone('');
-      setEmail('');
-      setTimeout(() => setIsSuccess(false), 4000);
-    } else {
-      alert(isUA ? 'Помилка надсилання: ' + result.error : 'Send error: ' + result.error);
+      setForm({ name: '', phone: '', email: '' });
+      setTimeout(() => setIsSuccess(false), 5000);
     }
     setIsSubmitting(false);
   };
 
-  return (
-    <section className="relative z-10 bg-black/90 backdrop-blur-3xl border-y border-white/10 py-8 md:py-10">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+  // Pre-calculate all cities for generic search
+  const allCities = useMemo(() => {
+    const arr: { name: string; countryName: string; flag: string }[] = [];
+    COUNTRIES.forEach(c => {
+      const cities = isUA ? c.cities : c.cities_en;
+      cities.forEach((city: string) => {
+        arr.push({ name: city, countryName: isUA ? c.name : c.name_en, flag: c.flag });
+      });
+    });
+    return arr;
+  }, [isUA]);
 
-        {/* Mode toggle */}
-        <div className="flex gap-2 mb-6 flex-wrap">
-          <button
-            onClick={() => set('mode', 'search')}
-            className={`flex items-center gap-2 px-4 py-2 text-[11px] font-montserrat font-black uppercase tracking-widest rounded-[2px] transition-all duration-300 ${filter.mode === 'search' ? 'bg-[#5cc8bd] text-white' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10 hover:text-white'}`}
-          >
-            <Search size={12} />
-            {isUA ? 'Пошук із акційних турів' : 'Search from deals'}
-          </button>
-          <button
-            onClick={() => set('mode', 'custom')}
-            className={`flex items-center gap-2 px-4 py-2 text-[11px] font-montserrat font-black uppercase tracking-widest rounded-[2px] transition-all duration-300 ${filter.mode === 'custom' ? 'bg-[#5cc8bd] text-white' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10 hover:text-white'}`}
-          >
-            <Sparkles size={12} />
-            {isUA ? 'Індивідуальний підбір' : 'Custom selection'}
-          </button>
+  const filteredCountries = useMemo(() => {
+    if (!searchCountry) return COUNTRIES;
+    const s = searchCountry.toLowerCase();
+    return COUNTRIES.filter((c) => (isUA ? c.name : c.name_en).toLowerCase().includes(s));
+  }, [searchCountry, isUA]);
+
+  const filteredCities = useMemo(() => {
+    // If a country is selected, filter cities by that country
+    if (filter.country) {
+      const c = COUNTRIES.find(cnt => (isUA ? cnt.name : cnt.name_en) === filter.country);
+      const cities = isUA ? (c?.cities || []) : (c?.cities_en || []);
+      if (!searchCity) return cities.map(city => ({ name: city, countryName: filter.country, flag: c?.flag || '' }));
+      const s = searchCity.toLowerCase();
+      return cities.filter(city => city.toLowerCase().includes(s)).map(city => ({ name: city, countryName: filter.country, flag: c?.flag || '' }));
+    }
+    // If no country is selected, search in all cities
+    if (!searchCity) return allCities.slice(0, 20); // Show top 20 by default
+    const s = searchCity.toLowerCase();
+    return allCities.filter(city => city.name.toLowerCase().includes(s)).slice(0, 50);
+  }, [filter.country, searchCity, allCities, isUA]);
+
+  return (
+    <section className="relative z-30 max-w-[1440px] mx-auto px-4 md:px-12 pointer-events-none">
+      <div 
+        ref={panelRef}
+        className="bg-zinc-950/60 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-4 md:p-6 overflow-visible pointer-events-auto"
+      >
+        {/* Mode Switcher */}
+        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-6">
+          <div className="text-[9px] uppercase font-montserrat font-black tracking-[0.3em] text-white/20 pl-1">
+            {isUA ? 'РЕЖИМ ФІЛЬТРУ' : 'FILTER MODE'}
+          </div>
+          <div className="flex bg-white/10 p-1.5 rounded-2xl w-fit shadow-lg border border-white/5">
+            {[
+              { id: 'search', label: isUA ? 'Пошук акцій' : 'Deals Search', icon: Search },
+              { id: 'custom', label: isUA ? 'Індивідуальний підбір' : 'Full Custom', icon: Sparkles }
+            ].map(m => (
+              <button
+                key={m.id}
+                onClick={() => { set('mode', m.id as any); setActiveTab(null); }}
+                className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-[11px] font-montserrat font-black uppercase tracking-widest transition-all duration-500 relative ${
+                  filter.mode === m.id ? 'text-white' : 'text-white/40 hover:text-white/70'
+                }`}
+              >
+                {filter.mode === m.id && (
+                  <div className="absolute inset-0 bg-[#5cc8bd] rounded-xl shadow-[0_0_24px_rgba(92,200,189,0.4)] animate-in fade-in zoom-in duration-500" />
+                )}
+                <m.icon size={13} className="relative z-10" />
+                <span className="relative z-10">{m.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Filter row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
-
-          {/* Departure city */}
-          <FieldCell label={isUA ? 'Вирушаємо з' : 'Departing from'} icon={<MapPin size={10} />}>
-            <input
-              list="departure-cities"
-              value={filter.departureCity}
-              onChange={e => set('departureCity', e.target.value)}
-              placeholder={isUA ? 'Місто вильоту' : 'Departure city'}
-              className="w-full outline-none text-white font-inter font-semibold text-sm bg-transparent placeholder-white/25 border-none p-0"
+        {/* Filter Rows */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+          
+          {/* Country Field */}
+          <div className="relative">
+            <FieldZone 
+              label={isUA ? 'КРАЇНА' : 'COUNTRY'} 
+              icon={Globe} 
+              value={filter.country} 
+              placeholder={isUA ? 'Куди прямуємо?' : 'Destination?'}
+              onClick={() => setActiveTab(activeTab === 'country' ? null : 'country')}
+              active={activeTab === 'country'}
+              canSearch={true}
+              searchValue={searchCountry}
+              onSearchChange={setSearchCountry}
             />
-            <datalist id="departure-cities">
-              {departureCities.map(c => <option key={c} value={c} />)}
-            </datalist>
-          </FieldCell>
+            {activeTab === 'country' && (
+              <div className="absolute top-full right-0 z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
+                  <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
+                    <button 
+                      onClick={() => { set('country', ''); set('city', ''); setActiveTab(null); setSearchCountry(''); }}
+                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5 rounded-lg transition-colors"
+                    >
+                      {isUA ? 'Всі країни' : 'All countries'}
+                    </button>
+                  </div>
+                  <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-2">
+                    {filteredCountries.length === 0 ? (
+                      <div className="px-6 py-8 text-center text-xs text-white/20 italic">{isUA ? 'Нічого не знайдено' : 'Nothing found'}</div>
+                    ) : filteredCountries.map(c => (
+                      <button
+                        key={c.code}
+                        onClick={() => { set('country', isUA ? c.name : c.name_en); set('city', ''); setActiveTab('city'); setSearchCountry(''); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:bg-[#5cc8bd]/10 hover:text-[#5cc8bd] transition-all group text-left"
+                      >
+                        <span className="text-xl group-hover:scale-125 transition-transform duration-300">{c.flag}</span>
+                        <span className="flex-1">{isUA ? c.name : c.name_en}</span>
+                        <ChevronRight size={14} className="opacity-20 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
-          {/* Country */}
-          <FieldCell label={isUA ? 'Країна прибуття' : 'Destination country'} icon={<MapPin size={10} />}>
-            <select
-              value={isUA ? filter.country : (COUNTRIES.find(c => c.name === filter.country)?.name_en || filter.country)}
-              onChange={e => {
-                const val = e.target.value;
-                const entry = COUNTRIES.find(c => isUA ? c.name === val : c.name_en === val);
-                onChange({ ...filter, country: entry ? entry.name : val, city: '' });
-              }}
-              className="w-full outline-none text-white font-inter font-semibold text-sm bg-transparent border-none p-0 appearance-none"
-            >
-              <option value="">{isUA ? 'Будь-яка' : 'Any'}</option>
-              {COUNTRIES.map(c => (
-                <option key={c.code} value={isUA ? c.name : c.name_en} style={{ background: '#111' }}>
-                  {c.flag} {isUA ? c.name : c.name_en}
-                </option>
-              ))}
-            </select>
-          </FieldCell>
-
-          {/* City */}
-          <FieldCell label={isUA ? 'Місто / Регіон' : 'City / Region'} icon={<MapPin size={10} />}>
-            <input
-              list="dest-cities"
-              value={filter.city}
-              onChange={e => set('city', e.target.value)}
+          {/* City / Region Field */}
+          <div className="relative">
+            <FieldZone 
+              label={isUA ? 'МІСТО / РЕГІОН' : 'CITY / REGION'} 
+              icon={MapPin} 
+              value={filter.city} 
               placeholder={isUA ? 'Всі регіони' : 'All regions'}
-              className="w-full outline-none text-white font-inter font-semibold text-sm bg-transparent placeholder-white/25 border-none p-0"
+              onClick={() => setActiveTab(activeTab === 'city' ? null : 'city')}
+              active={activeTab === 'city'}
+              canSearch={true}
+              searchValue={searchCity}
+              onSearchChange={setSearchCity}
             />
-            <datalist id="dest-cities">
-              {(isUA ? selectedCountry?.cities : selectedCountry?.cities_en)?.map(c => (
-                <option key={c} value={c} />
-              ))}
-            </datalist>
-          </FieldCell>
+            {activeTab === 'city' && (
+              <div className="absolute top-full lg:left-0 right-0 lg:right-auto z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
+                  <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
+                    <button 
+                      onClick={() => { set('city', ''); setActiveTab(null); setSearchCity(''); }}
+                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5 rounded-lg transition-colors"
+                    >
+                      {isUA ? 'Всі регіони' : 'All regions'}
+                    </button>
+                  </div>
+                  <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-2">
+                    {filteredCities.length === 0 ? (
+                      <div className="px-6 py-8 text-center text-xs text-white/20 italic">{isUA ? 'Нічого не знайдено' : 'Nothing found'}</div>
+                    ) : filteredCities.map((item: { name: string; countryName: string; flag: string }, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => { set('country', item.countryName); set('city', item.name); setActiveTab(null); setSearchCity(''); }}
+                        className="w-full flex flex-col items-start px-4 py-3 rounded-xl hover:bg-[#5cc8bd]/10 transition-all group text-left"
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-sm font-medium text-white/70 group-hover:text-[#5cc8bd]">{item.name}</span>
+                          <span className="text-lg opacity-40 group-hover:opacity-100 transition-all">{item.flag}</span>
+                        </div>
+                        <span className="text-[10px] text-white/20 uppercase font-bold tracking-widest">{item.countryName}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
-          {/* Date range */}
-          <div className="relative" ref={calRef}>
-            <FieldCell
-              label={isUA ? 'Відправлення' : 'Departure dates'}
-              icon={<CalendarDays size={10} />}
-              onClick={() => setShowCalendar(v => !v)}
-            >
-              <span className={`font-inter font-semibold text-sm ${filter.dateFrom ? 'text-white' : 'text-white/30'}`}>
-                {dateSummary}
-              </span>
-            </FieldCell>
-            {showCalendar && (
-              <CalendarPopup
-                dateFrom={filter.dateFrom}
-                dateTo={filter.dateTo}
-                onChange={(from, to) => onChange({ ...filter, dateFrom: from, dateTo: to })}
-                onClose={() => setShowCalendar(false)}
-              />
+          {/* Dates */}
+          <div className="relative">
+            <FieldZone 
+              label={isUA ? 'ВІДПРАВЛЕННЯ' : 'DEPARTURE'} 
+              icon={CalendarDays} 
+              value={filter.dateFrom ? `${format(parseISO(filter.dateFrom), 'dd.MM')} — ${filter.dateTo ? format(parseISO(filter.dateTo), 'dd.MM') : '...'}` : ''} 
+              placeholder={isUA ? 'Дати' : 'Dates'}
+              onClick={() => setActiveTab(activeTab === 'dates' ? null : 'dates')}
+              active={activeTab === 'dates'}
+            />
+            {activeTab === 'dates' && (
+              <div className="absolute top-full right-0 z-[100] mt-2 w-[320px] sm:w-[600px] origin-top animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col sm:flex-row min-h-[460px]">
+                  {/* Month Sidebar */}
+                  <div className="w-full sm:w-44 bg-[#081210] border-b sm:border-b-0 sm:border-r border-[#5cc8bd]/10 flex flex-col">
+                    {/* Year selector */}
+                    <div className="flex border-b border-[#5cc8bd]/10 px-2 py-2 gap-1">
+                      {availableYears.map(y => (
+                        <button
+                          key={y}
+                          onClick={() => {
+                            setCalendarYear(y);
+                            setCalendarMonth(new Date(y, calendarMonth.getMonth(), 1));
+                          }}
+                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-black tracking-wider uppercase transition-all ${
+                            calendarYear === y
+                              ? 'bg-[#5cc8bd] text-black'
+                              : 'text-white/40 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {y}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Month list */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar py-1">
+                      {monthsList.map((m, idx) => {
+                        const isActive = m.getMonth() === calendarMonth.getMonth() && m.getFullYear() === calendarMonth.getFullYear();
+                        return (
+                          <button 
+                            key={idx}
+                            onClick={() => setCalendarMonth(m)}
+                            className={`w-full text-left px-5 py-2.5 transition-all flex items-center justify-between ${
+                              isActive 
+                                ? 'bg-[#5cc8bd] text-black font-black' 
+                                : 'text-white/50 hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            <span className="text-[11px] uppercase font-bold tracking-wider">
+                              {format(m, 'LLLL', { locale: isUA ? uk : enUS })}
+                            </span>
+                            {isActive && <div className="w-1.5 h-1.5 bg-black rounded-full" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Calendar Grid */}
+                  <div className="flex-1 p-5 flex flex-col justify-between">
+                    <div>
+                      <DayPicker 
+                        mode="range"
+                        month={calendarMonth}
+                        onMonthChange={setCalendarMonth}
+                        selected={{
+                          from: filter.dateFrom ? parseISO(filter.dateFrom) : undefined,
+                          to: filter.dateTo ? parseISO(filter.dateTo) : undefined
+                        }}
+                        onSelect={(range: DateRange | undefined) => {
+                          onChange({
+                            ...filter,
+                            dateFrom: range?.from ? format(range.from, 'yyyy-MM-dd') : '',
+                            dateTo: range?.to ? format(range.to, 'yyyy-MM-dd') : '',
+                          });
+                        }}
+                        locale={isUA ? uk : enUS}
+                        className="calendar-premium-v2"
+                        showOutsideDays={false}
+                      />
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-[#5cc8bd]/10 flex items-center justify-between gap-4">
+                      <div className="flex gap-4">
+                        <div className="flex flex-col">
+                          <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">{isUA ? 'ВИЛІТ' : 'DEPARTURE'}</span>
+                          <span className="text-sm font-bold text-[#5cc8bd]">
+                            {filter.dateFrom ? format(parseISO(filter.dateFrom), 'dd MMM') : '—'}
+                          </span>
+                        </div>
+                        <div className="text-white/20 flex items-center">→</div>
+                        <div className="flex flex-col">
+                          <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">{isUA ? 'ПОВЕРНЕННЯ' : 'RETURN'}</span>
+                          <span className="text-sm font-bold text-[#5cc8bd]">
+                            {filter.dateTo ? format(parseISO(filter.dateTo), 'dd MMM') : '—'}
+                          </span>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => setActiveTab(null)}
+                        className="bg-[#5cc8bd] hover:bg-[#4eb1a6] text-black font-black text-[10px] uppercase tracking-[0.2em] px-8 py-3.5 rounded-xl shadow-lg shadow-[#5cc8bd]/20 transition-all active:scale-95"
+                      >
+                        {isUA ? 'Застосувати' : 'Apply'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
           {/* Nights */}
-          <FieldCell label={isUA ? 'Ночей' : 'Nights'} icon={<Moon size={10} />}>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => set('nights', typeof filter.nights === 'number' ? Math.max(1, filter.nights - 1) : 7)}
-                className="text-white/40 hover:text-[#5cc8bd] transition-colors"
-              >
-                <Minus size={12} />
-              </button>
-              <input
-                type="number"
-                min={1}
-                max={30}
-                value={filter.nights}
-                onChange={e => set('nights', e.target.value === '' ? '' : Number(e.target.value))}
-                placeholder="7"
-                className="w-8 outline-none text-white font-inter font-bold text-sm bg-transparent border-none p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-              <button
-                type="button"
-                onClick={() => set('nights', typeof filter.nights === 'number' ? Math.min(30, filter.nights + 1) : 1)}
-                className="text-white/40 hover:text-[#5cc8bd] transition-colors"
-              >
-                <Plus size={12} />
-              </button>
-            </div>
-          </FieldCell>
-
-          {/* Guests */}
-          <div className="relative" ref={guestsRef}>
-            <FieldCell
-              label={isUA ? 'Гості' : 'Guests'}
-              icon={<Users size={10} />}
-              onClick={() => setShowGuests(v => !v)}
-            >
-              <span className="font-inter font-semibold text-sm text-white">
-                {guestSummary}
-              </span>
-            </FieldCell>
-            {showGuests && (
-              <GuestsPopup
-                adults={filter.adults}
-                children={filter.children}
-                childAges={filter.childAges}
-                onChange={(a, c, ages) => onChange({ ...filter, adults: a, children: c, childAges: ages })}
-                onClose={() => setShowGuests(false)}
-              />
+          <div className="relative">
+            <FieldZone 
+              label={isUA ? 'НОЧЕЙ' : 'NIGHTS'} 
+              icon={Moon} 
+              value={filter.nights ? `${filter.nights}` : ''} 
+              placeholder={isUA ? '7 - 14' : '7 - 14'}
+              onClick={() => setActiveTab(activeTab === 'nights' ? null : 'nights')}
+              active={activeTab === 'nights'}
+            />
+            {activeTab === 'nights' && (
+              <div className="absolute top-full left-0 z-[100] mt-2 w-[280px] sm:w-[340px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-8 flex flex-col items-center gap-10">
+                  <div className="flex items-center gap-10">
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.max(1, Number(filter.nights || 7) - 1)); }} className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                        <Minus size={20} />
+                     </button>
+                     <div className="flex flex-col items-center gap-1">
+                        <span className="text-5xl font-montserrat font-black text-white leading-none">{filter.nights || 7}</span>
+                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{isUA ? 'ночей' : 'nights'}</span>
+                     </div>
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights || 7) + 1)); }} className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                        <Plus size={20} />
+                     </button>
+                  </div>
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black rounded-xl text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/20 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                </div>
+              </div>
             )}
           </div>
+
+          {/* Guests */}
+          <div className="relative">
+            <FieldZone 
+              label={isUA ? 'ГОСТІ' : 'GUESTS'} 
+              icon={Users} 
+              value={guestSummary} 
+              placeholder={isUA ? 'Склад родини' : 'Family'}
+              onClick={() => setActiveTab(activeTab === 'guests' ? null : 'guests')}
+              active={activeTab === 'guests'}
+            />
+            {activeTab === 'guests' && (
+              <div className="absolute top-full right-0 z-[100] mt-2 w-[340px] sm:w-[420px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-6 space-y-6">
+                  <div className="flex items-center justify-between">
+                     <div>
+                       <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{isUA ? 'ДОРОСЛІ' : 'ADULTS'}</h4>
+                       <p className="text-[10px] text-white/30 italic">16+ years</p>
+                     </div>
+                     <div className="flex items-center gap-5">
+                        <button onClick={() => set('adults', Math.max(1, filter.adults - 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
+                        <span className="w-6 text-center text-sm font-black text-white">{filter.adults}</span>
+                        <button onClick={() => set('adults', Math.min(9, filter.adults + 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
+                     </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                     <div>
+                       <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{isUA ? 'ДІТИ' : 'CHILDREN'}</h4>
+                       <p className="text-[10px] text-white/30 italic">0 - 15 years</p>
+                     </div>
+                     <div className="flex items-center gap-5">
+                        <button onClick={() => set('children', Math.max(0, filter.children - 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
+                        <span className="w-6 text-center text-sm font-bold text-white">{filter.children}</span>
+                        <button onClick={() => set('children', Math.min(6, filter.children + 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
+                     </div>
+                  </div>
+                  {filter.children > 0 && (
+                    <div className="pt-4 border-t border-white/5 space-y-3">
+                      <p className="text-[9px] text-white/40 uppercase font-black text-center tracking-widest">{isUA ? 'Вкажіть вік кожної дитини' : 'Specify each child age'}</p>
+                      <div className="grid grid-cols-3 gap-2">
+                         {Array.from({ length: filter.children }).map((_, i) => (
+                           <div key={i} className="bg-white/5 rounded-xl px-3 py-2.5 border border-white/5 hover:border-[#5cc8bd]/30 group transition-all relative">
+                             <label className="text-[8px] text-white/30 uppercase font-bold block mb-1">{isUA ? `Дитина ${i + 1}` : `Kid ${i + 1}`}</label>
+                             <div className="relative">
+                               <select 
+                                 value={filter.childAges[i] || 0}
+                                 onChange={(e) => {
+                                   const newAges = [...filter.childAges];
+                                   newAges[i] = parseInt(e.target.value);
+                                   set('childAges', newAges);
+                                 }}
+                                 className="w-full bg-transparent text-white text-xs font-bold outline-none cursor-pointer appearance-none relative z-10 pr-5"
+                               >
+                                 {[...Array(16)].map((_, age) => (
+                                   <option key={age} value={age} className="bg-zinc-900 text-white">{age} {isUA ? 'р.' : 'y.'}</option>
+                                 ))}
+                               </select>
+                               <ChevronDown size={11} className="absolute right-0 top-1/2 -translate-y-1/2 text-white/20 group-hover:text-[#5cc8bd] pointer-events-none transition-colors" />
+                             </div>
+                           </div>
+                         ))}
+                      </div>
+                    </div>
+                  )}
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black rounded-xl text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/10 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
 
-        {/* Contact + Submit row */}
-        {isSuccess ? (
-          <div className="flex items-center gap-3 py-3 animate-in fade-in duration-500">
-            <CheckCircle2 className="text-[#5cc8bd] w-6 h-6 shrink-0" />
-            <p className="text-white/80 font-inter text-sm">
-              {isUA ? 'Дякуємо! Менеджер зв\'яжеться з вами найближчим часом.' : 'Thank you! A manager will contact you soon.'}
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 items-stretch md:items-center">
-            <p className="text-[10px] uppercase tracking-widest text-[#5cc8bd] font-black border-l-2 border-[#5cc8bd] pl-3 shrink-0 self-center">
-              {isUA ? "Заповніть для отримання розрахунку" : "Fill in to get a quote"}
-            </p>
-
-            {/* Name */}
-            <div className="flex-1 bg-white/5 border border-white/10 rounded-[2px] p-3 px-5 flex flex-col justify-center focus-within:border-white/40 transition-colors h-[56px]">
-              <label className="text-[9px] uppercase text-white/40 font-montserrat font-black tracking-[0.1em] mb-0.5">{isUA ? "Ім'я" : 'Name'}</label>
-              <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="John Doe"
-                className="outline-none text-white font-inter font-semibold text-sm bg-transparent border-none p-0 placeholder-white/25"
-              />
+        {/* Lead Form - Luxury Request */}
+        <div className="pt-6 border-t border-white/10 relative overflow-hidden">
+          {isSuccess ? (
+            <div className="flex flex-col items-center justify-center py-6 animate-in fade-in slide-in-from-bottom duration-1000">
+               <div className="w-16 h-16 rounded-3xl bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] shadow-[0_0_50px_rgba(92,200,189,0.2)] mb-4">
+                  <CheckCircle2 size={40} className="animate-in zoom-in spin-in-12 duration-1000" />
+               </div>
+               <div className="text-center">
+                  <h3 className="text-white font-montserrat font-black uppercase tracking-[0.3em] text-xl mb-2">
+                    {isUA ? 'ВАШ ЗАПИТ ПРИЙНЯТИЙ' : 'REQUEST ACCEPTED'}
+                  </h3>
+                  <p className="text-white/40 text-sm font-medium">
+                    {isUA ? 'Персональний менеджер звʼяжеться з вами найближчим часом' : 'A personal manager will contact you shortly'}
+                  </p>
+               </div>
             </div>
-
-            {/* Phone */}
-            <div className={`flex-1 bg-white/5 border rounded-[2px] p-3 px-5 flex flex-col justify-center transition-colors h-[56px] ${phone && !phoneValid ? 'border-red-500/50' : 'border-white/10 focus-within:border-white/40'}`}>
-              <label className="text-[9px] uppercase text-white/40 font-montserrat font-black tracking-[0.1em] mb-0.5">{isUA ? 'Телефон' : 'Phone'}</label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="+380 XX XXX XX XX"
-                className="outline-none text-white font-inter font-semibold text-sm bg-transparent border-none p-0 placeholder-white/25"
-              />
+          ) : (
+            <div className="flex flex-col items-center">
+              <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-stretch">
+                <input 
+                  type="text" 
+                  name="name"
+                  autoComplete="name"
+                  placeholder={isUA ? "ВАШЕ ІМ'Я" : "YOUR NAME"}
+                  value={form.name}
+                  onChange={e => setForm({...form, name: e.target.value})}
+                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                />
+                <input 
+                  type="tel" 
+                  name="tel"
+                  autoComplete="tel"
+                  placeholder="+380 XX XXX XX XX"
+                  value={form.phone}
+                  onChange={e => setForm({...form, phone: e.target.value})}
+                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                />
+                <input 
+                  type="email" 
+                  name="email"
+                  autoComplete="email"
+                  placeholder="EMAIL"
+                  value={form.email}
+                  onChange={e => setForm({...form, email: e.target.value})}
+                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                />
+                
+                <button 
+                  type="submit"
+                  disabled={isSubmitting || (!form.phone && !form.email)}
+                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-5 rounded-xl transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                  <span className="text-[13px] font-montserrat font-black uppercase tracking-[0.3em] relative z-10">
+                    {isSubmitting ? (isUA ? '...' : '...') : (isUA ? 'ОТРИМАТИ ПРОПОЗИЦІЮ' : 'GET PROPOSAL')}
+                  </span>
+                  {isSubmitting ? (
+                    <Loader2 size={18} className="animate-spin relative z-10" />
+                  ) : (
+                    <div className="relative w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500">
+                      <Send size={18} className="absolute inset-0" />
+                    </div>
+                  )}
+                </button>
+              </form>
             </div>
-
-            {/* Email */}
-            <div className={`flex-1 bg-white/5 border rounded-[2px] p-3 px-5 flex flex-col justify-center transition-colors h-[56px] ${email && !emailValid ? 'border-red-500/50' : 'border-white/10 focus-within:border-white/40'}`}>
-              <label className="text-[9px] uppercase text-white/40 font-montserrat font-black tracking-[0.1em] mb-0.5">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="mail@example.com"
-                className="outline-none text-white font-inter font-semibold text-sm bg-transparent border-none p-0 placeholder-white/25"
-              />
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="bg-white border border-white text-black font-montserrat uppercase tracking-[0.2em] font-black text-xs h-[56px] hover:bg-transparent hover:text-white transition-all duration-500 rounded-[2px] px-8 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
-            >
-              {isSubmitting ? (isUA ? 'Надсилаємо...' : 'Sending...') : (isUA ? 'Розрахувати' : 'Get a quote')}
-              <Send size={14} />
-            </button>
-          </form>
-        )}
+          )}
+        </div>
       </div>
+
+      <style>{`
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2.5s infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+          transition: background 0.3s;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #5cc8bd;
+        }
+        
+        /* Premium Calendar Styles */
+        .calendar-premium {
+          --rdp-accent-color: #5cc8bd;
+          --rdp-accent-color-dark: #4eb1a6;
+          --rdp-background-color: transparent;
+          --rdp-outline: 2px solid var(--rdp-accent-color);
+          --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+          --rdp-selected-color: #000;
+          color: #fff;
+          font-family: 'Montserrat', sans-serif;
+          margin: 0;
+        }
+        .calendar-premium .rdp-day {
+          border-radius: 8px;
+          transition: all 0.2s;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .calendar-premium .rdp-day:hover:not(.rdp-day_selected) {
+          background: rgba(92, 200, 189, 0.1) !important;
+          color: #5cc8bd;
+        }
+        .calendar-premium .rdp-day_selected {
+          background: #5cc8bd !important;
+          color: #000 !important;
+          font-weight: 800;
+        }
+        .calendar-premium .rdp-day_range_middle {
+          background: rgba(92, 200, 189, 0.15) !important;
+          color: #fff !important;
+          border-radius: 0;
+        }
+        .calendar-premium .rdp-month_caption {
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          font-size: 11px;
+          color: #5cc8bd;
+          margin-bottom: 1rem;
+        }
+        .calendar-premium .rdp-weekday {
+          font-size: 10px;
+          font-weight: 900;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.3);
+          letter-spacing: 0.05em;
+        }
+        .calendar-premium .rdp-nav_button {
+          color: rgba(255, 255, 255, 0.4);
+        }
+        .calendar-premium .rdp-nav_button:hover {
+          color: #5cc8bd;
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* V2 Split Calendar — Deep Forest Green */
+        .calendar-premium-v2 {
+          --rdp-accent-color: #5cc8bd;
+          --rdp-selected-color: #000;
+          color: #e0f7f5;
+          font-family: 'Montserrat', sans-serif;
+          width: 100%;
+        }
+        .calendar-premium-v2 table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .calendar-premium-v2 .rdp-day {
+          height: 40px;
+          width: 40px;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 500;
+          font-size: 13px;
+          color: rgba(255,255,255,0.8);
+          transition: all 0.15s;
+          border-radius: 6px;
+          padding: 0;
+          text-align: center;
+          vertical-align: middle;
+        }
+        .calendar-premium-v2 .rdp-day_button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          cursor: pointer;
+          border-radius: 6px;
+          background: none;
+          border: none;
+          color: inherit;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          padding: 0;
+          transition: all 0.15s;
+        }
+        .calendar-premium-v2 .rdp-day_button:hover {
+          background-color: rgba(92, 200, 189, 0.2);
+          color: #5cc8bd;
+        }
+        .calendar-premium-v2 .rdp-day_today .rdp-day_button {
+          color: #5cc8bd;
+          font-weight: 800;
+        }
+        /* Start of range */
+        .calendar-premium-v2 .rdp-day_range_start {
+          background-color: #5cc8bd !important;
+          color: #000 !important;
+          font-weight: 900 !important;
+          border-radius: 8px 0 0 8px !important;
+        }
+        /* End of range */
+        .calendar-premium-v2 .rdp-day_range_end {
+          background-color: #5cc8bd !important;
+          color: #000 !important;
+          font-weight: 900 !important;
+          border-radius: 0 8px 8px 0 !important;
+        }
+        /* Single day (start == end) */
+        .calendar-premium-v2 .rdp-day_range_start.rdp-day_range_end {
+          border-radius: 8px !important;
+        }
+        /* Range middle */
+        .calendar-premium-v2 .rdp-day_range_middle {
+          background-color: rgba(92, 200, 189, 0.15) !important;
+          color: #c8f0ec !important;
+          border-radius: 0 !important;
+        }
+        /* Outside days hidden */
+        .calendar-premium-v2 .rdp-day_outside {
+          visibility: hidden;
+          pointer-events: none;
+        }
+        .calendar-premium-v2 .rdp-month_caption {
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.2em;
+          color: #5cc8bd;
+          padding: 6px 0 12px;
+          text-align: center;
+          font-size: 13px;
+        }
+        .calendar-premium-v2 .rdp-nav { display: none; }
+        .calendar-premium-v2 .rdp-weekday {
+          font-size: 9px;
+          font-weight: 900;
+          text-transform: uppercase;
+          color: rgba(92, 200, 189, 0.45);
+          padding-bottom: 8px;
+          letter-spacing: 0.08em;
+          text-align: center;
+        }
+        .calendar-premium-v2 th,
+        .calendar-premium-v2 td {
+          text-align: center;
+          padding: 2px;
+        }
+      `}</style>
     </section>
   );
 };

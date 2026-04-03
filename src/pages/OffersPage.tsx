@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { CalendarClock, CalendarDays, MapPin } from 'lucide-react';
+import { CalendarClock, CalendarDays, MapPin, ChevronRight } from 'lucide-react';
 import { useOffers } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
 import aboutPoster from '../assets/about-bg.png';
@@ -113,42 +113,44 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
       <Link to={l(`/offers/${slug}`)} className="block h-full group">
-        <article className="bg-black/40 backdrop-blur-md border border-white/5 rounded-sm overflow-hidden hover:bg-black/60 md:hover:-translate-y-2 transition-all duration-500 flex flex-col h-full">
+        <article className="bg-[#0b1a15]/40 backdrop-blur-md border border-[#5cc8bd]/10 rounded-2xl overflow-hidden hover:bg-[#0b1a15]/60 md:hover:-translate-y-2 transition-all duration-700 flex flex-col h-full group/card shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
           {/* Image */}
-          <div className="relative h-56 overflow-hidden">
+          <div className="relative h-60 overflow-hidden">
             <OptimizedImage
               src={offer.image}
               alt={t(offer, 'image_alt') || hotelName}
-              className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover opacity-80 group-hover/card:opacity-100 transition-all duration-1000 group-hover/card:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1a15] via-[#0b1a15]/20 to-transparent" />
 
             {/* Discount badge */}
             {discountVal && (
-              <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
+              <div className="absolute top-5 right-5 bg-[#5cc8bd] text-black font-montserrat font-black text-[13px] px-5 py-2 rounded-xl shadow-[0_10px_20px_rgba(92,200,189,0.3)] tracking-wider">
                 {discountVal}
               </div>
             )}
 
-            {/* Location tag — now shows Country, City */}
-            <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
-              <MapPin className="w-3 h-3" strokeWidth={1.5} />
+            {/* Location tag */}
+            <div className="absolute bottom-5 left-5 flex items-center gap-2 text-[#5cc8bd] text-[10px] font-montserrat font-black uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-4 py-2 rounded-lg border border-white/5">
+              <MapPin className="w-3.5 h-3.5" strokeWidth={2.5} />
               {locationTag}
             </div>
           </div>
 
           {/* Card body */}
-          <div className="flex-1 p-7 flex flex-col gap-5">
-            <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
+          <div className="flex-1 p-8 flex flex-col gap-6">
+            <h2 className="font-montserrat font-black text-xl text-white leading-tight group-hover/card:text-[#5cc8bd] transition-colors duration-500 tracking-tight">
               {hotelName}
             </h2>
 
-            <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
-              <div className="flex items-center gap-3 text-white/60 py-4">
-                <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
+            <div className="space-y-0 mt-auto border-t border-[#5cc8bd]/10 pt-6 divide-y divide-[#5cc8bd]/5">
+              <div className="flex items-center gap-4 text-white/60 py-4 group/item">
+                <div className="w-10 h-10 rounded-xl bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
+                  <CalendarClock className="w-5 h-5" strokeWidth={1.5} />
+                </div>
                 <div className="flex flex-col gap-0.5 leading-tight">
-                  <span className="font-inter text-[11px] font-medium uppercase tracking-[0.05em] text-white/40">
+                  <span className="font-inter text-[10px] font-black uppercase tracking-[0.1em] text-white/30">
                     {tr('offers.book_by')}
                   </span>
                   <strong className="text-white/90 font-bold text-[15px] font-montserrat">
@@ -157,30 +159,33 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 text-white/60 py-4">
-                <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
+              <div className="flex items-center gap-4 text-white/60 py-4 group/item">
+                <div className="w-10 h-10 rounded-xl bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
+                  <CalendarDays className="w-5 h-5" strokeWidth={1.5} />
+                </div>
                 <div className="flex flex-col gap-0.5 leading-tight">
-                  <span className="font-inter text-[11px] font-medium uppercase tracking-[0.05em] text-white/40">
+                  <span className="font-inter text-[10px] font-black uppercase tracking-[0.1em] text-white/30">
                     {tr('offers.stay_period')}
                   </span>
-                  <strong className="text-white/90 font-bold text-[15px] font-montserrat">
+                  <strong className="text-white/90 font-bold text-[15px] font-montserrat tracking-tight">
                     {formatDate(stayFrom)} — {formatDate(stayTo)}
                   </strong>
                 </div>
               </div>
 
               {discountVal && (
-                <div className="flex items-center justify-between py-3">
-                  <span className="font-inter text-[14px] text-white/50 font-light">{tr('common.discount')}</span>
-                  <span className="font-montserrat font-bold text-[#5cc8bd] text-lg tracking-wider">
+                <div className="flex items-center justify-between py-4">
+                  <span className="font-inter text-[14px] text-white/30 font-bold uppercase tracking-widest">{tr('common.discount')}</span>
+                  <span className="font-montserrat font-black text-[#5cc8bd] text-2xl tracking-tight">
                     {discountVal}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 group-hover:bg-white group-hover:text-black transition-all duration-500 rounded-sm text-center block">
-              {tr('common.details')}
+            <div className="mt-2 w-full bg-[#5cc8bd] text-black font-montserrat uppercase tracking-[0.2em] text-[11px] font-black py-4 hover:bg-white transition-all duration-500 rounded-xl text-center flex items-center justify-center gap-3 group/btn">
+              <span>{tr('common.details')}</span>
+              <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
             </div>
           </div>
         </article>
@@ -219,7 +224,6 @@ const OffersPage = () => {
     const timer = setTimeout(() => setShowScrollIndicator(false), 2000);
     return () => clearTimeout(timer);
   }, []);
-  const introRef = useScrollReveal();
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
@@ -252,7 +256,7 @@ const OffersPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-20 w-full">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-32 w-full">
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
             <span className="block text-white/30 text-2xl md:text-3xl mb-2">Vogel Family Travel</span>
             <span className="block text-5xl md:text-7xl lg:text-[88px] text-white">
@@ -267,33 +271,11 @@ const OffersPage = () => {
         </div>
       </section>
 
-      {/* ── Intro ── */}
-      <section className="relative z-10 bg-zinc-950 border-y border-white/5 py-14">
-        <div
-          ref={introRef}
-          className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
-        >
-          <div>
-            <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-white flex items-center gap-4 mb-6">
-              <span className="w-8 h-px bg-white/30" />
-              {tr('offers.title')}
-            </h2>
-            <p className="font-inter text-white/70 text-lg leading-relaxed">
-              {tr('offers.subtitle')}
-            </p>
-          </div>
-          <div>
-            <p className="font-inter text-white/50 text-base leading-relaxed border-l border-white/10 pl-8">
-              {currentLang === 'ua'
-                ? "Кожна пропозиція перевірена нашими менеджерами особисто. Ми гарантуємо відповідність заявленого рівня сервісу та захист інтересів клієнта на кожному етапі бронювання."
-                : "Each offer is personally verified by our managers. We guarantee compliance with the stated level of service and protection of client interests at every stage of booking."}
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* ── Search / Filter Panel ── */}
-      <OfferSearchPanel filter={filter} onChange={setFilter} />
+      <div className="relative z-20 -mt-12 md:-mt-24">
+        <OfferSearchPanel filter={filter} onChange={setFilter} />
+      </div>
 
       {/* ── Offer cards grid ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
