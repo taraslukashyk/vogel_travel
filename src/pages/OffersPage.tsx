@@ -113,7 +113,7 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
       style={{ transitionDelay: `${idx * 100}ms` }}
     >
       <Link to={l(`/offers/${slug}`)} className="block h-full group">
-        <article className="bg-[#0b1a15]/40 backdrop-blur-md border border-[#5cc8bd]/10 rounded-2xl overflow-hidden hover:bg-[#0b1a15]/60 md:hover:-translate-y-2 transition-all duration-700 flex flex-col h-full group/card shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
+        <article className="bg-[#0b1a15]/40 backdrop-blur-md border border-[#5cc8bd]/10 rounded-none overflow-hidden hover:bg-[#0b1a15]/60 md:hover:-translate-y-2 transition-all duration-700 flex flex-col h-full group/card shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
           {/* Image */}
           <div className="relative h-60 overflow-hidden">
             <OptimizedImage
@@ -126,13 +126,13 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
 
             {/* Discount badge */}
             {discountVal && (
-              <div className="absolute top-5 right-5 bg-[#5cc8bd] text-black font-montserrat font-black text-[13px] px-5 py-2 rounded-xl shadow-[0_10px_20px_rgba(92,200,189,0.3)] tracking-wider">
+              <div className="absolute top-5 right-5 bg-[#5cc8bd] text-black font-montserrat font-black text-[13px] px-5 py-2 rounded-none shadow-[0_10px_20px_rgba(92,200,189,0.3)] tracking-wider">
                 {discountVal}
               </div>
             )}
 
             {/* Location tag */}
-            <div className="absolute bottom-5 left-5 flex items-center gap-2 text-[#5cc8bd] text-[10px] font-montserrat font-black uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-4 py-2 rounded-lg border border-white/5">
+            <div className="absolute bottom-5 left-5 flex items-center gap-2 text-[#5cc8bd] text-[10px] font-montserrat font-black uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-4 py-2 rounded-none border border-white/5">
               <MapPin className="w-3.5 h-3.5" strokeWidth={2.5} />
               {locationTag}
             </div>
@@ -146,7 +146,7 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
 
             <div className="space-y-0 mt-auto border-t border-[#5cc8bd]/10 pt-6 divide-y divide-[#5cc8bd]/5">
               <div className="flex items-center gap-4 text-white/60 py-4 group/item">
-                <div className="w-10 h-10 rounded-xl bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
+                <div className="w-10 h-10 rounded-none bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
                   <CalendarClock className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-tight">
@@ -160,7 +160,7 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
               </div>
 
               <div className="flex items-center gap-4 text-white/60 py-4 group/item">
-                <div className="w-10 h-10 rounded-xl bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
+                <div className="w-10 h-10 rounded-none bg-[#5cc8bd]/5 flex items-center justify-center text-[#5cc8bd] group-hover/item:bg-[#5cc8bd] group-hover/item:text-black transition-all duration-300">
                   <CalendarDays className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-tight">
@@ -183,7 +183,7 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
               )}
             </div>
 
-            <div className="mt-2 w-full bg-[#5cc8bd] text-black font-montserrat uppercase tracking-[0.2em] text-[11px] font-black py-4 hover:bg-white transition-all duration-500 rounded-xl text-center flex items-center justify-center gap-3 group/btn">
+            <div className="mt-2 w-full bg-[#5cc8bd] text-black font-montserrat uppercase tracking-[0.2em] text-[11px] font-black py-4 hover:bg-white transition-all duration-500 rounded-none text-center flex items-center justify-center gap-3 group/btn">
               <span>{tr('common.details')}</span>
               <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
             </div>
