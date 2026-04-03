@@ -21,12 +21,17 @@ export interface Offer {
   slug: string;
   seoTitle?: string;
   seoDescription?: string;
+  country?: string;
+  country_en?: string;
+  city?: string;
+  city_en?: string;
 }
 
 export const offers: Offer[] = [
   {
     id: 1,
     location: 'Мальдіви',
+    country: 'Мальдіви', country_en: 'Maldives', city: 'Атол Баа', city_en: 'Baa Atoll',
     hotel: 'Dusit Thani Maldives',
     image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=1200',
     bookBy: '12/04',
@@ -71,6 +76,7 @@ export const offers: Offer[] = [
   {
     id: 2,
     location: 'Греція, Санторіні',
+    country: 'Греція', country_en: 'Greece', city: 'Санторіні', city_en: 'Santorini',
     hotel: 'Canaves Oia Suites',
     image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&q=80&w=1200',
     bookBy: '20/04',
@@ -110,6 +116,7 @@ export const offers: Offer[] = [
   {
     id: 3,
     location: 'ОАЕ, Дубай',
+    country: 'ОАЕ', country_en: 'UAE', city: 'Дубай', city_en: 'Dubai',
     hotel: 'Atlantis The Royal',
     image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1200',
     bookBy: '05/05',
@@ -149,6 +156,7 @@ export const offers: Offer[] = [
   {
     id: 4,
     location: 'Індонезія, Балі',
+    country: 'Індонезія', country_en: 'Indonesia', city: 'Балі', city_en: 'Bali',
     hotel: 'Four Seasons Resort Bali',
     image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=1200',
     bookBy: '15/04',
@@ -188,6 +196,7 @@ export const offers: Offer[] = [
   {
     id: 5,
     location: 'Сейшельські Острови',
+    country: 'Сейшельські Острови', country_en: 'Seychelles', city: 'Мае', city_en: 'Mahé',
     hotel: 'Four Seasons Seychelles',
     image: 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?auto=format&fit=crop&q=80&w=1200',
     bookBy: '25/04',
@@ -227,6 +236,7 @@ export const offers: Offer[] = [
   {
     id: 6,
     location: 'Швейцарія, Альпи',
+    country: 'Швейцарія', country_en: 'Switzerland', city: 'Андерматт', city_en: 'Andermatt',
     hotel: 'The Chedi Andermatt',
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=1200',
     bookBy: '30/04',

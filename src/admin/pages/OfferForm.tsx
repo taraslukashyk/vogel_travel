@@ -17,6 +17,7 @@ import { translateText } from '../utils/translate';
 import DateRangePicker from '../components/DateRangePicker';
 import DatePicker from '../components/DatePicker';
 import type { DBOffer, DBSection } from '../../lib/types';
+import { COUNTRIES } from '../../lib/data/countries';
 
 interface GalleryImage {
   image: string;
@@ -107,6 +108,10 @@ function SortableGalleryItem({ item, index, onUpdate, onRemove, isUA }: {
 const emptyOffer = {
   // UA
   location: '',
+  country: '',
+  country_en: '',
+  city: '',
+  city_en: '',
   hotel: '',
   book_by: '',
   stay_from: '',
@@ -175,6 +180,10 @@ export default function OfferForm() {
 
       setForm({
         location: existing.location,
+        country: existing.country || '',
+        country_en: existing.country_en || '',
+        city: existing.city || '',
+        city_en: existing.city_en || '',
         hotel: existing.hotel,
         book_by: existing.book_by,
         stay_from: existing.stay_from,
@@ -233,8 +242,13 @@ export default function OfferForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = { 
-        ...form, 
+      // Derive location from country + city for backward compat
+      const locationUA = [form.country, form.city].filter(Boolean).join(', ') || form.location;
+      const locationEN = [form.country_en, form.city_en].filter(Boolean).join(', ') || form.location_en;
+      const payload = {
+        ...form,
+        location: locationUA,
+        location_en: locationEN,
         book_by_en: form.book_by,
         stay_from_en: form.stay_from,
         stay_to_en: form.stay_to,
@@ -292,6 +306,7 @@ export default function OfferForm() {
   const translatableFields = [
     'hotel',
     'location',
+    'city',
     'description',
     'image_alt',
     'seo_title',
@@ -361,22 +376,63 @@ export default function OfferForm() {
                 <p className="text-xs text-gray-400 mt-1">vogel.travel/ua/offers/<strong>{form.slug || 'slug'}</strong></p>
               </FormField>
 
-               <FormField label={isUA ? "Локація" : "Location"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'location' : 'location_en')}>
-                <input
+              <FormField label={isUA ? "Країна" : "Country"} required={isUA}>
+                <select
                   className={inputClass}
-                  value={isUA ? form.location : form.location_en}
+                  value={isUA ? form.country : form.country_en}
                   onChange={(e) => {
-                    const val = e.target.value;
-                    if (isUA) {
-                      set('location', val);
-                      if (isNew) set('slug', slugify(`${form.hotel} ${val}`));
+                    const selectedName = e.target.value;
+                    const entry = COUNTRIES.find(c => isUA ? c.name === selectedName : c.name_en === selectedName);
+                    if (entry) {
+                      set('country', entry.name);
+                      set('country_en', entry.name_en);
+                      set('city', '');
+                      set('city_en', '');
+                      if (isNew) set('slug', slugify(`${form.hotel} ${entry.name}`));
                     } else {
-                      set('location_en', val);
+                      set(isUA ? 'country' : 'country_en', selectedName);
                     }
                   }}
                   required={isUA}
-                  placeholder={isUA ? form.location_en : form.location}
-                />
+                >
+                  <option value="">{isUA ? '— Оберіть країну —' : '— Select country —'}</option>
+                  {COUNTRIES.map(c => (
+                    <option key={c.code} value={isUA ? c.name : c.name_en}>
+                      {c.flag} {isUA ? c.name : c.name_en}
+                    </option>
+                  ))}
+                </select>
+              </FormField>
+
+              <FormField label={isUA ? "Місто / Регіон" : "City / Region"} onTranslate={() => handleTranslate(isUA ? 'city' : 'city_en')}>
+                {(() => {
+                  const entry = COUNTRIES.find(c => c.name === form.country || c.name_en === form.country_en);
+                  const datalistId = `city-suggestions-${isUA ? 'ua' : 'en'}`;
+                  return (
+                    <>
+                      <input
+                        list={datalistId}
+                        className={inputClass}
+                        value={isUA ? form.city : form.city_en}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          set(isUA ? 'city' : 'city_en', val);
+                          if (isUA && entry) {
+                            const idx = entry.cities.indexOf(val);
+                            if (idx !== -1) set('city_en', entry.cities_en[idx]);
+                          }
+                          if (isNew && isUA) set('slug', slugify(`${form.hotel} ${form.country} ${val}`));
+                        }}
+                        placeholder={isUA ? (form.city_en || 'Місто або регіон') : (form.city || 'City or region')}
+                      />
+                      <datalist id={datalistId}>
+                        {(isUA ? entry?.cities : entry?.cities_en)?.map(c => (
+                          <option key={c} value={c} />
+                        ))}
+                      </datalist>
+                    </>
+                  );
+                })()}
               </FormField>
               <div className="space-y-4">
                 <DatePicker 

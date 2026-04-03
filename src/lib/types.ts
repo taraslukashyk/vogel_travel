@@ -23,6 +23,10 @@ export interface DBOffer {
   seo_title_en?: string;
   seo_description: string | null;
   seo_description_en?: string;
+  country?: string;
+  country_en?: string;
+  city?: string;
+  city_en?: string;
   slug: string | null;
   slug_en?: string;
   sort_order: number;

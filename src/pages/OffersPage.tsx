@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { CalendarClock, CalendarDays, Tag } from 'lucide-react';
+import { CalendarClock, CalendarDays, MapPin } from 'lucide-react';
 import { useOffers } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
 import aboutPoster from '../assets/about-bg.png';
@@ -9,6 +9,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../lib/utils/dateUtils';
+import OfferSearchPanel, { type FilterState, emptyFilter } from '../components/OfferSearchPanel';
 
 /* ─── Scroll-reveal hook ─── */
 function useScrollReveal() {
@@ -32,12 +33,64 @@ function useScrollReveal() {
   return ref;
 }
 
+/* ─── Helpers ─── */
+function parseIsoDate(s: string): Date | null {
+  if (!s) return null;
+  // support formats: YYYY-MM-DD, MM/DD, DD/MM
+  const iso = /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+  if (iso) return new Date(iso);
+  return null;
+}
+
+function calcNights(offer: any): number {
+  const from = new Date(offer.stayFrom || offer.stay_from || '');
+  const to = new Date(offer.stayTo || offer.stay_to || '');
+  if (isNaN(from.getTime()) || isNaN(to.getTime())) return 0;
+  return Math.round((to.getTime() - from.getTime()) / 86400000);
+}
+
+function applyFilter(offers: any[], filter: FilterState, isUA: boolean): any[] {
+  if (filter.mode === 'custom') return offers;
+
+  return offers.filter(offer => {
+    const offerCountry = isUA ? (offer.country || '') : (offer.country_en || offer.country || '');
+    const offerCity = isUA ? (offer.city || '') : (offer.city_en || offer.city || '');
+
+    if (filter.country) {
+      if (!offerCountry.toLowerCase().includes(filter.country.toLowerCase())) return false;
+    }
+    if (filter.city) {
+      if (!offerCity.toLowerCase().includes(filter.city.toLowerCase())) return false;
+    }
+
+    // Date filter: offer stay overlaps with selected departure range
+    if (filter.dateFrom) {
+      const offerFrom = parseIsoDate(offer.stayFrom || offer.stay_from || '');
+      const offerTo = parseIsoDate(offer.stayTo || offer.stay_to || '');
+      const selFrom = parseIsoDate(filter.dateFrom);
+      const selTo = filter.dateTo ? parseIsoDate(filter.dateTo) : selFrom;
+      if (offerFrom && offerTo && selFrom && selTo) {
+        if (offerTo < selFrom || offerFrom > selTo) return false;
+      }
+    }
+
+    // Nights filter (±2 tolerance)
+    if (filter.nights !== '') {
+      const nights = calcNights(offer);
+      if (nights > 0 && Math.abs(nights - Number(filter.nights)) > 2) return false;
+    }
+
+    return true;
+  });
+}
+
 /* ─── Single Offer Card ─── */
 const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
   const ref = useScrollReveal();
-  const { l } = useLanguage();
+  const { l, currentLang } = useLanguage();
   const { t } = useLanguageContent();
   const { t: tr } = useTranslation();
+  const isUA = currentLang === 'ua';
 
   const hotelName = t(offer, 'hotel');
   const locationName = t(offer, 'location');
@@ -46,6 +99,11 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
   const stayTo = t(offer, 'stay_to');
   const discountVal = t(offer, 'discount');
   const slug = t(offer, 'slug');
+
+  // Country, City tag
+  const country = isUA ? offer.country : (offer.country_en || offer.country);
+  const city = isUA ? offer.city : (offer.city_en || offer.city);
+  const locationTag = (country && city) ? `${country}, ${city}` : (country || city || locationName);
 
   return (
     <div
@@ -66,30 +124,27 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-            {/* Discount badge — glassmorphism */}
+            {/* Discount badge */}
             {discountVal && (
               <div className="absolute top-4 right-4 bg-[#5cc8bd]/80 backdrop-blur-sm text-white font-montserrat font-bold text-base px-4 py-1.5 rounded-sm shadow-lg tracking-wider">
                 {discountVal}
               </div>
             )}
 
-            {/* Location tag at bottom of image */}
+            {/* Location tag — now shows Country, City */}
             <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white/70 text-xs font-montserrat uppercase tracking-widest">
-              <Tag className="w-3 h-3" strokeWidth={1.5} />
-              {locationName}
+              <MapPin className="w-3 h-3" strokeWidth={1.5} />
+              {locationTag}
             </div>
           </div>
 
           {/* Card body */}
           <div className="flex-1 p-7 flex flex-col gap-5">
-            {/* Hotel name */}
             <h2 className="font-montserrat font-bold text-xl text-white leading-snug group-hover:text-[#5cc8bd] transition-colors duration-300 tracking-tight">
               {hotelName}
             </h2>
 
-            {/* Details */}
             <div className="space-y-0 mt-auto border-t border-white/10 pt-5 divide-y divide-white/10">
-              {/* Book by */}
               <div className="flex items-center gap-3 text-white/60 py-4">
                 <CalendarClock className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
                 <div className="flex flex-col gap-0.5 leading-tight">
@@ -102,7 +157,6 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
                 </div>
               </div>
 
-              {/* Stay period */}
               <div className="flex items-center gap-3 text-white/60 py-4">
                 <CalendarDays className="w-4 h-4 text-[#5cc8bd]/70 shrink-0" strokeWidth={1.5} />
                 <div className="flex flex-col gap-0.5 leading-tight">
@@ -115,7 +169,6 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
                 </div>
               </div>
 
-              {/* Discount row */}
               {discountVal && (
                 <div className="flex items-center justify-between py-3">
                   <span className="font-inter text-[14px] text-white/50 font-light">{tr('common.discount')}</span>
@@ -126,7 +179,6 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
               )}
             </div>
 
-            {/* CTA row (visual button) */}
             <div className="mt-1 w-full border border-white/20 text-white/80 font-montserrat uppercase tracking-[0.15em] text-xs font-bold py-3 group-hover:bg-white group-hover:text-black transition-all duration-500 rounded-sm text-center block">
               {tr('common.details')}
             </div>
@@ -141,9 +193,13 @@ const OfferCard = ({ offer, idx }: { offer: any; idx: number }) => {
 const OffersPage = () => {
   const { data: offers = [] } = useOffers();
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [filter, setFilter] = useState<FilterState>(emptyFilter());
   const location = useLocation();
   const { currentLang } = useLanguage();
   const { t: tr } = useTranslation();
+  const isUA = currentLang === 'ua';
+
+  const filteredOffers = applyFilter(offers, filter, isUA);
 
   useEffect(() => {
     if (location.hash) {
@@ -167,10 +223,10 @@ const OffersPage = () => {
 
   return (
     <main className="w-full bg-zinc-950/95 text-white selection:bg-[#5cc8bd]/30 min-h-screen overflow-hidden relative">
-      <SEOHead 
-        pagePath={`/${currentLang}/offers`} 
-        fallbackTitle={tr('nav.offers') + " — Vogel Family Travel"} 
-        fallbackDescription={tr('offers.subtitle')} 
+      <SEOHead
+        pagePath={`/${currentLang}/offers`}
+        fallbackTitle={tr('nav.offers') + " — Vogel Family Travel"}
+        fallbackDescription={tr('offers.subtitle')}
       />
 
       {/* Background video */}
@@ -183,7 +239,6 @@ const OffersPage = () => {
         >
           <source src="/about-video.mp4" type="video/mp4" />
         </video>
-        {/* Light gradient overlay to brighten the video edges */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
       </div>
 
@@ -205,7 +260,6 @@ const OffersPage = () => {
             </span>
           </h1>
 
-          {/* Scroll Indicator with smooth fade out */}
           <div className={`absolute bottom-10 right-10 flex flex-col items-center gap-2 transition-opacity duration-[2000ms] ease-in-out ${showScrollIndicator ? 'opacity-100 animate-pulse' : 'opacity-0 pointer-events-none'}`}>
             <span className="text-[9px] font-bold tracking-[0.3em] text-white/30 uppercase">{currentLang === 'ua' ? 'Гортай' : 'Scroll'}</span>
             <div className="scroll-indicator"></div>
@@ -213,7 +267,7 @@ const OffersPage = () => {
         </div>
       </section>
 
-      {/* ── Intro / description card (Non-transparent) ── */}
+      {/* ── Intro ── */}
       <section className="relative z-10 bg-zinc-950 border-y border-white/5 py-14">
         <div
           ref={introRef}
@@ -230,7 +284,7 @@ const OffersPage = () => {
           </div>
           <div>
             <p className="font-inter text-white/50 text-base leading-relaxed border-l border-white/10 pl-8">
-              {currentLang === 'ua' 
+              {currentLang === 'ua'
                 ? "Кожна пропозиція перевірена нашими менеджерами особисто. Ми гарантуємо відповідність заявленого рівня сервісу та захист інтересів клієнта на кожному етапі бронювання."
                 : "Each offer is personally verified by our managers. We guarantee compliance with the stated level of service and protection of client interests at every stage of booking."}
             </p>
@@ -238,15 +292,31 @@ const OffersPage = () => {
         </div>
       </section>
 
+      {/* ── Search / Filter Panel ── */}
+      <OfferSearchPanel filter={filter} onChange={setFilter} />
+
       {/* ── Offer cards grid ── */}
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {offers.map((offer: any, idx: number) => (
-            <OfferCard key={offer.id} offer={offer} idx={idx} />
-          ))}
-        </div>
+        {filteredOffers.length === 0 && filter.mode === 'search' ? (
+          <div className="text-center py-20">
+            <p className="font-montserrat font-bold text-white/40 text-xl uppercase tracking-widest">
+              {isUA ? 'Не знайдено пропозицій за заданими критеріями' : 'No offers match your criteria'}
+            </p>
+            <button
+              onClick={() => setFilter(emptyFilter())}
+              className="mt-6 text-[#5cc8bd] text-sm font-inter underline hover:no-underline"
+            >
+              {isUA ? 'Скинути фільтр' : 'Reset filter'}
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {filteredOffers.map((offer: any, idx: number) => (
+              <OfferCard key={offer.id} offer={offer} idx={idx} />
+            ))}
+          </div>
+        )}
       </section>
-
     </main>
   );
 };
