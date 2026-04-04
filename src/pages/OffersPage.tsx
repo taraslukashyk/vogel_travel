@@ -256,7 +256,7 @@ const OffersPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-16 w-full">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 pb-8 w-full">
           <h1 className="font-montserrat font-extrabold uppercase tracking-tight leading-none">
             <span className="block text-white/30 text-xl md:text-2xl lg:text-3xl mb-1 md:mb-2">Vogel Family Travel</span>
             <span className="block text-4xl md:text-7xl lg:text-[88px] text-white">
@@ -272,7 +272,7 @@ const OffersPage = () => {
       </section>
 
       {/* ── Intro ── */}
-      <section className="relative z-20 bg-zinc-950 border-y border-white/5 py-14">
+      <section className="relative z-20 bg-zinc-950 border-y border-white/5 py-8">
         <div
           ref={introRef}
           className="opacity-0 translate-y-10 transition-all duration-700 ease-out max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"

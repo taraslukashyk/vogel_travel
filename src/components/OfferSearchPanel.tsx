@@ -100,7 +100,8 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
   const [searchCity, setSearchCity] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', email: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', firstName: '', lastName: '' });
+  const [invoiceMode, setInvoiceMode] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
@@ -166,16 +167,25 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
       ? ` (вік: ${filter.childAges.slice(0, filter.children).join(', ')})` 
       : '';
 
+    const datesStr = filter.dateFrom 
+      ? `${format(parseISO(filter.dateFrom), 'dd.MM.yyyy')}${filter.dateTo ? ` — ${format(parseISO(filter.dateTo), 'dd.MM.yyyy')}` : ''}` 
+      : null;
+
     const lines = [
       `<b>🔍 Запит на підбір туру</b>`,
       `<b>Режим:</b> ${modeLabel}`,
       filter.country ? `<b>Країна:</b> ${flagStr} ${escapeHTML(filter.country)}` : null,
       filter.city ? `<b>Місто:</b> ${escapeHTML(filter.city)}` : null,
+      datesStr ? `<b>Дати:</b> ${datesStr}` : null,
       filter.nights ? `<b>Ночей:</b> ${filter.nights}` : null,
       `<b>Гості:</b> Дорослі: ${filter.adults} | Діти: ${filter.children}${kidsAgesStr}`,
       '',
+      invoiceMode ? `<b>💳 ЗАПИТ НА ІНВОЙС</b>` : null,
+      invoiceMode ? `Прізвище: ${escapeHTML(form.lastName)}` : null,
+      invoiceMode ? `Ім'я: ${escapeHTML(form.firstName)}` : null,
+      '',
       `<b>👤 Клієнт:</b>`,
-      `Ім'я: ${escapeHTML(form.name || 'Anonymous')}`,
+      `Як звертатися: ${escapeHTML(form.name || 'Anonymous')}`,
       form.phone ? `Телефон: ${escapeHTML(form.phone)}` : null,
       form.email ? `Email: ${escapeHTML(form.email)}` : null,
     ].filter(Boolean).join('\n');
@@ -183,7 +193,8 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
     const result = await sendTelegramNotification(lines);
     if (result.success) {
       setIsSuccess(true);
-      setForm({ name: '', phone: '', email: '' });
+      setForm({ name: '', phone: '', email: '', firstName: '', lastName: '' });
+      setInvoiceMode(false);
       setTimeout(() => setIsSuccess(false), 5000);
     }
     setIsSubmitting(false);
@@ -226,7 +237,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
     <section className="relative z-30 max-w-[1440px] mx-auto px-4 md:px-12 pointer-events-none">
       <div 
         ref={panelRef}
-        className="bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
+        className="relative bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
       >
         {/* Mode Switcher */}
         <div className="flex flex-col md:flex-row md:items-center gap-3 mb-3">
@@ -566,7 +577,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         </div>
 
         {/* Lead Form - Luxury Request */}
-        <div className="pt-3 border-t border-white/10 relative overflow-hidden">
+        <div className="pt-3 border-t border-white/10 relative overflow-visible">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-6 animate-in fade-in slide-in-from-bottom duration-1000">
                <div className="w-16 h-16 bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] shadow-[0_0_50px_rgba(92,200,189,0.2)] mb-4">
@@ -588,7 +599,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   type="text" 
                   name="name"
                   autoComplete="name"
-                  placeholder={isUA ? "ВАШЕ ІМ'Я" : "YOUR NAME"}
+                  placeholder={isUA ? "ЯК ДО ВАС ЗВЕРТАТИСЯ" : "HOW TO ADDRESS YOU"}
                   value={form.name}
                   onChange={e => setForm({...form, name: e.target.value})}
                   className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
@@ -611,15 +622,17 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   onChange={e => setForm({...form, email: e.target.value})}
                   className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
-                
+
                 <button 
                   type="submit"
-                  disabled={isSubmitting || (!form.phone && !form.email)}
-                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-4 transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                  disabled={isSubmitting || (!form.phone && !form.email) || (invoiceMode && (!form.firstName || !form.lastName))}
+                  className={`group px-8 py-4 transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none ${
+                    invoiceMode ? 'bg-[#5cc8bd] text-black shadow-[0_0_30px_rgba(92,200,189,0.3)]' : 'bg-white text-black hover:bg-[#5cc8bd]'
+                  }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
                   <span className="text-[13px] font-montserrat font-black uppercase tracking-[0.3em] relative z-10">
-                    {isSubmitting ? (isUA ? '...' : '...') : (isUA ? 'РОЗРАХУВАТИ' : 'CALCULATE')}
+                    {isSubmitting ? '...' : (invoiceMode ? (isUA ? 'ОТРИМАТИ ІНВОЙС' : 'GET INVOICE') : (isUA ? 'РОЗРАХУВАТИ' : 'CALCULATE'))}
                   </span>
                   {isSubmitting ? (
                     <Loader2 size={18} className="animate-spin relative z-10" />
@@ -630,6 +643,56 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   )}
                 </button>
               </form>
+
+              {/* Invoice Mode Fields (Expandable) */}
+              <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 overflow-hidden ${
+                invoiceMode ? 'max-h-[200px] mt-6 mb-2 opacity-100' : 'max-h-0 opacity-0'
+              }`}>
+                <input 
+                  type="text" 
+                  placeholder={isUA ? "ПРІЗВИЩЕ (LAST NAME)" : "LAST NAME"}
+                  value={form.lastName}
+                  onChange={e => setForm({...form, lastName: e.target.value.toUpperCase()})}
+                  className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold tracking-wide"
+                  required={invoiceMode}
+                />
+                <input 
+                  type="text" 
+                  placeholder={isUA ? "ІМ'Я (FIRST NAME)" : "FIRST NAME"}
+                  value={form.firstName}
+                  onChange={e => setForm({...form, firstName: e.target.value.toUpperCase()})}
+                  className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold tracking-wide"
+                  required={invoiceMode}
+                />
+              </div>
+
+              {/* Protruding 'Notch' Toggle */}
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[calc(100%-1px)] z-50">
+                <button
+                  type="button"
+                  onClick={() => setInvoiceMode(!invoiceMode)}
+                  className={`relative px-8 py-2.5 transition-all duration-300 group flex flex-col items-center gap-1 min-w-[240px] ${
+                    invoiceMode ? 'bg-[#0b1a15]/80' : 'bg-zinc-950/40'
+                  }`}
+                  style={{
+                    clipPath: 'polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderTop: 'none'
+                  }}
+                >
+                  {/* Subtle Top Border Emulation for ClipPath */}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-white/10" />
+                  
+                  <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/30 group-hover:text-[#5cc8bd] transition-colors leading-none pt-1">
+                    {isUA ? 'Для отримання інвойсу на оплату' : 'Request invoice for payment'}
+                  </span>
+                  <div className={`transition-all duration-500 flex flex-col items-center ${invoiceMode ? 'rotate-180' : ''}`}>
+                    <ChevronDown size={14} className={`transition-colors ${invoiceMode ? 'text-[#5cc8bd]' : 'text-white/20 group-hover:text-white/50'}`} />
+                  </div>
+                </button>
+              </div>
             </div>
           )}
         </div>
