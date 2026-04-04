@@ -18,6 +18,7 @@ import DateRangePicker from '../components/DateRangePicker';
 import DatePicker from '../components/DatePicker';
 import type { DBOffer, DBSection } from '../../lib/types';
 import { COUNTRIES } from '../../lib/data/countries';
+import AdminSearchableSelect from '../components/AdminSearchableSelect';
 
 interface GalleryImage {
   image: string;
@@ -377,60 +378,51 @@ export default function OfferForm() {
               </FormField>
 
               <FormField label={isUA ? "Країна" : "Country"} required={isUA}>
-                <select
-                  className={inputClass}
+                <AdminSearchableSelect
+                  placeholder={isUA ? '— Оберіть країну —' : '— Select country —'}
+                  options={COUNTRIES.map(c => ({
+                    id: c.code,
+                    label: isUA ? c.name : c.name_en,
+                    flag: c.flag
+                  }))}
                   value={isUA ? form.country : form.country_en}
-                  onChange={(e) => {
-                    const selectedName = e.target.value;
-                    const entry = COUNTRIES.find(c => isUA ? c.name === selectedName : c.name_en === selectedName);
+                  onChange={(val) => {
+                    const entry = COUNTRIES.find(c => (isUA ? c.name : c.name_en) === val);
                     if (entry) {
                       set('country', entry.name);
                       set('country_en', entry.name_en);
                       set('city', '');
                       set('city_en', '');
                       if (isNew) set('slug', slugify(`${form.hotel} ${entry.name}`));
-                    } else {
-                      set(isUA ? 'country' : 'country_en', selectedName);
                     }
                   }}
-                  required={isUA}
-                >
-                  <option value="">{isUA ? '— Оберіть країну —' : '— Select country —'}</option>
-                  {COUNTRIES.map(c => (
-                    <option key={c.code} value={isUA ? c.name : c.name_en}>
-                      {c.flag} {isUA ? c.name : c.name_en}
-                    </option>
-                  ))}
-                </select>
+                  required
+                />
               </FormField>
 
               <FormField label={isUA ? "Місто / Регіон" : "City / Region"} onTranslate={() => handleTranslate(isUA ? 'city' : 'city_en')}>
                 {(() => {
                   const entry = COUNTRIES.find(c => c.name === form.country || c.name_en === form.country_en);
-                  const datalistId = `city-suggestions-${isUA ? 'ua' : 'en'}`;
+                  const cityOptions = (isUA ? entry?.cities : entry?.cities_en)?.map((city, idx) => ({
+                    id: `city-${idx}`,
+                    label: city,
+                    subLabel: isUA ? entry?.name_en : entry?.name
+                  })) || [];
+                  
                   return (
-                    <>
-                      <input
-                        list={datalistId}
-                        className={inputClass}
-                        value={isUA ? form.city : form.city_en}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          set(isUA ? 'city' : 'city_en', val);
-                          if (isUA && entry) {
-                            const idx = entry.cities.indexOf(val);
-                            if (idx !== -1) set('city_en', entry.cities_en[idx]);
-                          }
-                          if (isNew && isUA) set('slug', slugify(`${form.hotel} ${form.country} ${val}`));
-                        }}
-                        placeholder={isUA ? (form.city_en || 'Місто або регіон') : (form.city || 'City or region')}
-                      />
-                      <datalist id={datalistId}>
-                        {(isUA ? entry?.cities : entry?.cities_en)?.map(c => (
-                          <option key={c} value={c} />
-                        ))}
-                      </datalist>
-                    </>
+                    <AdminSearchableSelect
+                      placeholder={isUA ? (form.city_en || 'Місто або регіон') : (form.city || 'City or region')}
+                      options={cityOptions}
+                      value={isUA ? form.city : form.city_en}
+                      onChange={(val) => {
+                        set(isUA ? 'city' : 'city_en', val);
+                        if (isUA && entry) {
+                          const idx = entry.cities.indexOf(val);
+                          if (idx !== -1) set('city_en', entry.cities_en[idx]);
+                        }
+                        if (isNew && isUA) set('slug', slugify(`${form.hotel} ${form.country} ${val}`));
+                      }}
+                    />
                   );
                 })()}
               </FormField>

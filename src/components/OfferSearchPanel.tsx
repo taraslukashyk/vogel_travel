@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { 
-  Search, Sparkles, MapPin, CalendarDays, Moon, Users, 
+  MapPin, CalendarDays, Moon, Users, 
   Send, CheckCircle2, Minus, Plus, 
   ChevronRight, Loader2, Globe, ChevronDown
 } from 'lucide-react';
@@ -35,7 +35,7 @@ export const emptyFilter = (): FilterState => ({
   city: '',
   dateFrom: '',
   dateTo: '',
-  nights: '',
+  nights: 7,
   adults: 2,
   children: 0,
   childAges: [],
@@ -475,7 +475,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             <FieldZone 
               label={isUA ? 'НОЧЕЙ' : 'NIGHTS'} 
               icon={Moon} 
-              value={filter.nights ? `${filter.nights}` : ''} 
+              value={filter.nights.toString()} 
               placeholder={isUA ? '7 - 14' : '7 - 14'}
               onClick={() => setActiveTab(activeTab === 'nights' ? null : 'nights')}
               active={activeTab === 'nights'}
@@ -484,14 +484,14 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
               <div className="absolute top-full left-0 z-[100] mt-2 w-[280px] sm:w-[340px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-8 flex flex-col items-center gap-10">
                   <div className="flex items-center gap-10">
-                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.max(1, Number(filter.nights || 7) - 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.max(1, Number(filter.nights) - 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
                         <Minus size={20} />
                      </button>
                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-5xl font-montserrat font-black text-white leading-none">{filter.nights || 7}</span>
+                        <span className="text-5xl font-montserrat font-black text-white leading-none">{filter.nights}</span>
                         <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{isUA ? 'ночей' : 'nights'}</span>
                      </div>
-                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights || 7) + 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights) + 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
                         <Plus size={20} />
                      </button>
                   </div>
