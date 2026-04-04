@@ -11,6 +11,8 @@ import { useLanguage } from '../hooks/useLanguage';
 import { DayPicker, type DateRange } from 'react-day-picker';
 import { uk, enUS } from 'date-fns/locale';
 import { format, parseISO } from 'date-fns';
+import { Switch } from './ui/switch';
+import { Label } from './ui/label';
 
 /* ── Types ── */
 export interface FilterState {
@@ -239,38 +241,25 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         ref={panelRef}
         className="relative bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
       >
-        {/* Mode Switcher - Single Toggle Button */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-3">
-          <div className="text-[9px] uppercase font-montserrat font-black tracking-[0.3em] text-white/20 pl-1">
-            {isUA ? 'РЕЖИМ ФІЛЬТРУ' : 'FILTER MODE'}
-          </div>
-          <button
-            onClick={() => { set('mode', filter.mode === 'search' ? 'custom' : 'search'); setActiveTab(null); }}
-            className="group flex items-center bg-white/5 border border-white/5 hover:border-white/20 transition-all duration-300 relative overflow-hidden"
+        {/* Mode Switcher - Shadcn Switch + Label */}
+        <div className="flex items-center space-x-2 mb-4 pl-1">
+          <Switch
+            id="mode-switch"
+            checked={filter.mode === 'search'}
+            onCheckedChange={(checked) => {
+              set('mode', checked ? 'search' : 'custom');
+              setActiveTab(null);
+            }}
+            className="data-checked:bg-[#5cc8bd] data-unchecked:bg-white/20"
+          />
+          <Label
+            htmlFor="mode-switch"
+            className="text-[11px] font-montserrat font-semibold text-white/60 hover:text-white/90 transition-colors cursor-pointer"
           >
-            <div className={`flex items-center gap-2.5 px-6 py-2.5 text-[11px] font-montserrat font-black uppercase tracking-widest transition-all duration-500 relative ${
-              filter.mode === 'search' ? 'text-[#5cc8bd] bg-white/5 shadow-[inset_0_0_20px_rgba(92,200,189,0.05)]' : 'text-white/40 hover:text-white/60'
-            }`}>
-              <Search size={13} className="relative z-10" />
-              <span className="relative z-10">{isUA ? 'Пошук з акційних пропозицій' : 'Search Deals'}</span>
-            </div>
-            <div className="w-px h-10 bg-white/10" />
-            <div className={`flex items-center gap-2.5 px-6 py-2.5 text-[11px] font-montserrat font-black uppercase tracking-widest transition-all duration-500 relative ${
-              filter.mode === 'custom' ? 'text-[#5cc8bd] bg-white/5 shadow-[inset_0_0_20px_rgba(92,200,189,0.05)]' : 'text-white/40 hover:text-white/60'
-            }`}>
-              <Sparkles size={13} className="relative z-10" />
-              <span className="relative z-10">{isUA ? 'Індивідуальний підбір' : 'Full Custom'}</span>
-            </div>
-
-            {/* Active Indicator Slide */}
-            <div 
-              className="absolute top-0 bottom-0 bg-[#5cc8bd]/10 border-x border-[#5cc8bd]/30 transition-all duration-500 ease-out z-0"
-              style={{
-                left: filter.mode === 'search' ? '0' : '50%',
-                width: '50%'
-              }}
-            />
-          </button>
+            {filter.mode === 'search'
+              ? (isUA ? 'Пошук з акційних пропозицій' : 'Search Deals')
+              : (isUA ? 'Індивідуальний підбір' : 'Custom Quote')}
+          </Label>
         </div>
 
         {/* Filter Rows */}

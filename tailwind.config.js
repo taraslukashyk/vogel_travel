@@ -7,11 +7,39 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#5cc8bd",
-        secondary: "#48a79d",
-        cta: "#06B6D4",
-        background: "#FDF2F8",
-        foreground: "#831843",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        primary: {
+          DEFAULT: "#5cc8bd",
+          foreground: "var(--primary-foreground)",
+        },
+        secondary: {
+          DEFAULT: "#48a79d",
+          foreground: "var(--secondary-foreground)",
+        },
+        destructive: {
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
+        },
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          foreground: "var(--accent-foreground)",
+        },
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
+        },
+        card: {
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+        },
       },
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'],
