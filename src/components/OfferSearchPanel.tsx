@@ -57,13 +57,13 @@ const FieldZone = ({
 }) => (
   <button
     onClick={(e) => { e.stopPropagation(); onClick(); }}
-    className={`relative flex flex-col items-start px-5 py-3 transition-all duration-300 group min-h-[70px] w-full ${
+    className={`relative flex flex-col items-start px-5 py-2 transition-all duration-300 group min-h-[58px] w-full ${
       active ? 'bg-white/15 ring-1 ring-white/30 shadow-[0_0_30px_rgba(255,255,255,0.08)]' : 'bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10'
     }`}
   >
-    <div className="flex items-center gap-2 mb-2 pointer-events-none">
-      <Icon size={14} className={`${active ? 'text-[#5cc8bd]' : 'text-white/80 group-hover:text-white'} transition-colors`} />
-      <span className="text-[10px] uppercase font-montserrat font-black tracking-[0.2em] text-white/70 group-hover:text-white/90">
+    <div className="flex items-center gap-2 mb-1.5 pointer-events-none">
+      <Icon size={13} className={`${active ? 'text-[#5cc8bd]' : 'text-white/80 group-hover:text-white'} transition-colors`} />
+      <span className="text-[9px] uppercase font-montserrat font-black tracking-[0.2em] text-white/70 group-hover:text-white/90">
         {label}
       </span>
     </div>
@@ -229,7 +229,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         className="bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
       >
         {/* Mode Switcher */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-3">
           <div className="text-[9px] uppercase font-montserrat font-black tracking-[0.3em] text-white/20 pl-1">
             {isUA ? 'РЕЖИМ ФІЛЬТРУ' : 'FILTER MODE'}
           </div>
@@ -256,7 +256,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         </div>
 
         {/* Filter Rows */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 mb-3">
           
           {/* Country Field */}
           <div className="relative">
@@ -566,7 +566,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         </div>
 
         {/* Lead Form - Luxury Request */}
-        <div className="pt-4 border-t border-white/10 relative overflow-hidden">
+        <div className="pt-3 border-t border-white/10 relative overflow-hidden">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-6 animate-in fade-in slide-in-from-bottom duration-1000">
                <div className="w-16 h-16 bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] shadow-[0_0_50px_rgba(92,200,189,0.2)] mb-4">
@@ -591,7 +591,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder={isUA ? "ВАШЕ ІМ'Я" : "YOUR NAME"}
                   value={form.name}
                   onChange={e => setForm({...form, name: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 <input 
                   type="tel" 
@@ -600,7 +600,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder="+380 XX XXX XX XX"
                   value={form.phone}
                   onChange={e => setForm({...form, phone: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 <input 
                   type="email" 
@@ -609,13 +609,13 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder="EMAIL"
                   value={form.email}
                   onChange={e => setForm({...form, email: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 
                 <button 
                   type="submit"
                   disabled={isSubmitting || (!form.phone && !form.email)}
-                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-5 transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-4 transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
                   <span className="text-[13px] font-montserrat font-black uppercase tracking-[0.3em] relative z-10">
