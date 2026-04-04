@@ -57,7 +57,7 @@ const FieldZone = ({
 }) => (
   <button
     onClick={(e) => { e.stopPropagation(); onClick(); }}
-    className={`relative flex flex-col items-start px-6 py-5 rounded-xl transition-all duration-300 group min-h-[80px] w-full ${
+    className={`relative flex flex-col items-start px-5 py-3 transition-all duration-300 group min-h-[70px] w-full ${
       active ? 'bg-white/15 ring-1 ring-white/30 shadow-[0_0_30px_rgba(255,255,255,0.08)]' : 'bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10'
     }`}
   >
@@ -226,27 +226,27 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
     <section className="relative z-30 max-w-[1440px] mx-auto px-4 md:px-12 pointer-events-none">
       <div 
         ref={panelRef}
-        className="bg-zinc-950/60 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-4 md:p-6 overflow-visible pointer-events-auto"
+        className="bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
       >
         {/* Mode Switcher */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
           <div className="text-[9px] uppercase font-montserrat font-black tracking-[0.3em] text-white/20 pl-1">
             {isUA ? 'РЕЖИМ ФІЛЬТРУ' : 'FILTER MODE'}
           </div>
-          <div className="flex bg-white/10 p-1.5 rounded-2xl w-fit shadow-lg border border-white/5">
+          <div className="flex bg-white/5 p-1 w-fit border border-white/5">
             {[
-              { id: 'search', label: isUA ? 'Пошук акцій' : 'Deals Search', icon: Search },
+              { id: 'search', label: isUA ? 'Пошук з акційних пропозицій' : 'Search Deals', icon: Search },
               { id: 'custom', label: isUA ? 'Індивідуальний підбір' : 'Full Custom', icon: Sparkles }
             ].map(m => (
               <button
                 key={m.id}
                 onClick={() => { set('mode', m.id as any); setActiveTab(null); }}
-                className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-[11px] font-montserrat font-black uppercase tracking-widest transition-all duration-500 relative ${
+                className={`flex items-center gap-2.5 px-6 py-2.5 text-[11px] font-montserrat font-black uppercase tracking-widest transition-all duration-500 relative ${
                   filter.mode === m.id ? 'text-white' : 'text-white/40 hover:text-white/70'
                 }`}
               >
                 {filter.mode === m.id && (
-                  <div className="absolute inset-0 bg-[#5cc8bd] rounded-xl shadow-[0_0_24px_rgba(92,200,189,0.4)] animate-in fade-in zoom-in duration-500" />
+                  <div className="absolute inset-0 bg-white/10 border border-[#5cc8bd]/30 shadow-[0_0_15px_rgba(92,200,189,0.15)] animate-in fade-in zoom-in duration-500" />
                 )}
                 <m.icon size={13} className="relative z-10" />
                 <span className="relative z-10">{m.label}</span>
@@ -256,7 +256,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         </div>
 
         {/* Filter Rows */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
           
           {/* Country Field */}
           <div className="relative">
@@ -273,11 +273,11 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             />
             {activeTab === 'country' && (
               <div className="absolute top-full right-0 z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20  shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
                   <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
                     <button 
                       onClick={() => { set('country', ''); set('city', ''); setActiveTab(null); setSearchCountry(''); }}
-                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5 rounded-lg transition-colors"
+                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5  transition-colors"
                     >
                       {isUA ? 'Всі країни' : 'All countries'}
                     </button>
@@ -293,7 +293,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                           setActiveTab('city'); 
                           setSearchCountry(''); 
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:bg-[#5cc8bd]/10 hover:text-[#5cc8bd] transition-all group text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-white/70 hover:bg-[#5cc8bd]/10 hover:text-[#5cc8bd] transition-all group text-left"
                       >
                         <span className="text-xl group-hover:scale-125 transition-transform duration-300">{c.flag}</span>
                         <span className="flex-1">{isUA ? c.name : c.name_en}</span>
@@ -321,11 +321,11 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             />
             {activeTab === 'city' && (
               <div className="absolute top-full lg:left-0 right-0 lg:right-auto z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20  shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
                   <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
                     <button 
                       onClick={() => { set('city', ''); setActiveTab(null); setSearchCity(''); }}
-                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5 rounded-lg transition-colors"
+                      className="w-full text-left px-4 py-2 text-[10px] text-[#5cc8bd] font-black uppercase tracking-widest hover:bg-white/5  transition-colors"
                     >
                       {isUA ? 'Всі регіони' : 'All regions'}
                     </button>
@@ -337,7 +337,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                       <button
                         key={idx}
                         onClick={() => { set('country', item.countryName); set('city', item.name); setActiveTab(null); setSearchCity(''); }}
-                        className="w-full flex flex-col items-start px-4 py-3 rounded-xl hover:bg-[#5cc8bd]/10 transition-all group text-left"
+                        className="w-full flex flex-col items-start px-4 py-3 hover:bg-[#5cc8bd]/10 transition-all group text-left"
                       >
                         <div className="flex items-center justify-between w-full">
                           <span className="text-sm font-medium text-white/70 group-hover:text-[#5cc8bd]">{item.name}</span>
@@ -364,7 +364,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             />
             {activeTab === 'dates' && (
               <div className="absolute top-full right-0 z-[100] mt-2 w-[320px] sm:w-[600px] origin-top animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col sm:flex-row min-h-[460px]">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col sm:flex-row min-h-[460px]">
                   {/* Month Sidebar */}
                   <div className="w-full sm:w-44 bg-[#081210] border-b sm:border-b-0 sm:border-r border-[#5cc8bd]/10 flex flex-col">
                     {/* Year selector */}
@@ -376,7 +376,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                             setCalendarYear(y);
                             setCalendarMonth(new Date(y, calendarMonth.getMonth(), 1));
                           }}
-                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-black tracking-wider uppercase transition-all ${
+                          className={`flex-1 py-1.5 text-[10px] font-black tracking-wider uppercase transition-all ${
                             calendarYear === y
                               ? 'bg-[#5cc8bd] text-black'
                               : 'text-white/40 hover:text-white hover:bg-white/5'
@@ -452,7 +452,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                       </div>
                       <button 
                         onClick={() => setActiveTab(null)}
-                        className="bg-[#5cc8bd] hover:bg-[#4eb1a6] text-black font-black text-[10px] uppercase tracking-[0.2em] px-8 py-3.5 rounded-xl shadow-lg shadow-[#5cc8bd]/20 transition-all active:scale-95"
+                        className="bg-[#5cc8bd] hover:bg-[#4eb1a6] text-black font-black text-[10px] uppercase tracking-[0.2em] px-8 py-3.5 shadow-lg shadow-[#5cc8bd]/20 transition-all active:scale-95"
                       >
                         {isUA ? 'Застосувати' : 'Apply'}
                       </button>
@@ -475,20 +475,20 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             />
             {activeTab === 'nights' && (
               <div className="absolute top-full left-0 z-[100] mt-2 w-[280px] sm:w-[340px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-8 flex flex-col items-center gap-10">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-8 flex flex-col items-center gap-10">
                   <div className="flex items-center gap-10">
-                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.max(1, Number(filter.nights || 7) - 1)); }} className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.max(1, Number(filter.nights || 7) - 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
                         <Minus size={20} />
                      </button>
                      <div className="flex flex-col items-center gap-1">
                         <span className="text-5xl font-montserrat font-black text-white leading-none">{filter.nights || 7}</span>
                         <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{isUA ? 'ночей' : 'nights'}</span>
                      </div>
-                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights || 7) + 1)); }} className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
+                     <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights || 7) + 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
                         <Plus size={20} />
                      </button>
                   </div>
-                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black rounded-xl text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/20 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/20 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
                 </div>
               </div>
             )}
@@ -506,16 +506,16 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
             />
             {activeTab === 'guests' && (
               <div className="absolute top-full right-0 z-[100] mt-2 w-[340px] sm:w-[420px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 rounded-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-6 space-y-6">
+                <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-6 space-y-6">
                   <div className="flex items-center justify-between">
                      <div>
                        <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{isUA ? 'ДОРОСЛІ' : 'ADULTS'}</h4>
                        <p className="text-[10px] text-white/30 italic">16+ years</p>
                      </div>
                      <div className="flex items-center gap-5">
-                        <button onClick={() => set('adults', Math.max(1, filter.adults - 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
+                        <button onClick={() => set('adults', Math.max(1, filter.adults - 1))} className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
                         <span className="w-6 text-center text-sm font-black text-white">{filter.adults}</span>
-                        <button onClick={() => set('adults', Math.min(9, filter.adults + 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
+                        <button onClick={() => set('adults', Math.min(9, filter.adults + 1))} className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
                      </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -524,9 +524,9 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                        <p className="text-[10px] text-white/30 italic">0 - 15 years</p>
                      </div>
                      <div className="flex items-center gap-5">
-                        <button onClick={() => set('children', Math.max(0, filter.children - 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
+                        <button onClick={() => set('children', Math.max(0, filter.children - 1))} className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Minus size={14}/></button>
                         <span className="w-6 text-center text-sm font-bold text-white">{filter.children}</span>
-                        <button onClick={() => set('children', Math.min(6, filter.children + 1))} className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
+                        <button onClick={() => set('children', Math.min(6, filter.children + 1))} className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-colors"><Plus size={14}/></button>
                      </div>
                   </div>
                   {filter.children > 0 && (
@@ -534,7 +534,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                       <p className="text-[9px] text-white/40 uppercase font-black text-center tracking-widest">{isUA ? 'Вкажіть вік кожної дитини' : 'Specify each child age'}</p>
                       <div className="grid grid-cols-3 gap-2">
                          {Array.from({ length: filter.children }).map((_, i) => (
-                           <div key={i} className="bg-white/5 rounded-xl px-3 py-2.5 border border-white/5 hover:border-[#5cc8bd]/30 group transition-all relative">
+                           <div key={i} className="bg-white/5 px-3 py-2.5 border border-white/5 hover:border-[#5cc8bd]/30 group transition-all relative">
                              <label className="text-[8px] text-white/30 uppercase font-bold block mb-1">{isUA ? `Дитина ${i + 1}` : `Kid ${i + 1}`}</label>
                              <div className="relative">
                                <select 
@@ -557,7 +557,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                       </div>
                     </div>
                   )}
-                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black rounded-xl text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/10 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/10 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
                 </div>
               </div>
             )}
@@ -566,10 +566,10 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         </div>
 
         {/* Lead Form - Luxury Request */}
-        <div className="pt-6 border-t border-white/10 relative overflow-hidden">
+        <div className="pt-4 border-t border-white/10 relative overflow-hidden">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-6 animate-in fade-in slide-in-from-bottom duration-1000">
-               <div className="w-16 h-16 rounded-3xl bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] shadow-[0_0_50px_rgba(92,200,189,0.2)] mb-4">
+               <div className="w-16 h-16 bg-[#5cc8bd]/10 flex items-center justify-center text-[#5cc8bd] shadow-[0_0_50px_rgba(92,200,189,0.2)] mb-4">
                   <CheckCircle2 size={40} className="animate-in zoom-in spin-in-12 duration-1000" />
                </div>
                <div className="text-center">
@@ -591,7 +591,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder={isUA ? "ВАШЕ ІМ'Я" : "YOUR NAME"}
                   value={form.name}
                   onChange={e => setForm({...form, name: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 <input 
                   type="tel" 
@@ -600,7 +600,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder="+380 XX XXX XX XX"
                   value={form.phone}
                   onChange={e => setForm({...form, phone: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 <input 
                   type="email" 
@@ -609,17 +609,17 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder="EMAIL"
                   value={form.email}
                   onChange={e => setForm({...form, email: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 rounded-xl px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
                 />
                 
                 <button 
                   type="submit"
                   disabled={isSubmitting || (!form.phone && !form.email)}
-                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-5 rounded-xl transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                  className="group bg-white hover:bg-[#5cc8bd] text-black px-8 py-5 transition-all duration-700 flex items-center justify-center gap-4 relative overflow-hidden active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
                   <span className="text-[13px] font-montserrat font-black uppercase tracking-[0.3em] relative z-10">
-                    {isSubmitting ? (isUA ? '...' : '...') : (isUA ? 'ОТРИМАТИ ПРОПОЗИЦІЮ' : 'GET PROPOSAL')}
+                    {isSubmitting ? (isUA ? '...' : '...') : (isUA ? 'РОЗРАХУВАТИ' : 'CALCULATE')}
                   </span>
                   {isSubmitting ? (
                     <Loader2 size={18} className="animate-spin relative z-10" />
@@ -647,11 +647,9 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         }
         .custom-scrollbar::-webkit-scrollbar-track {
           background: rgba(0, 0, 0, 0.2);
-          border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.05);
-          border-radius: 10px;
           transition: background 0.3s;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -671,7 +669,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           margin: 0;
         }
         .calendar-premium .rdp-day {
-          border-radius: 8px;
           transition: all 0.2s;
           font-size: 13px;
           font-weight: 500;
@@ -688,7 +685,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         .calendar-premium .rdp-day_range_middle {
           background: rgba(92, 200, 189, 0.15) !important;
           color: #fff !important;
-          border-radius: 0;
         }
         .calendar-premium .rdp-month_caption {
           font-weight: 900;
@@ -733,7 +729,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           font-size: 13px;
           color: rgba(255,255,255,0.8);
           transition: all 0.15s;
-          border-radius: 6px;
           padding: 0;
           text-align: center;
           vertical-align: middle;
@@ -745,7 +740,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           width: 36px;
           height: 36px;
           cursor: pointer;
-          border-radius: 6px;
           background: none;
           border: none;
           color: inherit;
@@ -782,7 +776,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           background-color: #5cc8bd !important;
           color: #000 !important;
           font-weight: 900 !important;
-          border-radius: 8px 0 0 8px !important;
           width: 100% !important;
         }
 
@@ -790,7 +783,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           background-color: #5cc8bd !important;
           color: #000 !important;
           font-weight: 900 !important;
-          border-radius: 0 8px 8px 0 !important;
           width: 100% !important;
         }
 
