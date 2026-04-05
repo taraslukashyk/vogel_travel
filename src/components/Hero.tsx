@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import BirdCursorEffect from './BirdCursorEffect';
 import OrderTourModal from './OrderTourModal';
+import PromoTag from './PromoTag';
 import { useTranslation } from 'react-i18next';
 
 import heroPoster from '../assets/hero-bg.png';
@@ -16,6 +17,7 @@ const Hero = () => {
     <>
       <section className="relative w-full min-h-[100svh] overflow-hidden bg-black flex flex-col justify-center pt-24 lg:pt-32 pb-16 lg:pb-20">
       <BirdCursorEffect />
+      <PromoTag />
 
       {/* Background Video with Poster fallback */}
       <video

@@ -49,12 +49,17 @@ export default {
       animation: {
         'infinite-scroll': 'infinite-scroll 25s linear infinite',
         'spin-slow': 'spin 8s linear infinite',
+        'swing': 'swing 3s ease-in-out infinite',
       },
       keyframes: {
         'infinite-scroll': {
           from: { transform: 'translateX(0)' },
           to: { transform: 'translateX(-100%)' },
-        }
+        },
+        'swing': {
+          '0%, 100%': { transform: 'rotate(-6deg)' },
+          '50%': { transform: 'rotate(6deg)' },
+        },
       }
     },
   },
