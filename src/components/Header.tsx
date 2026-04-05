@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
 import { useLanguage } from '../hooks/useLanguage';
+import CurrencyRates from './CurrencyRates';
 
 // Lazy load modals - they are only shown on user interaction
 const ContactModal = lazy(() => import('./ContactModal'));
@@ -52,7 +53,8 @@ const Header = () => {
           </div>
 
           {/* Right: Socials & Language */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-14">
+            <CurrencyRates />
             {/* Social Icons */}
             <div className="flex items-center gap-4">
               <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
@@ -198,20 +200,24 @@ const Header = () => {
             </button>
 
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/10">
-              {/* Mobile Language */}
-              <div className="flex gap-4 text-sm">
-                <button 
-                  onClick={() => { changeLanguage('ua'); setIsMobileMenuOpen(false); }}
-                  className={currentLang === 'ua' ? 'text-white' : 'text-white/40'}
-                >UA</button>
-                <button 
-                  onClick={() => { changeLanguage('en'); setIsMobileMenuOpen(false); }}
-                  className={currentLang === 'en' ? 'text-white' : 'text-white/40'}
-                >EN</button>
+              <div className="flex flex-col gap-4">
+                {/* Mobile Language */}
+                <div className="flex gap-4 text-sm">
+                  <button 
+                    onClick={() => { changeLanguage('ua'); setIsMobileMenuOpen(false); }}
+                    className={currentLang === 'ua' ? 'text-white' : 'text-white/40'}
+                  >UA</button>
+                  <button 
+                    onClick={() => { changeLanguage('en'); setIsMobileMenuOpen(false); }}
+                    className={currentLang === 'en' ? 'text-white' : 'text-white/40'}
+                  >EN</button>
+                </div>
+                <CurrencyRates />
               </div>
 
               {/* Mobile Socials */}
-              <div className="flex items-center gap-6 text-white/50">
+              <div className="flex flex-col items-end gap-6 mt-4">
+                <div className="flex items-center gap-6 text-white/50">
                 <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   <Instagram className="w-5 h-5" strokeWidth={1.5} />
                 </a>
@@ -227,7 +233,8 @@ const Header = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
       </header>
 
       {/* Contact Modal */}

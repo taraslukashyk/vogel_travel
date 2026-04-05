@@ -203,7 +203,15 @@
     "modal_legal_desc1": "This document defines the terms for providing travel services and protecting the rights of Vogel Family Travel clients.",
     "modal_legal_desc2": "We adhere to high standards of transparency and security in working with your personal data and financial transactions.",
     "modal_legal_footer": "If necessary, you can contact your personal manager to receive the full text of the document with a stamp.",
-    "modal_close_btn": "UNDERSTOOD"
+    "modal_close_btn": "UNDERSTOOD",
+    "help_title": "Need help?",
+    "help_description": "Our assistants are online 24/7 in Telegram.",
+    "help_btn": "Start Chat",
+    "direct_line": "Direct Line",
+    "location": "Location",
+    "social_channels": "Social Channels",
+    "mobile": "Mobile",
+    "office": "Office"
   },
   "footer": {
     "copy": "© 2026 Vogel Family Travel. All rights reserved.",

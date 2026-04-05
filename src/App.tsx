@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import { Toaster } from 'sonner';
 
 // Lazy load public page components
 const Home = lazy(() => import('./pages/Home'));
@@ -194,6 +195,7 @@ function App() {
 
   return (
     <Router basename={import.meta.env.BASE_URL}>
+      <Toaster position="top-right" richColors />
       <LoaderStyles />
       
       {/* The Loader as an overlay to avoid deadlock */}
