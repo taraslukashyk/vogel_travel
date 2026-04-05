@@ -137,10 +137,13 @@ Email: ${escapeHTML(form.email)}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase text-white/40 font-black tracking-widest">{isUA ? 'Імʼя' : 'First Name'}</label>
+                <label htmlFor="firstName" className="text-[10px] uppercase text-white/40 font-black tracking-widest cursor-pointer">{isUA ? 'Імʼя' : 'First Name'}</label>
                 <input
                   required
                   type="text"
+                  id="firstName"
+                  name="given-name"
+                  autoComplete="given-name"
                   value={form.firstName}
                   onChange={e => setForm({...form, firstName: e.target.value})}
                   className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:border-[#5cc8bd] transition-colors"
@@ -148,10 +151,13 @@ Email: ${escapeHTML(form.email)}
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase text-white/40 font-black tracking-widest">{isUA ? 'Прізвище' : 'Last Name'}</label>
+                <label htmlFor="lastName" className="text-[10px] uppercase text-white/40 font-black tracking-widest cursor-pointer">{isUA ? 'Прізвище' : 'Last Name'}</label>
                 <input
                   required
                   type="text"
+                  id="lastName"
+                  name="family-name"
+                  autoComplete="family-name"
                   value={form.lastName}
                   onChange={e => setForm({...form, lastName: e.target.value})}
                   className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:border-[#5cc8bd] transition-colors"
@@ -161,10 +167,13 @@ Email: ${escapeHTML(form.email)}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase text-white/40 font-black tracking-widest">{isUA ? 'Телефон' : 'Phone'}</label>
+              <label htmlFor="phone" className="text-[10px] uppercase text-white/40 font-black tracking-widest cursor-pointer">{isUA ? 'Телефон' : 'Phone'}</label>
               <input
                 required
                 type="tel"
+                id="phone"
+                name="tel"
+                autoComplete="tel"
                 value={form.phone}
                 onChange={e => setForm({...form, phone: e.target.value})}
                 className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:border-[#5cc8bd] transition-colors"
@@ -173,10 +182,13 @@ Email: ${escapeHTML(form.email)}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase text-white/40 font-black tracking-widest">Email</label>
+              <label htmlFor="email" className="text-[10px] uppercase text-white/40 font-black tracking-widest cursor-pointer">Email</label>
               <input
                 required
                 type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
                 value={form.email}
                 onChange={e => setForm({...form, email: e.target.value})}
                 className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:border-[#5cc8bd] transition-colors"
