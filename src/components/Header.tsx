@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
 import { useLanguage } from '../hooks/useLanguage';
@@ -11,10 +11,16 @@ const SearchPortal = lazy(() => import('./SearchPortal'));
 
 const Header = () => {
   const { t, currentLang, changeLanguage, l } = useLanguage();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const isActive = (path: string) => {
+    const fullPath = l(path);
+    return location.pathname === fullPath;
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,12 +107,23 @@ const Header = () => {
 
             {/* Center: Horizontal Navigation (Desktop Only) */}
             <nav className="hidden xl:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.15em] ml-24 h-full">
-              <Link to={l('/about')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.about')}</Link>
-              <Link to={l('/offers')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.offers')}</Link>
-              <Link to={l('/services')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.services')}</Link>
-              <Link to={l('/partners')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.partners')}</Link>
-              <Link to={l('/blog')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.blog')}</Link>
-              <Link to={l('/contacts')} className="hover:text-[#5cc8bd] transition-colors h-full flex items-center">{t('nav.contacts')}</Link>
+              {[
+                { path: '/about', label: t('nav.about') },
+                { path: '/offers', label: t('nav.offers') },
+                { path: '/services', label: t('nav.services') },
+                { path: '/partners', label: t('nav.partners') },
+                { path: '/blog', label: t('nav.blog') },
+                { path: '/contacts', label: t('nav.contacts') },
+              ].map((item) => (
+                <Link
+                  key={item.path}
+                  to={l(item.path)}
+                  className={`hover:text-[#5cc8bd] transition-all h-full flex items-center gap-2 ${isActive(item.path) ? 'text-[#5cc8bd]' : 'text-white'}`}
+                >
+                  {item.label}
+                  {isActive(item.path) && <span className="w-1 h-1 rounded-full bg-[#5cc8bd] animate-in fade-in zoom-in duration-500" />}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex-grow hidden xl:block"></div>
@@ -179,12 +196,24 @@ const Header = () => {
             </div>
 
             <div className="flex flex-col gap-6 text-lg items-end">
-              <Link to={l('/about')} onClick={() => setIsMobileMenuOpen(false)}>{t('nav.about')}</Link>
-              <Link to={l('/offers')} onClick={() => setIsMobileMenuOpen(false)}>{t('nav.offers')}</Link>
-              <Link to={l('/services')} onClick={() => setIsMobileMenuOpen(false)}>{t('nav.services')}</Link>
-              <Link to={l('/partners')} className="opacity-70" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.partners')}</Link>
-              <Link to={l('/blog')} onClick={() => setIsMobileMenuOpen(false)}>{t('nav.blog')}</Link>
-              <Link to={l('/contacts')} onClick={() => setIsMobileMenuOpen(false)}>{t('nav.contacts')}</Link>
+              {[
+                { path: '/about', label: t('nav.about') },
+                { path: '/offers', label: t('nav.offers') },
+                { path: '/services', label: t('nav.services') },
+                { path: '/partners', label: t('nav.partners') },
+                { path: '/blog', label: t('nav.blog') },
+                { path: '/contacts', label: t('nav.contacts') },
+              ].map((item) => (
+                <Link
+                  key={item.path}
+                  to={l(item.path)}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 transition-all duration-300 ${isActive(item.path) ? 'text-[#5cc8bd]' : 'text-white hover:text-[#5cc8bd] opacity-80 hover:opacity-100'}`}
+                >
+                  {item.label}
+                  {isActive(item.path) && <span className="w-1.5 h-1.5 rounded-full bg-[#5cc8bd]" />}
+                </Link>
+              ))}
             </div>
 
             <div className="h-px bg-white/10 w-full my-2"></div>

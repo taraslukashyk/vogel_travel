@@ -7,7 +7,7 @@ import { useLanguage } from '../hooks/useLanguage';
 
 const Footer = () => {
   const { settings } = useSettings();
-  const { t, l, changeLanguage } = useLanguage();
+  const { t, l, changeLanguage, currentLang } = useLanguage();
 
   return (
     <footer className="w-full bg-black/60 backdrop-blur-[40px] text-white pt-24 pb-12 relative overflow-hidden font-montserrat border-t border-white/10 shadow-[0_-10px_50px_rgba(0,0,0,0.5)]">
@@ -33,12 +33,12 @@ const Footer = () => {
 
               <div className="mt-4">
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((t('i18n.language') === 'en' ? settings?.address_en : settings?.address) || 'Спортивна площа, 1А, Київ')}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((currentLang === 'en' ? settings?.address_en : settings?.address) || 'Спортивна площа, 1А, Київ')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/50 hover:text-white transition-colors max-w-sm block leading-relaxed"
                 >
-                  {t('footer.address_text')} <span className="underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">{(t('i18n.language') === 'en' ? settings?.address_en : settings?.address) || (t('i18n.language') === 'ua' ? 'Спортивна площа, 1А' : 'Sportyvna Square, 1A')}</span>
+                  {t('footer.address_text')} <span className="underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">{(currentLang === 'en' ? settings?.address_en : settings?.address) || (currentLang === 'ua' ? 'Спортивна площа, 1А' : 'Sportyvna Square, 1A')}</span>
                 </a>
                 <span className="text-white/80 font-semibold block mt-1">{t('footer.by_appointment')}</span>
               </div>
@@ -94,7 +94,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Email Subscription */}
+            {/* Email Subscription - Temporarily hidden
             <div className="flex flex-col sm:flex-row gap-4 mt-auto">
               <input
                 type="email"
@@ -105,6 +105,7 @@ const Footer = () => {
                 {t('footer.subscribe')}
               </button>
             </div>
+            */}
           </div>
         </div>
 
