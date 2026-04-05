@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { ChevronDown, Plus, Minus, Globe } from 'lucide-react';
+import { ChevronDown, Plus, Minus, Globe, ExternalLink } from 'lucide-react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -210,6 +210,37 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
     }
   };
 
+  const openInGoogleMaps = () => {
+    if (!mapRef.current) return;
+    
+    const center = mapRef.current.getCenter();
+    const zoom = Math.round(mapRef.current.getZoom()) + 1; // Adjust zoom for Google Maps differences
+    
+    // Check if there are any partners near the center to show pins
+    // For general view with pins, Google Maps doesn't support multiple pins in a simple URL easily,
+    // so we'll open at the same center and zoom.
+    
+    let url = `https://www.google.com/maps/@${center.lat},${center.lng},${zoom}z`;
+    
+    // If the user is zoomed in enough, maybe they are looking at one partner
+    // We can try to finding the closest partner to the center
+    if (zoom >= 10 && activePartners.length > 0) {
+      const closest = activePartners.reduce((prev, curr) => {
+        const d1 = Math.sqrt(Math.pow(prev.lat - center.lat, 2) + Math.pow(prev.lng - center.lng, 2));
+        const d2 = Math.sqrt(Math.pow(curr.lat - center.lat, 2) + Math.pow(curr.lng - center.lng, 2));
+        return d1 < d2 ? prev : curr;
+      });
+      
+      // If the closest partner is within a reasonable distance, we use search to show its pin
+      const dist = Math.sqrt(Math.pow(closest.lat - center.lat, 2) + Math.pow(closest.lng - center.lng, 2));
+      if (dist < 0.1) {
+        url = `https://www.google.com/maps/search/?api=1&query=${closest.lat},${closest.lng}`;
+      }
+    }
+    
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div ref={wrapperRef} className="map-section-wrapper relative w-full h-[60vh] md:h-screen bg-black">
       <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
@@ -218,6 +249,16 @@ const PartnershipMap = ({ onNextDown, partners }: PartnershipMapProps) => {
         ref={mapContainer}
         className="w-full h-full !absolute inset-0 z-0 map-gl-container outline-none"
       />
+
+      <div className="absolute top-8 right-4 md:right-8 z-20">
+        <button
+          onClick={openInGoogleMaps}
+          className="flex items-center gap-3 px-6 py-4 bg-black/60 backdrop-blur-xl border border-white/10 rounded-sm text-[10px] font-black uppercase tracking-[0.3em] text-[#5cc8bd] hover:bg-[#5cc8bd] hover:text-black hover:border-[#5cc8bd] transition-all duration-500 group shadow-2xl"
+        >
+          <ExternalLink className="w-4 h-4 transition-transform group-hover:scale-110" />
+          <span className="hidden md:inline">{t('contacts.open_in_maps')}</span>
+        </button>
+      </div>
 
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center bg-black/50 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl shadow-2xl transition-opacity duration-500 map-instruction-pill flex flex-col items-center justify-center">
         <span ref={instructionRef} className="text-[#5cc8bd] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 pointer-events-none">
