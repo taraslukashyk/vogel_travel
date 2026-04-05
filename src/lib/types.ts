@@ -58,6 +58,8 @@ export interface DBService {
   slug: string | null;
   slug_en?: string;
   sort_order: number;
+  price?: number | null;
+  is_for_payment: boolean;
   is_published: boolean;
   created_at: string;
   updated_at: string;

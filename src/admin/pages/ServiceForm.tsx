@@ -45,6 +45,8 @@ const emptyService = {
   image: '',
   image_alt: '',
   image_alt_en: '',
+  price: undefined as number | undefined,
+  is_for_payment: false,
   is_published: true,
 };
 
@@ -93,6 +95,8 @@ export default function ServiceForm() {
         seo_description_en: existing.seo_description_en || '',
 
         is_published: existing.is_published,
+        price: existing.price ?? undefined,
+        is_for_payment: existing.is_for_payment || false,
       });
     }
   }, [existing]);
@@ -248,6 +252,29 @@ export default function ServiceForm() {
               placeholder={isUA ? form.type_en : form.type}
             />
           </FormField>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-teal-50/50 rounded-lg border border-teal-100">
+          <FormField label="Вартість (UAH)" tooltip="Фіксована ціна для оплати на сайті.">
+            <input 
+              type="number"
+              className={inputClass} 
+              value={form.price ?? ''} 
+              onChange={(e) => set('price', e.target.value ? Number(e.target.value) : undefined)} 
+              placeholder="5000" 
+            />
+          </FormField>
+          <div className="flex items-center gap-3 h-full pt-6">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={form.is_for_payment} 
+                onChange={(e) => set('is_for_payment', e.target.checked)} 
+                className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-500 transition-all cursor-pointer" 
+              />
+              Виводити на оплату (Кнопка "Оплатити")
+            </label>
+          </div>
         </div>
 
         <FormField label={isUA ? "Назва" : "Title"} required={isUA} onTranslate={() => handleTranslate(isUA ? 'title' : 'title_en')}>

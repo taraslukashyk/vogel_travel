@@ -57,7 +57,9 @@
     "listen": "Listen",
     "min_listen": "min listen",
     "share": "Share",
-    "official_website": "Official website"
+    "official_website": "Official website",
+    "pay": "Pay",
+    "currency": "UAH"
   },
   "home": {
     "hero_title": "Vogel Travel",

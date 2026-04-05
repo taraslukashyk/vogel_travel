@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { Plus, Trash2, Eye, EyeOff, GripVertical, CreditCard } from 'lucide-react';
 import { btnPrimary } from '../components/FormField';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
@@ -21,6 +21,10 @@ function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBServ
       </td>
       <td className="px-3 py-3 font-medium text-gray-500">{service.num}</td>
       <td className="px-3 py-3 font-medium text-gray-800">{service.title}</td>
+      <td className="px-3 py-3 text-gray-500 font-mono">{service.price || 0}</td>
+      <td className="px-3 py-3">
+        {service.is_for_payment ? <CreditCard size={16} className="text-teal-600" /> : <span className="text-gray-300">-</span>}
+      </td>
       <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
         <button onClick={onToggle} className={`${service.is_published ? 'text-green-600' : 'text-gray-400'}`}>
           {service.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -107,6 +111,8 @@ export default function ServicesList() {
               <th className="px-3 py-2 w-10"></th>
               <th className="px-3 py-2 w-16">№</th>
               <th className="px-3 py-2">Назва</th>
+              <th className="px-3 py-2 w-24">Ціна (UAH)</th>
+              <th className="px-3 py-2 w-16">Оплата</th>
               <th className="px-3 py-2 w-16">Статус</th>
               <th className="px-3 py-2 w-12"></th>
             </tr>

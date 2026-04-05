@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight } from 'lucide-react';
+import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight, CreditCard } from 'lucide-react';
 import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import aboutPoster from '../assets/about-bg.png';
@@ -107,9 +107,25 @@ const ServiceBlock = ({ service, idx }: { service: any; idx: number }) => {
               </ul>
             )}
 
-            <div className="mt-8 flex items-center gap-2 text-[#5cc8bd] text-xs font-bold uppercase tracking-[0.3em] font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span>{tr('common.details')}</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <div className="mt-8 flex items-center gap-4 text-[#5cc8bd] text-xs font-bold uppercase tracking-[0.3em] font-montserrat transition-all duration-300">
+              {service.is_for_payment ? (
+                <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#5cc8bd] text-black rounded-sm shadow-lg shadow-[#5cc8bd]/20">
+                    <CreditCard size={14} strokeWidth={2.5} />
+                    <span>{tr('common.pay')}</span>
+                  </div>
+                  {service.price && (
+                    <span className="text-white text-lg font-black tracking-normal italic font-serif">
+                      {service.price} {tr('common.currency')}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span>{tr('common.details')}</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              )}
             </div>
           </div>
         </article>

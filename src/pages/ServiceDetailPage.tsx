@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, MessageCircle, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Share2, CheckCircle2, MessageSquare, MessageCircle, X, CreditCard } from 'lucide-react';
 import { useService } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import ContactModal from '../components/ContactModal';
+import PaymentModal from '../components/PaymentModal';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,7 @@ const ServiceDetailPage = () => {
 
   const [currentImg, setCurrentImg] = useState(0);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const minSwipeDistance = 50;
@@ -175,13 +177,23 @@ const ServiceDetailPage = () => {
 
               <div className="flex flex-col gap-3 font-montserrat tracking-tight">
                 <div className="flex flex-row gap-3">
-                  <button 
-                    onClick={() => navigate(l(`/contacts?service=service-${slug}`))}
-                    className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
-                  >
-                    <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
-                    <span>{tr('offers.order_manager')}</span>
-                  </button>
+                  {service.is_for_payment ? (
+                    <button 
+                      onClick={() => setIsPaymentModalOpen(true)}
+                      className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-[#5cc8bd] text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-white hover:text-black transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3 shadow-lg shadow-[#5cc8bd]/20"
+                    >
+                      <CreditCard className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
+                      <span>{tr('common.pay')} {service.price} {tr('common.currency')}</span>
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => navigate(l(`/contacts?service=service-${slug}`))}
+                      className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
+                    >
+                      <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
+                      <span>{tr('offers.order_manager')}</span>
+                    </button>
+                  )}
                   <button
                     onClick={handleShare}
                     className="w-14 lg:w-16 h-14 lg:h-16 shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-white/50 hover:text-white hover:bg-white/20 transition-all backdrop-blur-md rounded-sm group"
@@ -207,6 +219,16 @@ const ServiceDetailPage = () => {
           onClose={() => setIsContactModalOpen(false)}
           initialMessage={`${tr('offers.interest_question')} ${title}`}
         />
+
+        {service.is_for_payment && service.price && (
+          <PaymentModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            serviceTitle={title}
+            price={service.price}
+            serviceSlug={slug!}
+          />
+        )}
       </section>
 
       {/* ── Text & List Sections ── */}

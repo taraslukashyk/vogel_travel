@@ -57,7 +57,9 @@
     "listen": "Прослухати",
     "min_listen": "хв прослуховування",
     "share": "Поділитися",
-    "official_website": "Офіційний сайт"
+    "official_website": "Офіційний сайт",
+    "pay": "Оплатити",
+    "currency": "грн"
   },
   "home": {
     "hero_title": "Vogel Travel",
