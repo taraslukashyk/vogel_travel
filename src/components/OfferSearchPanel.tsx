@@ -268,7 +268,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           {/* Country Field */}
           <div className="relative">
             <FieldZone 
-              label={isUA ? 'КРАЇНА' : 'COUNTRY'} 
+              label={isUA ? 'Країна' : 'Country'} 
               icon={Globe} 
               value={filter.country} 
               placeholder={isUA ? 'Куди прямуємо?' : 'Destination?'}
@@ -316,7 +316,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           {/* City / Region Field */}
           <div className="relative">
             <FieldZone 
-              label={isUA ? 'МІСТО / РЕГІОН' : 'CITY / REGION'} 
+              label={isUA ? 'Місто / Регіон' : 'City / Region'} 
               icon={MapPin} 
               value={filter.city} 
               placeholder={isUA ? 'Всі регіони' : 'All regions'}
@@ -362,7 +362,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           {/* Dates */}
           <div className="relative">
             <FieldZone 
-              label={isUA ? 'ВІДПРАВЛЕННЯ' : 'DEPARTURE'} 
+              label={isUA ? 'Відправлення' : 'Departure'} 
               icon={CalendarDays} 
               value={filter.dateFrom ? `${format(parseISO(filter.dateFrom), 'dd.MM')} — ${filter.dateTo ? format(parseISO(filter.dateTo), 'dd.MM') : '...'}` : ''} 
               placeholder={isUA ? 'Дати' : 'Dates'}

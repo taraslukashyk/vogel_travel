@@ -171,7 +171,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
           <div className="flex items-center gap-4 mb-2">
             <div className="h-px flex-1 bg-white/10" />
             <h2 className="text-[11px] font-black text-[#5cc8bd] uppercase tracking-[0.4em] whitespace-nowrap">
-              {isUA ? 'ОФОРМЛЕННЯ ЗАМОВЛЕННЯ' : 'ORDER DETAILS'}
+              {isUA ? 'Оформлення замовлення' : 'Order Details'}
             </h2>
             <div className="h-px flex-1 bg-white/10" />
           </div>
@@ -180,7 +180,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
             {/* Dates Selection */}
             <div className="relative">
               <FieldZone 
-                label={isUA ? 'ВІДПРАВЛЕННЯ' : 'DEPARTURE'} 
+                label={isUA ? 'Відправлення' : 'Departure'} 
                 icon={CalendarDays} 
                 value={booking.dateFrom ? `${format(parseISO(booking.dateFrom), 'dd.MM')}${booking.dateTo ? ` — ${format(parseISO(booking.dateTo), 'dd.MM')}` : ''}` : ''} 
                 placeholder={isUA ? 'Оберіть дати' : 'Choose dates'}
@@ -299,7 +299,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
             {/* Nights Selection */}
             <div className="relative">
               <FieldZone 
-                label={isUA ? 'НОЧЕЙ' : 'NIGHTS'} 
+                label={isUA ? 'Ночей' : 'Nights'} 
                 icon={Moon} 
                 value={booking.nights.toString()} 
                 placeholder="7"
@@ -332,7 +332,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
             {/* Guests Selection */}
             <div className="relative">
               <FieldZone 
-                label={isUA ? 'ГОСТІ' : 'GUESTS'} 
+                label={isUA ? 'Гості' : 'Guests'} 
                 icon={Users} 
                 value={guestSummary} 
                 placeholder={isUA ? 'Склад родини' : 'Family'}
@@ -408,7 +408,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
                 id="first_name"
                 name="given-name"
                 type="text" 
-                placeholder={isUA ? "ІМ'Я" : "FIRST NAME"}
+                placeholder={isUA ? "Ім'я" : "First Name"}
                 value={form.name}
                 onChange={e => setForm({...form, name: e.target.value})}
                 autoComplete="given-name"
@@ -422,7 +422,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
                 id="last_name"
                 name="family-name"
                 type="text" 
-                placeholder={isUA ? "ПРІЗВИЩЕ" : "LAST NAME"}
+                placeholder={isUA ? "Прізвище" : "Last Name"}
                 value={form.lastName}
                 onChange={e => setForm({...form, lastName: e.target.value})}
                 autoComplete="family-name"
@@ -436,7 +436,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
                 id="email"
                 name="email"
                 type="email" 
-                placeholder="EMAIL"
+                placeholder="Email"
                 value={form.email}
                 onChange={e => setForm({...form, email: e.target.value})}
                 autoComplete="email"
@@ -450,7 +450,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
                 id="phone"
                 name="tel"
                 type="tel" 
-                placeholder="PHONE"
+                placeholder="Phone"
                 value={form.phone}
                 onChange={e => setForm({...form, phone: e.target.value})}
                 autoComplete="tel"

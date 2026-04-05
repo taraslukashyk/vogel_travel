@@ -394,6 +394,10 @@ export default function OfferForm() {
                       set('city', '');
                       set('city_en', '');
                       if (isNew) set('slug', slugify(`${form.hotel} ${entry.name}`));
+                    } else {
+                      // Allow custom country
+                      set(isUA ? 'country' : 'country_en', val);
+                      if (isNew) set('slug', slugify(`${form.hotel} ${val}`));
                     }
                   }}
                   required
