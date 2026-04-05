@@ -32,7 +32,7 @@ const FieldZone = ({
   >
     <div className="flex items-center gap-2 mb-1.5 pointer-events-none">
       <Icon size={13} className={`${active ? 'text-[#5cc8bd]' : 'text-white/80 group-hover:text-white'} transition-colors`} />
-      <span className="text-[9px] uppercase font-montserrat font-black tracking-[0.2em] text-white/70 group-hover:text-white/90">
+      <span className="text-[10px] font-montserrat font-extrabold tracking-[0.05em] text-white/70 group-hover:text-white/90">
         {label}
       </span>
     </div>

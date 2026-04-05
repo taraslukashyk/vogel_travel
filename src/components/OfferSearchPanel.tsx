@@ -65,7 +65,7 @@ const FieldZone = ({
   >
     <div className="flex items-center gap-2 mb-1.5 pointer-events-none">
       <Icon size={13} className={`${active ? 'text-[#5cc8bd]' : 'text-white/80 group-hover:text-white'} transition-colors`} />
-      <span className="text-[9px] uppercase font-montserrat font-black tracking-[0.2em] text-white/70 group-hover:text-white/90">
+      <span className="text-[10px] font-montserrat font-extrabold tracking-[0.05em] text-white/70 group-hover:text-white/90">
         {label}
       </span>
     </div>
@@ -236,7 +236,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
   }, [filter.country, searchCity, allCities, isUA]);
 
   return (
-    <section className="relative z-30 max-w-[1440px] mx-auto px-4 md:px-12 pointer-events-none">
+    <section className={`relative z-30 max-w-[1440px] mx-auto px-4 md:px-12 pointer-events-none transition-all duration-500 ${invoiceMode ? 'mb-24' : 'mb-12 md:mb-0'}`}>
       <div 
         ref={panelRef}
         className="relative bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
@@ -272,14 +272,23 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
               icon={Globe} 
               value={filter.country} 
               placeholder={isUA ? 'Куди прямуємо?' : 'Destination?'}
-              onClick={() => setActiveTab(activeTab === 'country' ? null : 'country')}
+              onClick={() => {
+                if (activeTab !== 'country') setSearchCountry(filter.country);
+                setActiveTab(activeTab === 'country' ? null : 'country');
+              }}
               active={activeTab === 'country'}
               canSearch={true}
               searchValue={searchCountry}
-              onSearchChange={setSearchCountry}
+              onSearchChange={(v) => {
+                setSearchCountry(v);
+                updateFilter({ country: v });
+              }}
             />
             {activeTab === 'country' && (
-              <div className="absolute top-full right-0 z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+              <div 
+                className="absolute top-full right-0 z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300"
+                onKeyDown={(e) => { if (e.key === 'Enter') setActiveTab(null); }}
+              >
                 <div className="bg-[#0b1a15] border border-[#5cc8bd]/20  shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
                   <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
                     <button 
@@ -320,14 +329,23 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
               icon={MapPin} 
               value={filter.city} 
               placeholder={isUA ? 'Всі регіони' : 'All regions'}
-              onClick={() => setActiveTab(activeTab === 'city' ? null : 'city')}
+              onClick={() => {
+                if (activeTab !== 'city') setSearchCity(filter.city);
+                setActiveTab(activeTab === 'city' ? null : 'city');
+              }}
               active={activeTab === 'city'}
               canSearch={true}
               searchValue={searchCity}
-              onSearchChange={setSearchCity}
+              onSearchChange={(v) => {
+                setSearchCity(v);
+                updateFilter({ city: v });
+              }}
             />
             {activeTab === 'city' && (
-              <div className="absolute top-full lg:left-0 right-0 lg:right-auto z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300">
+              <div 
+                className="absolute top-full lg:left-0 right-0 lg:right-auto z-[100] mt-2 w-[280px] sm:w-[320px] origin-top animate-in fade-in slide-in-from-top-4 duration-300"
+                onKeyDown={(e) => { if (e.key === 'Enter') setActiveTab(null); }}
+              >
                 <div className="bg-[#0b1a15] border border-[#5cc8bd]/20  shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] overflow-hidden">
                   <div className="p-2 border-b border-[#5cc8bd]/10 bg-[#081210]">
                     <button 
@@ -489,13 +507,13 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                      </button>
                      <div className="flex flex-col items-center gap-1">
                         <span className="text-5xl font-montserrat font-black text-white leading-none">{filter.nights}</span>
-                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{isUA ? 'ночей' : 'nights'}</span>
+                        <span className="text-[10px] font-bold text-white/20 tracking-wider font-montserrat">{isUA ? 'ночей' : 'nights'}</span>
                      </div>
                      <button onClick={(e) => { e.stopPropagation(); set('nights', Math.min(30, Number(filter.nights) + 1)); }} className="w-14 h-14 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#5cc8bd] text-white/40 hover:text-[#5cc8bd] transition-all group scale-100 active:scale-90">
                         <Plus size={20} />
                      </button>
                   </div>
-                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/20 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-[11px] font-black tracking-widest shadow-lg shadow-[#5cc8bd]/20 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
                 </div>
               </div>
             )}
@@ -504,7 +522,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
           {/* Guests */}
           <div className="relative">
             <FieldZone 
-              label={isUA ? 'ГОСТІ' : 'GUESTS'} 
+              label={isUA ? 'Гості' : 'Guests'} 
               icon={Users} 
               value={guestSummary} 
               placeholder={isUA ? 'Склад родини' : 'Family'}
@@ -516,7 +534,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                 <div className="bg-[#0b1a15] border border-[#5cc8bd]/20 shadow-[0_40px_80px_-20px_rgba(0,0,0,1)] p-6 space-y-6">
                   <div className="flex items-center justify-between">
                      <div>
-                       <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{isUA ? 'ДОРОСЛІ' : 'ADULTS'}</h4>
+                       <h4 className="text-[11px] font-black text-white tracking-widest">{isUA ? 'Дорослі' : 'Adults'}</h4>
                        <p className="text-[10px] text-white/30 italic">16+ years</p>
                      </div>
                      <div className="flex items-center gap-5">
@@ -527,7 +545,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   </div>
                   <div className="flex items-center justify-between">
                      <div>
-                       <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{isUA ? 'ДІТИ' : 'CHILDREN'}</h4>
+                       <h4 className="text-[11px] font-black text-white tracking-widest">{isUA ? 'Діти' : 'Children'}</h4>
                        <p className="text-[10px] text-white/30 italic">0 - 15 years</p>
                      </div>
                      <div className="flex items-center gap-5">
@@ -538,11 +556,11 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   </div>
                   {filter.children > 0 && (
                     <div className="pt-4 border-t border-white/5 space-y-3">
-                      <p className="text-[9px] text-white/40 uppercase font-black text-center tracking-widest">{isUA ? 'Вкажіть вік кожної дитини' : 'Specify each child age'}</p>
+                      <p className="text-[9px] text-white/40 font-black text-center tracking-widest">{isUA ? 'Вкажіть вік кожної дитини' : 'Specify each child age'}</p>
                       <div className="grid grid-cols-3 gap-2">
                          {Array.from({ length: filter.children }).map((_, i) => (
                            <div key={i} className="bg-white/5 px-3 py-2.5 border border-white/5 hover:border-[#5cc8bd]/30 group transition-all relative">
-                             <label className="text-[8px] text-white/30 uppercase font-bold block mb-1">{isUA ? `Дитина ${i + 1}` : `Kid ${i + 1}`}</label>
+                             <label className="text-[8px] text-white/30 font-bold block mb-1">{isUA ? `Дитина ${i + 1}` : `Kid ${i + 1}`}</label>
                              <div className="relative">
                                <select 
                                  value={filter.childAges[i] || 0}
@@ -564,7 +582,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                       </div>
                     </div>
                   )}
-                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-xs font-black uppercase tracking-[0.3em] shadow-lg shadow-[#5cc8bd]/10 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
+                  <button onClick={() => setActiveTab(null)} className="w-full py-4 bg-[#5cc8bd] text-black text-[11px] font-black tracking-widest shadow-lg shadow-[#5cc8bd]/10 hover:bg-[#4eb1a6] transition-all active:scale-95">{isUA ? 'Застосувати' : 'Apply'}</button>
                 </div>
               </div>
             )}
@@ -607,16 +625,16 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   placeholder="+380 XX XXX XX XX"
                   value={form.phone}
                   onChange={e => setForm({...form, phone: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold"
                 />
                 <input 
                   type="email" 
                   name="email"
                   autoComplete="email"
-                  placeholder="EMAIL"
+                  placeholder="Email"
                   value={form.email}
                   onChange={e => setForm({...form, email: e.target.value})}
-                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold tracking-wide"
+                  className="bg-white/[0.03] border border-white/10 px-6 py-4 text-sm text-white focus:bg-white/[0.08] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-white/40 font-bold"
                 />
 
                 <button 
@@ -627,8 +645,8 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
-                  <span className="text-[13px] font-montserrat font-black uppercase tracking-[0.3em] relative z-10">
-                    {isSubmitting ? '...' : (invoiceMode ? (isUA ? 'ОТРИМАТИ ІНВОЙС' : 'GET INVOICE') : (isUA ? 'РОЗРАХУВАТИ' : 'CALCULATE'))}
+                  <span className="text-[13px] font-montserrat font-black tracking-widest relative z-10">
+                    {isSubmitting ? '...' : (invoiceMode ? (isUA ? 'Отримати інвойс' : 'Get Invoice') : (isUA ? 'Розрахувати' : 'Calculate'))}
                   </span>
                   {isSubmitting ? (
                     <Loader2 size={18} className="animate-spin relative z-10" />
@@ -640,26 +658,36 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                 </button>
               </form>
 
-              {/* Invoice Mode Fields (Expandable) */}
-              <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 overflow-hidden ${
-                invoiceMode ? 'max-h-[200px] mt-6 mb-2 opacity-100' : 'max-h-0 opacity-0'
+              <div className={`transition-all duration-500 overflow-hidden ${
+                invoiceMode ? 'max-h-[300px] mt-6 mb-2 opacity-100' : 'max-h-0 opacity-0'
               }`}>
-                <input 
-                  type="text" 
-                  placeholder={isUA ? "ІМ'Я (FIRST NAME)" : "FIRST NAME"}
-                  value={form.firstName}
-                  onChange={e => setForm({...form, firstName: e.target.value.toUpperCase()})}
-                  className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold tracking-wide"
-                  required={invoiceMode}
-                />
-                <input 
-                  type="text" 
-                  placeholder={isUA ? "ПРІЗВИЩЕ (LAST NAME)" : "LAST NAME"}
-                  value={form.lastName}
-                  onChange={e => setForm({...form, lastName: e.target.value.toUpperCase()})}
-                  className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold tracking-wide"
-                  required={invoiceMode}
-                />
+                <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                  <p className="text-[10px] md:text-xs text-[#5cc8bd] font-bold tracking-widest opacity-80 italic md:whitespace-nowrap animate-in fade-in slide-in-from-left duration-700 leading-relaxed">
+                    {isUA ? 'Важливо для оформлення інвойсу на оплату' : 'Important for issuing an invoice for payment'}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                    <input 
+                      type="text" 
+                      name="given-name"
+                      autoComplete="given-name"
+                      placeholder={isUA ? "Ім'я" : "First Name"}
+                      value={form.firstName}
+                      onChange={e => setForm({...form, firstName: e.target.value})}
+                      className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold w-full"
+                      required={invoiceMode}
+                    />
+                    <input 
+                      type="text" 
+                      name="family-name"
+                      autoComplete="family-name"
+                      placeholder={isUA ? "Прізвище" : "Last Name"}
+                      value={form.lastName}
+                      onChange={e => setForm({...form, lastName: e.target.value})}
+                      className="bg-white/[0.06] border border-[#5cc8bd]/30 px-6 py-4 text-sm text-[#5cc8bd] focus:bg-white/[0.1] focus:border-[#5cc8bd] outline-none transition-all placeholder:text-[#5cc8bd]/40 font-bold w-full"
+                      required={invoiceMode}
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Protruding 'Notch' Toggle */}
@@ -678,10 +706,9 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
                     borderTop: 'none'
                   }}
                 >
-                  {/* Subtle Top Border Emulation for ClipPath */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-white/10" />
                   
-                  <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/30 group-hover:text-[#5cc8bd] transition-colors leading-none pt-1">
+                  <span className="text-[10px] font-black tracking-widest text-white/30 group-hover:text-[#5cc8bd] transition-colors leading-none pt-1">
                     {isUA ? 'Для отримання інвойсу на оплату' : 'Request invoice for payment'}
                   </span>
                   <div className={`transition-all duration-500 flex flex-col items-center ${invoiceMode ? 'rotate-180' : ''}`}>
@@ -747,7 +774,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         }
         .calendar-premium .rdp-month_caption {
           font-weight: 900;
-          text-transform: uppercase;
           letter-spacing: 0.1em;
           font-size: 11px;
           color: #5cc8bd;
@@ -756,7 +782,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         .calendar-premium .rdp-weekday {
           font-size: 10px;
           font-weight: 900;
-          text-transform: uppercase;
           color: rgba(255, 255, 255, 0.3);
           letter-spacing: 0.05em;
         }
@@ -818,8 +843,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         }
         .calendar-premium-v2 .rdp-month_caption {
           font-weight: 900;
-          text-transform: uppercase;
-          letter-spacing: 0.2em;
+          letter-spacing: 0.1em;
           color: #5cc8bd;
           padding: 6px 0 12px;
           text-align: center;
@@ -869,7 +893,6 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         .calendar-premium-v2 .rdp-weekday {
           font-size: 9px;
           font-weight: 900;
-          text-transform: uppercase;
           color: rgba(92, 200, 189, 0.45);
           padding-bottom: 8px;
           letter-spacing: 0.08em;

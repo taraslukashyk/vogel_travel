@@ -240,7 +240,7 @@ const OffersPage = () => {
 
 
       {/* ── Hero Banner ── */}
-      <section className="relative z-30 w-full h-[70vh] min-h-[650px] overflow-visible flex flex-col justify-between pt-24 md:pt-0">
+      <section className="relative z-30 w-full h-auto md:h-[70vh] min-h-[650px] overflow-visible flex flex-col justify-between pt-24 md:pt-0">
         <OptimizedImage
           src="https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&q=80&w=1920"
           alt="Offers hero"
