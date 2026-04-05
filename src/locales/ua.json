@@ -140,8 +140,8 @@
   },
   "contacts": {
     "title": "Контакти та Оплата",
-    "hero_title": "Оплата послуг",
-    "hero_subtitle": "& Контакти",
+    "hero_title": "Контакти",
+    "hero_subtitle": "",
     "hero_description": "Vogel Family Travel — це найвищий рівень сервісу. Ми на зв'язку 24/7 для наших клієнтів по всьому світу.",
     "success_title": "Дякуємо!",
     "success_description": "Вашу заявку прийнято до обробки. Пріоритетний менеджер сконтактує з вами протягом 15 хвилин.",
@@ -218,6 +218,11 @@
     "travels": "Подорожі",
     "languages": "Мови",
     "socials": "Соцмережі",
+    "legal": "Юридична інформація",
+    "public_offer": "Публічна оферта",
+    "privacy_policy": "Політика конфіденційності",
+    "cookie_policy": "Політика Cookie",
+    "refund_terms": "Умови повернення",
     "lang_ua": "УКРАЇНСЬКА",
     "lang_en": "ENGLISH"
   },

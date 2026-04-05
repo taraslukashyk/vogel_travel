@@ -5,7 +5,7 @@ import {
   ChevronRight, Loader2, Globe, ChevronDown
 } from 'lucide-react';
 import { COUNTRIES } from '../lib/data/countries';
-import { sendTelegramNotification } from '../lib/notifications';
+import { sendTelegramNotification, sendTelegramVoice } from '../lib/notifications';
 import { escapeHTML } from '../lib/utils/html';
 import { useLanguage } from '../hooks/useLanguage';
 import { DayPicker, type DateRange } from 'react-day-picker';
@@ -13,6 +13,7 @@ import { uk, enUS } from 'date-fns/locale';
 import { format, parseISO } from 'date-fns';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
+import VoiceRecorder from './VoiceRecorder';
 
 /* ── Types ── */
 export interface FilterState {
@@ -108,6 +109,7 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
   const panelRef = useRef<HTMLDivElement>(null);
+  const voiceBlobRef = useRef<Blob | null>(null);
 
   const availableYears = useMemo(() => {
     const y = new Date().getFullYear();
@@ -193,7 +195,23 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
     ].filter(Boolean).join('\n');
 
     const result = await sendTelegramNotification(lines);
+    
     if (result.success) {
+      if (voiceBlobRef.current) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64Audio = (reader.result as string).split(',')[1];
+          await sendTelegramVoice(
+            `🎙 Голосове повідомлення до запиту\n👤 ${escapeHTML(form.name || 'Anonymous')}`,
+            base64Audio,
+            `voice_${Date.now()}.ogg`,
+            result.messageId
+          );
+          voiceBlobRef.current = null;
+        };
+        reader.readAsDataURL(voiceBlobRef.current);
+      }
+
       setIsSuccess(true);
       setForm({ name: '', phone: '', email: '', firstName: '', lastName: '' });
       setInvoiceMode(false);
@@ -241,25 +259,38 @@ const OfferSearchPanel = ({ filter, onChange }: OfferSearchPanelProps) => {
         ref={panelRef}
         className="relative bg-zinc-950/60 backdrop-blur-3xl border border-white/10 shadow-[0_48px_140px_-20px_rgba(0,0,0,0.9)] p-3 md:p-4 overflow-visible pointer-events-auto"
       >
-        {/* Mode Switcher - Shadcn Switch + Label */}
-        <div className="flex items-center space-x-2 mb-4 pl-1">
-          <Switch
-            id="mode-switch"
-            checked={filter.mode === 'search'}
-            onCheckedChange={(checked) => {
-              set('mode', checked ? 'search' : 'custom');
-              setActiveTab(null);
-            }}
-            className="data-checked:bg-[#5cc8bd] data-unchecked:bg-white/20"
-          />
-          <Label
-            htmlFor="mode-switch"
-            className="text-[11px] font-montserrat font-semibold text-white/60 hover:text-white/90 transition-colors cursor-pointer"
-          >
-            {filter.mode === 'search'
-              ? (isUA ? 'Пошук з акційних пропозицій' : 'Search Deals')
-              : (isUA ? 'Індивідуальний підбір' : 'Custom Quote')}
-          </Label>
+        <div className="flex items-center justify-between mb-4 pl-1 pr-1 gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mode-switch"
+              checked={filter.mode === 'search'}
+              onCheckedChange={(checked) => {
+                set('mode', checked ? 'search' : 'custom');
+                setActiveTab(null);
+              }}
+              className="data-checked:bg-[#5cc8bd] data-unchecked:bg-white/20"
+            />
+            <Label
+              htmlFor="mode-switch"
+              className="text-[11px] font-montserrat font-semibold text-white/60 hover:text-white/90 transition-colors cursor-pointer"
+            >
+              {filter.mode === 'search'
+                ? (isUA ? 'Пошук з акційних пропозицій' : 'Search Deals')
+                : (isUA ? 'Індивідуальний підбір' : 'Custom Quote')}
+            </Label>
+          </div>
+
+          {/* Voice Prompt Action */}
+          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right duration-1000">
+            <span className="text-[9px] md:text-[10px] text-[#5cc8bd]/40 font-bold tracking-[0.15em] uppercase italic hidden sm:block">
+              {isUA ? 'Якщо є запитання — записуй голосове повідомлення' : 'Questions? Record a voice message'}
+            </span>
+            <div className="hidden sm:block h-4 w-px bg-white/10 mx-1" />
+            <VoiceRecorder 
+              onRecordingComplete={(blob) => { voiceBlobRef.current = blob; }} 
+              className="scale-90 md:scale-100 opacity-70 hover:opacity-100 transition-all p-0"
+            />
+          </div>
         </div>
 
         {/* Filter Rows */}

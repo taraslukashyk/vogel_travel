@@ -1,6 +1,6 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Briefcase, Building, ChevronRight } from 'lucide-react';
 import FinalQuote from '../components/FinalQuote';
 import SEOHead from '../components/SEOHead';
 import { usePartners } from '../lib/queries/partners';
@@ -160,13 +160,35 @@ const PartnershipPage = () => {
             </div>
           </div>
 
-          <div className="mt-16 text-center flex justify-center">
-            <a
-              href="#footer"
-              className="inline-flex items-center justify-center border border-[#5cc8bd] text-[#5cc8bd] py-4 px-10 hover:bg-[#5cc8bd] hover:text-black transition-all duration-500 tracking-[0.2em] font-bold text-sm"
-            >
-              {tr('partners.apply')}
-            </a>
+        </div>
+      </section>
+
+      {/* ── Additional Partners Info Block ── */}
+      <section className="relative w-full py-24 bg-zinc-950 border-t border-white/5">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="bg-white/5 border border-white/10 rounded-sm overflow-hidden group backdrop-blur-xl transition-all duration-500 hover:bg-white/10 p-6 md:p-14">
+            <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div className="flex-1 space-y-8">
+                <div className="mb-0 p-4 bg-white/5 inline-block rounded-sm transition-transform duration-500 group-hover:scale-110 border border-white/5">
+                  <Briefcase className="w-8 h-8 text-[#5cc8bd]" />
+                </div>
+                <h2 className="font-montserrat text-3xl font-bold uppercase text-white tracking-[0.05em] group-hover:text-[#5cc8bd] transition-colors">{tr('contacts.partners_title')}</h2>
+                <p className="font-inter text-white/50 text-lg leading-relaxed max-w-lg">
+                  {tr('contacts.partners_description')}
+                </p>
+                <button
+                  type="button"
+                  className="group/btn flex items-center gap-4 px-10 py-4 bg-white/5 border border-white/10 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all"
+                >
+                  {tr('contacts.b2b_btn')} <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-2" />
+                </button>
+              </div>
+              <div className="w-full md:w-1/3 aspect-[4/3] bg-white/5 border border-white/10 rounded-sm flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#5cc8bd]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <Building className="w-16 h-16 text-white/10 mb-5 relative z-10" />
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white/30 leading-tight relative z-10">Global Network</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

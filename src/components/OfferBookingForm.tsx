@@ -4,12 +4,13 @@ import {
   Send, CheckCircle2, Minus, Plus, 
   Loader2, ChevronDown, User, Mail, Phone
 } from 'lucide-react';
-import { sendTelegramNotification } from '../lib/notifications';
+import { sendTelegramNotification, sendTelegramVoice } from '../lib/notifications';
 import { escapeHTML } from '../lib/utils/html';
 import { useLanguage } from '../hooks/useLanguage';
 import { DayPicker, type DateRange } from 'react-day-picker';
 import { uk, enUS } from 'date-fns/locale';
 import { format, parseISO } from 'date-fns';
+import VoiceRecorder from './VoiceRecorder';
 
 interface OfferBookingFormProps {
   offerName: string;
@@ -75,6 +76,7 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   const panelRef = useRef<HTMLDivElement>(null);
+  const voiceBlobRef = useRef<Blob | null>(null);
 
   const availableYears = useMemo(() => {
     const y = new Date().getFullYear();
@@ -141,6 +143,21 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
 
     const result = await sendTelegramNotification(lines);
     if (result.success) {
+      if (voiceBlobRef.current) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64Audio = (reader.result as string).split(',')[1];
+          await sendTelegramVoice(
+            `🎙 Голосове повідомлення до броні\n👤 ${escapeHTML(form.name || 'Anonymous')}`,
+            base64Audio,
+            `booking_voice_${Date.now()}.ogg`,
+            result.messageId
+          );
+          voiceBlobRef.current = null;
+        };
+        reader.readAsDataURL(voiceBlobRef.current);
+      }
+
       setIsSuccess(true);
       setForm({ name: '', lastName: '', email: '', phone: '' });
       setTimeout(() => setIsSuccess(false), 5000);
@@ -475,6 +492,18 @@ const OfferBookingForm = ({ offerName, offerLocation, offerSlug, initialNights =
               <Send size={24} className="relative z-10 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500" />
             )}
           </button>
+
+          {/* Voice Prompt Below Submit Button */}
+          <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <span className="text-[10px] md:text-xs text-[#5cc8bd]/40 font-bold tracking-[0.15em] uppercase italic text-center">
+              {isUA ? 'Якщо є запитання — записуй голосове повідомлення' : 'Questions? Record a voice message'}
+            </span>
+            <div className="hidden md:block h-4 w-px bg-white/10" />
+            <VoiceRecorder 
+              onRecordingComplete={(blob) => { voiceBlobRef.current = blob; }} 
+              className="scale-90 md:scale-100 opacity-60 hover:opacity-100 transition-all p-0"
+            />
+          </div>
         </form>
       )}
 

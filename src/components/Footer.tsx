@@ -109,7 +109,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section: Footer Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 pt-10 border-t border-white/5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 pt-10 border-t border-white/5">
 
           {/* Col 1 */}
           <div className="flex flex-col gap-6">
@@ -140,7 +140,18 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Col 4 */}
+          {/* Col 4 - Legal */}
+          <div className="flex flex-col gap-6">
+            <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">{t('footer.legal')}</h4>
+            <div className="flex flex-col gap-3">
+              <Link to={l('/public-offer')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.public_offer')}</Link>
+              <Link to={l('/privacy-policy')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.privacy_policy')}</Link>
+              <Link to={l('/cookie-policy')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.cookie_policy')}</Link>
+              <Link to={l('/refund-terms')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.refund_terms')}</Link>
+            </div>
+          </div>
+
+          {/* Col 5 */}
           <div className="flex flex-col gap-6">
             <h4 className="text-[11px] uppercase tracking-[0.3em] font-black text-white/30">{t('footer.socials')}</h4>
             <div className="flex items-center gap-6">
@@ -149,7 +160,6 @@ const Footer = () => {
               <a href={settings?.whatsapp_url || 'https://wa.me/380685032230'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><MessageCircle className="w-5 h-5" /></a>
               <a href={settings?.telegram_url || 'https://t.me/Taras_luka'} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:scale-110"><Send className="w-5 h-5" /></a>
             </div>
-
           </div>
         </div>
 

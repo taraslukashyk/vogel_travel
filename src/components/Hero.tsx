@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import BirdCursorEffect from './BirdCursorEffect';
 import OrderTourModal from './OrderTourModal';
@@ -8,7 +9,8 @@ import heroPoster from '../assets/hero-bg.png';
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -60,7 +62,7 @@ const Hero = () => {
           </h1>
 
           <button 
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => navigate(`/${i18n.language}/offers`)}
             className="bg-white text-black font-montserrat uppercase tracking-[0.2em] font-bold py-4 px-10 hover:bg-white/90 active:scale-95 transition-all duration-300 rounded-[2px] shadow-lg w-full sm:w-auto text-sm"
           >
             {t('home.hero_order_btn')}

@@ -140,8 +140,8 @@
   },
   "contacts": {
     "title": "Contacts & Payment",
-    "hero_title": "Service Payment",
-    "hero_subtitle": "& Booking",
+    "hero_title": "Contacts",
+    "hero_subtitle": "",
     "hero_description": "Vogel Family Travel is the highest level of service. We are online 24/7 for our clients worldwide.",
     "success_title": "Thank You!",
     "success_description": "Your request has been accepted for processing. A priority manager will contact you within 15 minutes.",
@@ -218,6 +218,11 @@
     "travels": "Travels",
     "languages": "Languages",
     "socials": "Socials",
+    "legal": "Legal Information",
+    "public_offer": "Public Offer",
+    "privacy_policy": "Privacy Policy",
+    "cookie_policy": "Cookie Policy",
+    "refund_terms": "Refund Terms",
     "lang_ua": "UKRAINIAN",
     "lang_en": "ENGLISH"
   },

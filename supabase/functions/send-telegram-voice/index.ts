@@ -78,7 +78,10 @@ serve(async (req) => {
     // Try with Blob as audio file — Telegram needs specific format
     const formData = new FormData()
     formData.append('chat_id', settings.telegram_chat_id)
-    if (message) formData.append('caption', message.substring(0, 1024))
+    if (message) {
+      formData.append('caption', message.substring(0, 1024))
+      formData.append('parse_mode', 'HTML')
+    }
     if (replyToMessageId) formData.append('reply_to_message_id', replyToMessageId.toString())
     
     // Use generic 'audio' field instead of 'voice' to avoid Opus restriction
@@ -101,7 +104,10 @@ serve(async (req) => {
       
       const formData2 = new FormData()
       formData2.append('chat_id', settings.telegram_chat_id)
-      if (message) formData2.append('caption', message.substring(0, 1024))
+      if (message) {
+        formData2.append('caption', message.substring(0, 1024))
+        formData2.append('parse_mode', 'HTML')
+      }
       if (replyToMessageId) formData2.append('reply_to_message_id', replyToMessageId.toString())
       
       const audioBlob2 = new Blob([bytes], { type: 'audio/ogg' })
