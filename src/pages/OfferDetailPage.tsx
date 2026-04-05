@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { CalendarClock, CalendarDays, ArrowLeft, ArrowRight, Share2, Tag, CheckCircle2, MessageSquare, MessageCircle, X } from 'lucide-react';
+import OfferBookingForm from '../components/OfferBookingForm';
 import { useOffer } from '../lib/queries/offers';
 import SEOHead from '../components/SEOHead';
 import ContactModal from '../components/ContactModal';
@@ -12,7 +13,6 @@ import { formatDate } from '../lib/utils/dateUtils';
 const OfferDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const { t: tr } = useTranslation();
   const { currentLang, l } = useLanguage();
   const { t, sections: getSections } = useLanguageContent();
@@ -22,6 +22,17 @@ const OfferDetailPage = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [isBookingFormExpanded, setIsBookingFormExpanded] = useState(false);
+  const bookingFormRef = useRef<HTMLDivElement>(null);
+
+  const handleOrderClick = () => {
+    setShowBookingForm(true);
+    setIsBookingFormExpanded(false);
+    setTimeout(() => {
+      bookingFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   // the required distance between touchStart and touchEnd to be considered a swipe
   const minSwipeDistance = 50;
@@ -219,7 +230,7 @@ const OfferDetailPage = () => {
               <div className="flex flex-col gap-3 font-montserrat tracking-tight">
                 <div className="flex flex-row gap-2">
                   <button 
-                    onClick={() => navigate(l(`/contacts?service=offer-${slug}`))}
+                    onClick={handleOrderClick}
                     className="flex-1 py-3.5 md:py-5 px-4 lg:px-8 bg-white text-black font-black uppercase tracking-normal text-[12px] md:text-lg lg:text-[20px] hover:bg-[#5cc8bd] hover:text-white transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3"
                   >
                     <MessageSquare className="w-4 h-4 " strokeWidth={2.5} />
@@ -251,6 +262,25 @@ const OfferDetailPage = () => {
           initialMessage={`${tr('offers.interest_question')} ${offerHotel} (${offerLocation})`}
         />
       </section>
+
+      {/* ── Booking Form Section ── */}
+      <div 
+        ref={bookingFormRef}
+        onTransitionEnd={() => {
+          if (showBookingForm) setIsBookingFormExpanded(true);
+        }}
+        className={`relative z-50 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] ${showBookingForm ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'} ${isBookingFormExpanded && showBookingForm ? 'overflow-visible' : 'overflow-hidden'}`}
+      >
+        <section className="bg-zinc-950 py-12 px-6 md:px-12 border-b border-white/5">
+          <div className="max-w-6xl mx-auto">
+            <OfferBookingForm 
+              offerName={offerHotel}
+              offerLocation={offerLocation}
+              offerSlug={slug || ''}
+            />
+          </div>
+        </section>
+      </div>
 
       {/* ── Text Details Section ── */}
       <section className="relative py-24 px-6 md:px-8 bg-zinc-200/50 border-b border-zinc-200/50">
