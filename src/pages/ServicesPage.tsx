@@ -5,9 +5,11 @@ import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
 import aboutPoster from '../assets/about-bg.png';
 import OptimizedImage from '../components/OptimizedImage';
+import PaymentModal from '../components/PaymentModal';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../lib/utils/formatPrice';
 
 const icons: Record<string, React.ReactNode> = {
   '01': <Building2 className="w-8 h-8" strokeWidth={1} />,
@@ -40,7 +42,7 @@ function useScrollReveal() {
 }
 
 /* ─── Single Service Block ─── */
-const ServiceBlock = ({ service, idx }: { service: any; idx: number }) => {
+const ServiceBlock = ({ service, idx, onPay }: { service: any; idx: number; onPay: (s: any) => void }) => {
   const ref = useScrollReveal();
   const isReversed = idx % 2 !== 0;
   const { l } = useLanguage();
@@ -110,13 +112,20 @@ const ServiceBlock = ({ service, idx }: { service: any; idx: number }) => {
             <div className="mt-8 flex items-center gap-4 text-[#5cc8bd] text-xs font-bold uppercase tracking-[0.3em] font-montserrat transition-all duration-300">
               {service.is_for_payment ? (
                 <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#5cc8bd] text-black rounded-sm shadow-lg shadow-[#5cc8bd]/20">
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onPay(service);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-[#5cc8bd] text-black rounded-sm shadow-lg shadow-[#5cc8bd]/20 hover:bg-white transition-all duration-300 font-black"
+                  >
                     <CreditCard size={14} strokeWidth={2.5} />
                     <span>{tr('common.pay')}</span>
-                  </div>
+                  </button>
                   {service.price && (
-                    <span className="text-white text-lg font-black tracking-normal italic font-serif">
-                      {service.price} {tr('common.currency')}
+                    <span className="text-white text-xl font-black tracking-normal italic font-serif">
+                      {formatPrice(service.price)} {tr('common.currency')}
                     </span>
                   )}
                 </div>
@@ -139,9 +148,17 @@ const ServicesPage = () => {
   const { data: servicesData = [] } = useServices();
   const services = servicesData.map(s => ({ ...s, icon: icons[s.num] }));
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const location = useLocation();
   const { currentLang } = useLanguage();
   const { t: tr } = useTranslation();
+  const { t } = useLanguageContent();
+
+  const handlePay = (service: any) => {
+    setSelectedService(service);
+    setIsPaymentModalOpen(true);
+  };
 
   useEffect(() => {
     if (location.hash) {
@@ -242,10 +259,25 @@ const ServicesPage = () => {
       <section className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 py-24">
         <div className="flex flex-col gap-6">
           {services.map((service, idx) => (
-            <ServiceBlock key={service.id} service={service} idx={idx} />
+            <ServiceBlock 
+              key={service.id} 
+              service={service} 
+              idx={idx} 
+              onPay={handlePay}
+            />
           ))}
         </div>
       </section>
+
+      {selectedService && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          serviceTitle={t(selectedService, 'title')}
+          price={selectedService.price}
+          serviceSlug={selectedService.slug}
+        />
+      )}
 
     </main>
   );

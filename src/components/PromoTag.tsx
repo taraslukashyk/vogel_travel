@@ -2,6 +2,7 @@ import { useRef, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useService } from '../lib/queries/services';
+import { formatPrice } from '../lib/utils/formatPrice';
 
 const PromoTag = () => {
   const { t, i18n } = useTranslation();
@@ -86,9 +87,7 @@ const PromoTag = () => {
 
   if (!service && !mounted) return null;
 
-  const formattedPrice = price
-    ? price.toLocaleString(i18n.language === 'ua' ? 'uk-UA' : 'en-US')
-    : null;
+  const formattedPrice = price ? formatPrice(price) : null;
 
   return (
     <div

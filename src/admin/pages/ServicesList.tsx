@@ -7,6 +7,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type D
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { DBService } from '../../lib/types';
+import { formatPrice } from '../../lib/utils/formatPrice';
 
 function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBService; onToggle: () => void; onDelete: () => void; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: service.id });
@@ -21,7 +22,7 @@ function SortableRow({ service, onToggle, onDelete, onClick }: { service: DBServ
       </td>
       <td className="px-3 py-3 font-medium text-gray-500">{service.num}</td>
       <td className="px-3 py-3 font-medium text-gray-800">{service.title}</td>
-      <td className="px-3 py-3 text-gray-500 font-mono">{service.price || 0}</td>
+      <td className="px-3 py-3 text-gray-500 font-mono">{formatPrice(service.price)}</td>
       <td className="px-3 py-3">
         {service.is_for_payment ? <CreditCard size={16} className="text-teal-600" /> : <span className="text-gray-300">-</span>}
       </td>

@@ -8,12 +8,13 @@ import PaymentModal from '../components/PaymentModal';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLanguageContent } from '../hooks/useLanguageContent';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../lib/utils/formatPrice';
 
 const ServiceDetailPage = () => {
   const { slug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentLang, l } = useLanguage();
+  const { l, currentLang } = useLanguage();
   const { t, sections: getSections } = useLanguageContent();
   const { t: tr } = useTranslation();
   const { data: service, isLoading } = useService(slug!);
@@ -183,7 +184,7 @@ const ServiceDetailPage = () => {
                       className="flex-1 py-4 lg:py-5 px-4 lg:px-8 bg-[#5cc8bd] text-black font-black uppercase tracking-normal text-[14px] lg:text-[18px] hover:bg-white hover:text-black transition-all duration-500 flex items-center justify-center gap-2 lg:gap-3 shadow-lg shadow-[#5cc8bd]/20"
                     >
                       <CreditCard className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
-                      <span>{tr('common.pay')} {service.price} {tr('common.currency')}</span>
+                      <span>{tr('common.pay')} {formatPrice(service.price)} {tr('common.currency')}</span>
                     </button>
                   ) : (
                     <button 
