@@ -110,12 +110,12 @@ const PromoTag = () => {
 
         {/* Tag body */}
         <div
-          className="relative w-[140px] lg:w-[180px] shadow-xl group-hover:shadow-2xl transition-shadow duration-300"
+          className="relative w-[120px] lg:w-[150px] shadow-xl group-hover:shadow-2xl transition-shadow duration-300"
           style={{
-            clipPath: 'polygon(50% 0%, 100% 10%, 100% 100%, 0 100%, 0 10%)',
+            clipPath: 'polygon(50% 0%, 100% 8%, 100% 100%, 0 100%, 0 8%)',
           }}
         >
-          <div className="bg-[#f5f0e8] pt-6 pb-4 px-3 lg:px-4 lg:pt-7 lg:pb-5">
+          <div className="bg-[#f5f0e8] pt-7 pb-6 px-3 lg:px-4 lg:pt-8 lg:pb-8">
             {/* Hole */}
             <div className="absolute top-[10px] lg:top-[12px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-stone-400 bg-[#f5f0e8]" />
 
