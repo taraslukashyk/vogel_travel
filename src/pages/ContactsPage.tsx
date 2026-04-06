@@ -20,7 +20,7 @@ import SEOHead from '../components/SEOHead';
 import { useSettings } from '../hooks/useSettings';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
-import aboutPoster from '../assets/about-bg.png';
+import aboutPoster from '../assets/about-bg.webp';
 import VoiceRecorder from '../components/VoiceRecorder';
 import { sendTelegramVoice } from '../lib/notifications';
 import { toast } from 'sonner';
@@ -125,7 +125,7 @@ const ContactsPage = () => {
           autoPlay muted loop playsInline
           preload="metadata"
         >
-          <source src="/about-video.mp4" type="video/mp4" />
+          <source src="/about-video.webm" type="video/webm" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950" />
       </div>

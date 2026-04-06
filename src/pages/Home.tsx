@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import Hero from '../components/Hero'
 import SEOHead from '../components/SEOHead'
-import bgImage from '../assets/about-bg.png'
+import bgImage from '../assets/about-bg.webp'
 import OptimizedImage from '../components/OptimizedImage'
 import { useLanguage } from '../hooks/useLanguage'
 import { useTranslation } from 'react-i18next'

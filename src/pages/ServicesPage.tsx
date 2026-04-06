@@ -3,7 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { Building2, Compass, PhoneCall, Users, Gem, ArrowRight, CreditCard } from 'lucide-react';
 import { useServices } from '../lib/queries/services';
 import SEOHead from '../components/SEOHead';
-import aboutPoster from '../assets/about-bg.png';
+import aboutPoster from '../assets/about-bg.webp';
 import OptimizedImage from '../components/OptimizedImage';
 import PaymentModal from '../components/PaymentModal';
 import { useLanguage } from '../hooks/useLanguage';
@@ -196,7 +196,7 @@ const ServicesPage = () => {
           autoPlay muted loop playsInline
           preload="metadata"
         >
-          <source src="/about-video.mp4" type="video/mp4" />
+          <source src="/about-video.webm" type="video/webm" />
         </video>
         {/* Light gradient overlay to brighten the video edges */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />

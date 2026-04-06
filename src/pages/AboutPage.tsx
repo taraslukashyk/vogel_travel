@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ListChecks, Key, Clock, Target, UserCheck, ShieldCheck } from 'lucide-react';
 import logo from '../assets/logo.svg';
-import aboutPoster from '../assets/about-bg.png';
+import aboutPoster from '../assets/about-bg.webp';
 import SEOHead from '../components/SEOHead';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../hooks/useLanguage';
@@ -65,7 +65,7 @@ const AboutPage = () => {
           playsInline
           preload="metadata"
         >
-          <source src="/about-video.mp4" type="video/mp4" />
+          <source src="/about-video.webm" type="video/webm" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
