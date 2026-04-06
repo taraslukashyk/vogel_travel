@@ -1,5 +1,5 @@
 import aboutBg from '../assets/about-bg.png';
-import viktoria from '../assets/viktoria.webp';
+import viktoria from '../assets/viktoria.jpg';
 import OptimizedImage from './OptimizedImage';
 import { useTranslation } from 'react-i18next';
 
