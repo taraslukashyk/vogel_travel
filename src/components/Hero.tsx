@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 import heroPoster from '../assets/hero-bg.png';
 
+const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t, i18n } = useTranslation();
@@ -27,15 +29,9 @@ const Hero = () => {
         muted
         loop
         playsInline
-        preload="metadata"
-        onLoadedData={() => {
-          window.__VOGEL_VIDEO_READY__ = true;
-          console.log("Hero video ready");
-        }}
+        preload={isMobile ? 'none' : 'metadata'}
       >
         <source src="/hero-video.webm" type="video/webm" />
-        {/* Fallback for browsers that don't support WebM (like older iOS Safari) */}
-        {/* <source src="/hero-video.mp4" type="video/mp4" /> */}
       </video>
 
       {/* Gradient overlay for text readability */}

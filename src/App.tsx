@@ -40,7 +40,7 @@ const Analytics = lazy(() => import('./admin/pages/Analytics'));
 
 
 // Loading fallback component
-const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: { progress?: number, isVideoWaiting?: boolean, isFadingOut?: boolean }) => {
+const PageLoader = ({ progress, isFadingOut = false }: { progress?: number, isFadingOut?: boolean }) => {
   const [internalProgress, setInternalProgress] = useState(0);
 
   useEffect(() => {
@@ -59,21 +59,21 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
     }
   }, [progress]);
 
-  const displayProgress = progress !== undefined ? progress : (isVideoWaiting ? 98 : internalProgress);
+  const displayProgress = progress !== undefined ? progress : internalProgress;
 
   return (
     <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] transition-opacity duration-1000 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="relative flex flex-col items-center">
         {/* Background radial glow */}
         <div className="absolute inset-0 bg-primary/10 blur-[160px] rounded-full scale-150 animate-pulse"></div>
-        
+
         {/* Logo container with glass effect */}
         <div className="relative z-10 p-4">
-          <img 
-            src="/favicon.svg" 
-            alt="Vogel Travel Logo" 
+          <img
+            src="/favicon.svg"
+            alt="Vogel Travel Logo"
             className="w-56 h-56 md:w-96 md:h-96 object-contain animate-spin-slow will-change-transform"
-            style={{ 
+            style={{
               animationTimingFunction: 'linear',
               transformStyle: 'preserve-3d',
               backfaceVisibility: 'hidden',
@@ -83,7 +83,7 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
 
         {/* Minimalist Progress Bar */}
         <div className="mt-20 w-96 h-[3px] bg-white/5 relative overflow-hidden rounded-full">
-          <div 
+          <div
             className="absolute inset-y-0 left-0 bg-primary transition-all duration-700 ease-out shadow-[0_0_20px_rgba(92,200,189,0.4)]"
             style={{ width: `${displayProgress}%` }}
           ></div>
@@ -126,79 +126,48 @@ function LanguageHandler() {
   return <PublicLayout />;
 }
 
-// Global state listener for video
-declare global {
-  interface Window {
-    __VOGEL_VIDEO_READY__?: boolean;
-  }
-}
-
 function App() {
   const { i18n } = useTranslation();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isVideoWaiting, setIsVideoWaiting] = useState(false);
 
   useEffect(() => {
-    // Start progress simulation
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 95) return prev;
-        const increment = Math.max(0.2, (98 - prev) / 25);
-        return Math.min(prev + increment + (Math.random() * 0.5), 98);
-      });
-    }, 150);
+    let rafId: number;
+    let lastTime = performance.now();
+    const tick = (now: number) => {
+      if (now - lastTime >= 150) {
+        lastTime = now;
+        setProgress(prev => {
+          if (prev >= 95) return prev;
+          const increment = Math.max(0.2, (98 - prev) / 25);
+          return Math.min(prev + increment + (Math.random() * 0.5), 98);
+        });
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
 
     const finishLoading = () => {
-      const isHome = window.location.pathname === '/' || window.location.pathname.match(/\/(ua|en)\/?$/);
-      
-      if (isHome && !window.__VOGEL_VIDEO_READY__) {
-        setIsVideoWaiting(true);
-        
-        // Safety timeout: if video doesn't load in 3.5 seconds, Force fade out
-        const safetyTimeout = setTimeout(() => {
-          clearInterval(checkVideo);
-          setIsFadingOut(true);
-          setTimeout(() => setIsInitialLoading(false), 1000);
-        }, 3500);
-
-        const checkVideo = setInterval(() => {
-          if (window.__VOGEL_VIDEO_READY__) {
-            clearTimeout(safetyTimeout);
-            clearInterval(checkVideo);
-            setProgress(100);
-            setTimeout(() => {
-              setIsFadingOut(true);
-              setTimeout(() => setIsInitialLoading(false), 1000);
-            }, 800);
-          }
-        }, 100);
-        return;
-      } else {
-        setProgress(100);
-        setTimeout(() => {
-          setIsFadingOut(true);
-          setTimeout(() => setIsInitialLoading(false), 1000);
-        }, 800);
-      }
-    };
-
-    const handleLoad = () => {
-      finishLoading();
+      cancelAnimationFrame(rafId);
+      setProgress(100);
+      setTimeout(() => {
+        setIsFadingOut(true);
+        setTimeout(() => setIsInitialLoading(false), 1000);
+      }, 300);
     };
 
     if (document.readyState === 'complete') {
-      handleLoad();
+      finishLoading();
     } else {
-      window.addEventListener('load', handleLoad);
+      window.addEventListener('load', finishLoading);
       return () => {
-        window.removeEventListener('load', handleLoad);
-        clearInterval(interval);
+        window.removeEventListener('load', finishLoading);
+        cancelAnimationFrame(rafId);
       };
     }
-    
-    return () => clearInterval(interval);
+
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
@@ -208,7 +177,7 @@ function App() {
       
       {/* The Loader as an overlay to avoid deadlock */}
       {isInitialLoading && (
-        <PageLoader progress={progress} isVideoWaiting={isVideoWaiting} isFadingOut={isFadingOut} />
+        <PageLoader progress={progress} isFadingOut={isFadingOut} />
       )}
 
       <ErrorBoundary>

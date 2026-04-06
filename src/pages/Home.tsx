@@ -1,15 +1,17 @@
+import { lazy, Suspense } from 'react'
 import Hero from '../components/Hero'
-import About from '../components/About'
-import Advantages from '../components/Advantages'
-import Partners from '../components/Partners'
-import FeaturedTours from '../components/FeaturedTours'
-import FinalQuote from '../components/FinalQuote'
-import BlogCarousel from '../components/BlogCarousel'
 import SEOHead from '../components/SEOHead'
 import bgImage from '../assets/about-bg.png'
 import OptimizedImage from '../components/OptimizedImage'
 import { useLanguage } from '../hooks/useLanguage'
 import { useTranslation } from 'react-i18next'
+
+const About = lazy(() => import('../components/About'))
+const Advantages = lazy(() => import('../components/Advantages'))
+const Partners = lazy(() => import('../components/Partners'))
+const FeaturedTours = lazy(() => import('../components/FeaturedTours'))
+const FinalQuote = lazy(() => import('../components/FinalQuote'))
+const BlogCarousel = lazy(() => import('../components/BlogCarousel'))
 
 const Home = () => {
   const { currentLang } = useLanguage();
@@ -45,12 +47,14 @@ const Home = () => {
         />
         <div className="absolute inset-0 bg-black/85 pointer-events-none" />
         <div className="relative z-10 w-full flex flex-col">
-          <Advantages />
-          <FeaturedTours />
-          <About />
-          <Partners />
-          <BlogCarousel />
-          <FinalQuote />
+          <Suspense fallback={null}>
+            <Advantages />
+            <FeaturedTours />
+            <About />
+            <Partners />
+            <BlogCarousel />
+            <FinalQuote />
+          </Suspense>
         </div>
       </div>
     </>
