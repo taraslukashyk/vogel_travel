@@ -64,9 +64,6 @@ const AboutPage = () => {
           loop
           playsInline
           preload="metadata"
-          onLoadedData={() => {
-            window.__VOGEL_VIDEO_READY__ = true;
-          }}
         >
           <source src="/about-video.mp4" type="video/mp4" />
         </video>
