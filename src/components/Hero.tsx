@@ -6,9 +6,7 @@ import OrderTourModal from './OrderTourModal';
 import PromoTag from './PromoTag';
 import { useTranslation } from 'react-i18next';
 
-import heroPoster from '../assets/hero-bg.png';
-
-const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+import heroPoster from '../assets/hero-bg.jpg';
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +27,7 @@ const Hero = () => {
         muted
         loop
         playsInline
-        preload={isMobile ? 'none' : 'metadata'}
+        preload="none"
       >
         <source src="/hero-video.webm" type="video/webm" />
       </video>

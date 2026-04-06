@@ -62,7 +62,7 @@ const PageLoader = ({ progress, isFadingOut = false }: { progress?: number, isFa
   const displayProgress = progress !== undefined ? progress : internalProgress;
 
   return (
-    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] transition-opacity duration-1000 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#072421] transition-opacity duration-500 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="relative flex flex-col items-center">
         {/* Background radial glow */}
         <div className="absolute inset-0 bg-primary/10 blur-[160px] rounded-full scale-150 animate-pulse"></div>
@@ -151,10 +151,8 @@ function App() {
     const finishLoading = () => {
       cancelAnimationFrame(rafId);
       setProgress(100);
-      setTimeout(() => {
-        setIsFadingOut(true);
-        setTimeout(() => setIsInitialLoading(false), 1000);
-      }, 300);
+      setIsFadingOut(true);
+      setTimeout(() => setIsInitialLoading(false), 500);
     };
 
     if (document.readyState === 'complete') {
