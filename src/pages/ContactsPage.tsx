@@ -232,11 +232,19 @@ const ContactsPage = () => {
                 {[
                   { id: 'offer', name: t('contacts.doc_offer'), icon: <FileText className="w-4 h-4" /> },
                   { id: 'privacy', name: t('contacts.doc_privacy'), icon: <ShieldCheck className="w-4 h-4" /> },
-                  { id: 'cookie', name: t('contacts.doc_cookie'), icon: <Cookie className="w-4 h-4" /> },
                   { id: 'returns', name: t('contacts.doc_returns'), icon: <Undo2 className="w-4 h-4" /> },
+                  { id: 'cookie', name: t('contacts.doc_cookie'), icon: <Cookie className="w-4 h-4" /> },
                 ].map((link) => (
                   <button
                     key={link.id}
+                    onClick={() => {
+                      if (link.id === 'cookie') {
+                        window.dispatchEvent(new CustomEvent('openCookieSettings'));
+                      } else {
+                        // Handle other documents (e.g. open PDF or another modal)
+                        toast.info(currentLang === 'ua' ? 'Документ в процесі оновлення' : 'Document is being updated');
+                      }
+                    }}
                     className="w-full flex items-center justify-between px-6 py-5 bg-white/5 border border-white/5 rounded-sm group/link hover:bg-white hover:text-black transition-all"
                   >
                     <div className="flex items-center gap-4">

@@ -33,10 +33,11 @@ export default function CookieConsent() {
 
   useEffect(() => {
     const savedConsent = localStorage.getItem(STORAGE_KEY);
+    let timer: any = null;
+
     if (!savedConsent) {
       // Delay showing for a bit of premium feel
-      const timer = setTimeout(() => setIsVisible(true), 1500);
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setIsVisible(true), 1500);
     } else {
       try {
         const parsed = JSON.parse(savedConsent);
@@ -51,7 +52,10 @@ export default function CookieConsent() {
     };
 
     window.addEventListener('openCookieSettings', handleOpenSettings);
-    return () => window.removeEventListener('openCookieSettings', handleOpenSettings);
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('openCookieSettings', handleOpenSettings);
+    };
   }, []);
 
   const handleAcceptAll = () => {
@@ -99,9 +103,12 @@ export default function CookieConsent() {
               </div>
               <p className="text-sm text-gray-600 leading-relaxed max-w-4xl">
                 {t('cookie.description')}{' '}
-                <a href="/cookie-policy" className="underline hover:text-black transition-colors">
+                <button 
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="underline hover:text-black transition-colors"
+                >
                   {t('cookie.policy_link')}
-                </a>
+                </button>
               </p>
             </div>
             
@@ -126,8 +133,8 @@ export default function CookieConsent() {
 
       {/* Settings Modal */}
       <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className="max-w-4xl sm:max-w-[800px] w-full p-0 gap-0 bg-[#f9f9f7] border-none overflow-hidden rounded-none sm:rounded-none sm:top-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 sm:translate-y-0 sm:max-h-[85vh]">
-          <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
+        <DialogContent className="max-w-4xl sm:max-w-[800px] w-full p-0 gap-0 bg-[#f9f9f7] border-none overflow-hidden rounded-none sm:rounded-none sm:top-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 sm:translate-y-0 h-[90vh] sm:h-[85vh]">
+          <div className="flex flex-col h-full overflow-hidden">
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
                <div className="flex items-center gap-3">
                  <img src="/favicon.svg" alt="Vogel Logo" className="w-6 h-6 opacity-60" />

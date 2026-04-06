@@ -284,7 +284,7 @@
     "preference_center_title": "Privacy Preference Center",
     "preference_center_desc": "When you visit any website, it may store or retrieve information on your browser, mostly in the form of cookies. This information might be about you, your preferences or your device and is mostly used to make the site work as you expect it to. Because we respect your right to privacy, you can choose not to allow some types of cookies. Click on the different category headings to find out more and change our default settings. However, blocking some types of cookies may impact your experience of the site and the services we are able to offer.",
     "allow_all": "Allow All",
-    "confirm_choices": "Confirm My Choices",
+    "confirm_choices": "Confirm choice",
     "manage_preferences": "Manage Consent Preferences",
     "strictly_necessary": {
       "title": "Strictly Necessary Cookies",
