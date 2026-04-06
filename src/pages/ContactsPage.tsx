@@ -83,10 +83,16 @@ const ContactsPage = () => {
         center: [30.5233, 50.4382], // Kyiv, Sportyvna Sq, 1A
         zoom: 15,
         attributionControl: false,
+        dragPan: true,
+        scrollZoom: true,
+        touchZoomRotate: true
       });
 
+      // Add navigation control to make it feel more "pro"
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+
       const markerEl = document.createElement('div');
-      markerEl.className = 'w-5 h-5 bg-[#5cc8bd] rounded-full border-2 border-white shadow-lg animate-pulse';
+      markerEl.className = 'w-6 h-6 bg-[#5cc8bd] rounded-full border-2 border-white shadow-[0_0_15px_rgba(92,200,189,0.5)] animate-pulse';
 
       new maplibregl.Marker({ element: markerEl })
         .setLngLat([30.5233, 50.4382])
@@ -177,9 +183,21 @@ const ContactsPage = () => {
           </div>
 
           {/* Location */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-sm p-8 space-y-8 hover:bg-white/10 transition-all duration-500 h-full flex flex-col">
-            <h3 className="font-montserrat text-sm font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.location')}</h3>
-            <div className="space-y-6 flex-grow">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-sm p-8 pb-0 space-y-8 hover:bg-white/10 transition-all duration-500 h-full flex flex-col group/card overflow-hidden">
+            <div className="flex items-center justify-between">
+              <h3 className="font-montserrat text-sm font-black uppercase tracking-[0.3em] text-[#5cc8bd]">{t('contacts.location')}</h3>
+              <a 
+                href="https://www.google.com/maps/search/?api=1&query=50.4382,30.5233"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-[#5cc8bd] hover:border-[#5cc8bd]/50 hover:bg-[#5cc8bd]/5 transition-all flex items-center gap-2 rounded-full"
+              >
+                <span>GOOGLE MAPS</span>
+                <ChevronRight className="w-3 h-3" />
+              </a>
+            </div>
+            
+            <div className="space-y-6 flex-grow flex flex-col">
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 bg-white/5 border border-white/5 rounded-sm flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5 text-white/20" />
@@ -191,12 +209,17 @@ const ContactsPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full h-40 bg-black/40 rounded-sm overflow-hidden border border-white/10 relative group">
+              
+              <div className="w-[calc(100%+64px)] -mx-8 mt-auto h-64 bg-black/40 border-t border-white/10 relative group bg-zinc-900 group-hover/card:bg-zinc-800 transition-colors">
                 <div ref={mapContainer} className="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-3 left-4 flex items-center gap-2">
-                   <MapPin className="w-3 h-3 text-[#5cc8bd]" />
-                   <span className="text-[9px] font-black text-white/70 uppercase tracking-widest">{(currentLang === 'en' ? settings?.address_en : settings?.address) || 'Kyiv'}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-6 left-8 flex items-center gap-3">
+                   <div className="p-2 bg-[#5cc8bd] rounded-sm">
+                     <MapPin className="w-3 h-3 text-black" />
+                   </div>
+                   <span className="text-[10px] font-black text-white uppercase tracking-widest bg-black/40 backdrop-blur-sm px-3 py-1 rounded-sm border border-white/10">
+                     {(currentLang === 'en' ? settings?.address_en : settings?.address) || 'Kyiv, Gulliver BC'}
+                   </span>
                 </div>
               </div>
             </div>

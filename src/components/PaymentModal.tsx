@@ -46,6 +46,7 @@ const PaymentModal = ({ isOpen, onClose, serviceTitle, price, serviceSlug }: Pay
       // 1. Notify Telegram about payment attempt
       const telegramMessage = `
 <b>💳 СПРОБА ОПЛАТИ СЕРВІСУ</b>
+<b>Статус:</b> Очікує оплати
 <b>Сервіс:</b> ${escapeHTML(serviceTitle)}
 <b>Сума:</b> ${price} грн
 
