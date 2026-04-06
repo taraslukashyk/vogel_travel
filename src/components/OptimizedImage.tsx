@@ -5,26 +5,27 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   alt: string;
   className?: string;
   sizes?: string;
+  priority?: boolean;
 }
 
-const OptimizedImage: React.FC<OptimizedImageProps> = ({ 
-  src, 
-  alt, 
-  className, 
+const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  alt,
+  className,
   sizes = "(max-width: 768px) 100vw, 50vw",
-  ...props 
+  priority = false,
+  ...props
 }) => {
-  // If it's an Unsplash URL, we can leverage their API for different sizes
   const isUnsplash = src.includes('images.unsplash.com');
-  
+
   let srcSet = undefined;
   if (isUnsplash) {
     const baseUrl = src.split('?')[0];
     srcSet = `
-      ${baseUrl}?auto=format&fit=crop&q=60&w=400 400w,
-      ${baseUrl}?auto=format&fit=crop&q=70&w=800 800w,
-      ${baseUrl}?auto=format&fit=crop&q=80&w=1200 1200w,
-      ${baseUrl}?auto=format&fit=crop&q=80&w=1600 1600w
+      ${baseUrl}?auto=format&fm=webp&fit=crop&q=60&w=400 400w,
+      ${baseUrl}?auto=format&fm=webp&fit=crop&q=70&w=800 800w,
+      ${baseUrl}?auto=format&fm=webp&fit=crop&q=80&w=1200 1200w,
+      ${baseUrl}?auto=format&fm=webp&fit=crop&q=80&w=1600 1600w
     `;
   }
 
@@ -33,10 +34,11 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       src={src}
       alt={alt}
       className={className}
-      loading="lazy"
+      loading={priority ? 'eager' : 'lazy'}
       decoding="async"
+      fetchPriority={priority ? 'high' : 'auto'}
       srcSet={srcSet}
-      sizes={sizes}
+      sizes={srcSet ? sizes : undefined}
       {...props}
     />
   );

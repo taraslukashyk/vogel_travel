@@ -42,7 +42,7 @@ function mapService(db: DBService): any {
   };
 }
 
-export function useServices() {
+export function useServices(enabled = true) {
   return useQuery({
     queryKey: ['services'],
     queryFn: async (): Promise<any[]> => {
@@ -56,6 +56,7 @@ export function useServices() {
     },
     placeholderData: staticServices as any[],
     staleTime: 5 * 60 * 1000,
+    enabled,
   });
 }
 

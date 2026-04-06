@@ -39,7 +39,7 @@ function mapOffer(db: DBOffer): any {
   };
 }
 
-export function useOffers() {
+export function useOffers(enabled = true) {
   return useQuery({
     queryKey: ['offers'],
     queryFn: async (): Promise<any[]> => {
@@ -53,6 +53,7 @@ export function useOffers() {
     },
     placeholderData: staticOffers,
     staleTime: 5 * 60 * 1000,
+    enabled,
   });
 }
 

@@ -33,11 +33,10 @@ export default function CookieConsent() {
 
   useEffect(() => {
     const savedConsent = localStorage.getItem(STORAGE_KEY);
-    let timer: any = null;
-
     if (!savedConsent) {
       // Delay showing for a bit of premium feel
-      timer = setTimeout(() => setIsVisible(true), 1500);
+      const timer = setTimeout(() => setIsVisible(true), 1500);
+      return () => clearTimeout(timer);
     } else {
       try {
         const parsed = JSON.parse(savedConsent);
@@ -52,10 +51,7 @@ export default function CookieConsent() {
     };
 
     window.addEventListener('openCookieSettings', handleOpenSettings);
-    return () => {
-      if (timer) clearTimeout(timer);
-      window.removeEventListener('openCookieSettings', handleOpenSettings);
-    };
+    return () => window.removeEventListener('openCookieSettings', handleOpenSettings);
   }, []);
 
   const handleAcceptAll = () => {
@@ -77,13 +73,13 @@ export default function CookieConsent() {
     setPreferences(prefs);
     setIsVisible(false);
     setIsSettingsOpen(false);
-    
+
     // Trigger event for analytics or other listeners
     window.dispatchEvent(new CustomEvent('cookieConsentChanged', { detail: prefs }));
   };
 
   const toggleExpanded = (id: string) => {
-    setExpandedItems((prev: string[]) => 
+    setExpandedItems((prev: string[]) =>
       prev.includes(id) ? prev.filter((i: string) => i !== id) : [...prev, id]
     );
   };
@@ -98,12 +94,12 @@ export default function CookieConsent() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1 text-center md:text-left space-y-2">
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                 <img src="/favicon.svg" alt="Vogel Logo" className="w-8 h-8 opacity-90" />
-                 <span className="font-serif tracking-widest text-lg uppercase">VOGEL</span>
+                <img src="/favicon.svg" alt="Vogel Logo" className="w-8 h-8 opacity-90" />
+                <span className="font-serif tracking-widest text-lg uppercase">VOGEL</span>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed max-w-4xl">
                 {t('cookie.description')}{' '}
-                <button 
+                <button
                   onClick={() => setIsSettingsOpen(true)}
                   className="underline hover:text-black transition-colors"
                 >
@@ -111,16 +107,16 @@ export default function CookieConsent() {
                 </button>
               </p>
             </div>
-            
+
             <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
-              <button 
+              <button
                 onClick={() => setIsSettingsOpen(true)}
                 className="text-sm font-medium text-gray-500 hover:text-black transition-colors underline decoration-gray-300 underline-offset-4"
               >
                 {t('cookie.settings')}
               </button>
-              
-              <Button 
+
+              <Button
                 onClick={handleAcceptAll}
                 className="bg-[#1a1a1a] hover:bg-black text-white px-8 py-6 h-auto text-sm uppercase tracking-widest rounded-none min-w-[200px]"
               >
@@ -133,13 +129,13 @@ export default function CookieConsent() {
 
       {/* Settings Modal */}
       <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className="max-w-4xl sm:max-w-[800px] w-full p-0 gap-0 bg-[#f9f9f7] border-none overflow-hidden rounded-none sm:rounded-none sm:top-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 sm:translate-y-0 h-[90vh] sm:h-[85vh]">
-          <div className="flex flex-col h-full overflow-hidden">
+        <DialogContent className="max-w-4xl sm:max-w-[800px] w-full p-0 gap-0 bg-[#f9f9f7] border-none overflow-hidden rounded-none sm:rounded-none sm:top-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 sm:translate-y-0 sm:max-h-[85vh]">
+          <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-               <div className="flex items-center gap-3">
-                 <img src="/favicon.svg" alt="Vogel Logo" className="w-6 h-6 opacity-60" />
-                 <span className="font-serif tracking-widest text-sm uppercase opacity-60">VOGEL</span>
-               </div>
+              <div className="flex items-center gap-3">
+                <img src="/favicon.svg" alt="Vogel Logo" className="w-6 h-6 opacity-60" />
+                <span className="font-serif tracking-widest text-sm uppercase opacity-60">VOGEL</span>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
@@ -153,7 +149,7 @@ export default function CookieConsent() {
               </div>
 
               <div className="space-y-4">
-                <Button 
+                <Button
                   onClick={handleAcceptAll}
                   className="bg-[#1a1a1a] hover:bg-black text-white w-full sm:w-auto h-auto px-10 py-3 text-xs uppercase tracking-widest rounded-none mb-8"
                 >
@@ -167,16 +163,16 @@ export default function CookieConsent() {
                 <div className="divide-y divide-gray-200 border-t border-b border-gray-200">
                   {/* Strictly Necessary */}
                   <div className="py-4 space-y-3">
-                    <div 
+                    <div
                       className="flex items-center justify-between cursor-pointer group"
                       onClick={() => toggleExpanded('strictly_necessary')}
                     >
                       <div className="flex items-center gap-2">
-                        <ChevronDown 
+                        <ChevronDown
                           className={cn(
                             "w-4 h-4 text-gray-400 transition-transform duration-200",
                             expandedItems.includes('strictly_necessary') && "rotate-180"
-                          )} 
+                          )}
                         />
                         <span className="text-sm font-medium text-gray-900 group-hover:text-black">
                           {t('cookie.strictly_necessary.title')}
@@ -197,22 +193,22 @@ export default function CookieConsent() {
 
                   {/* Performance */}
                   <div className="py-4 space-y-3">
-                    <div 
+                    <div
                       className="flex items-center justify-between cursor-pointer group"
                       onClick={() => toggleExpanded('performance')}
                     >
                       <div className="flex items-center gap-2">
-                        <ChevronDown 
+                        <ChevronDown
                           className={cn(
                             "w-4 h-4 text-gray-400 transition-transform duration-200",
                             expandedItems.includes('performance') && "rotate-180"
-                          )} 
+                          )}
                         />
                         <span className="text-sm font-medium text-gray-900 group-hover:text-black">
                           {t('cookie.performance.title')}
                         </span>
                       </div>
-                      <Switch 
+                      <Switch
                         checked={preferences.performance}
                         onCheckedChange={(checked) => setPreferences((prev: CookiePreferences) => ({ ...prev, performance: checked }))}
                       />
@@ -228,22 +224,22 @@ export default function CookieConsent() {
 
                   {/* Functional */}
                   <div className="py-4 space-y-3">
-                    <div 
+                    <div
                       className="flex items-center justify-between cursor-pointer group"
                       onClick={() => toggleExpanded('functional')}
                     >
                       <div className="flex items-center gap-2">
-                        <ChevronDown 
+                        <ChevronDown
                           className={cn(
                             "w-4 h-4 text-gray-400 transition-transform duration-200",
                             expandedItems.includes('functional') && "rotate-180"
-                          )} 
+                          )}
                         />
                         <span className="text-sm font-medium text-gray-900 group-hover:text-black">
                           {t('cookie.functional.title')}
                         </span>
                       </div>
-                      <Switch 
+                      <Switch
                         checked={preferences.functional}
                         onCheckedChange={(checked) => setPreferences((prev: CookiePreferences) => ({ ...prev, functional: checked }))}
                       />
@@ -259,22 +255,22 @@ export default function CookieConsent() {
 
                   {/* Targeting */}
                   <div className="py-4 space-y-3">
-                    <div 
+                    <div
                       className="flex items-center justify-between cursor-pointer group"
                       onClick={() => toggleExpanded('targeting')}
                     >
                       <div className="flex items-center gap-2">
-                        <ChevronDown 
+                        <ChevronDown
                           className={cn(
                             "w-4 h-4 text-gray-400 transition-transform duration-200",
                             expandedItems.includes('targeting') && "rotate-180"
-                          )} 
+                          )}
                         />
                         <span className="text-sm font-medium text-gray-900 group-hover:text-black">
                           {t('cookie.targeting.title')}
                         </span>
                       </div>
-                      <Switch 
+                      <Switch
                         checked={preferences.targeting}
                         onCheckedChange={(checked) => setPreferences((prev: CookiePreferences) => ({ ...prev, targeting: checked }))}
                       />
@@ -292,7 +288,7 @@ export default function CookieConsent() {
             </div>
 
             <div className="p-6 bg-white border-t border-gray-200 sm:flex sm:justify-end">
-              <Button 
+              <Button
                 onClick={handleConfirmChoices}
                 className="bg-[#1a1a1a] hover:bg-black text-white w-full sm:w-auto h-auto px-10 py-3 text-xs uppercase tracking-widest rounded-none"
               >

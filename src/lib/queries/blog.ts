@@ -30,7 +30,7 @@ function mapPost(db: DBBlogPost): any {
   };
 }
 
-export function useBlogPosts() {
+export function useBlogPosts(enabled = true) {
   return useQuery({
     queryKey: ['blog_posts'],
     queryFn: async (): Promise<any[]> => {
@@ -44,6 +44,7 @@ export function useBlogPosts() {
     },
     placeholderData: staticPosts,
     staleTime: 5 * 60 * 1000,
+    enabled,
   });
 }
 

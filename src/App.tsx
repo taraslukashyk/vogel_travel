@@ -45,10 +45,17 @@ const PageLoader = ({ progress, isVideoWaiting = false, isFadingOut = false }: {
 
   useEffect(() => {
     if (progress === undefined) {
-      const interval = setInterval(() => {
-        setInternalProgress(prev => (prev >= 90 ? 90 : prev + 1));
-      }, 100);
-      return () => clearInterval(interval);
+      let rafId: number;
+      let lastTime = performance.now();
+      const tick = (now: number) => {
+        if (now - lastTime >= 100) {
+          lastTime = now;
+          setInternalProgress(prev => (prev >= 90 ? 90 : prev + 1));
+        }
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(rafId);
     }
   }, [progress]);
 

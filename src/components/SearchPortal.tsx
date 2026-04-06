@@ -15,9 +15,9 @@ interface SearchPortalProps {
 }
 
 const SearchPortal: React.FC<SearchPortalProps> = ({ isOpen, onClose, query }) => {
-  const { data: offers = [] } = useOffers();
-  const { data: services = [] } = useServices();
-  const { data: blogPosts = [] } = useBlogPosts();
+  const { data: offers = [] } = useOffers(isOpen);
+  const { data: services = [] } = useServices(isOpen);
+  const { data: blogPosts = [] } = useBlogPosts(isOpen);
   const { t: tr } = useTranslation();
   const { l } = useLanguage();
   const { t } = useLanguageContent();

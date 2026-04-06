@@ -7,13 +7,21 @@ export default defineConfig({
   base: '/',
   build: {
     target: 'es2020',
-    // Reduce CSS output size
     cssMinify: true,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-map': ['maplibre-gl'],
+          'vendor-icons': ['lucide-react'],
+          'vendor-animation': ['gsap'],
+          'vendor-admin': ['@tiptap/react', '@tiptap/starter-kit', '@dnd-kit/core', '@dnd-kit/sortable'],
+        },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 600,
   },
   test: {
     globals: true,

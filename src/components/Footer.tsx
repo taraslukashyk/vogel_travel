@@ -147,13 +147,13 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <Link to={l('/public-offer')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.public_offer')}</Link>
               <Link to={l('/privacy-policy')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.privacy_policy')}</Link>
+              <Link to={l('/refund-terms')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.refund_terms')}</Link>
               <button 
                 onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))}
                 className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70 text-left"
               >
                 {t('footer.cookie_policy')}
               </button>
-              <Link to={l('/refund-terms')} className="text-[13px] uppercase font-bold tracking-widest hover:text-white transition-colors text-white/70">{t('footer.refund_terms')}</Link>
             </div>
           </div>
 
