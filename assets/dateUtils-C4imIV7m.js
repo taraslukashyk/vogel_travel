@@ -1,0 +1,1 @@
+function f(t){if(!t)return"";const e=/^(\d{4})-(\d{2})-(\d{2})/,a=t.match(e);if(a){const[,n,c,o]=a;return`${o}/${c}/${n}`}const r=/^(\d{1,2})\/(\d{1,2})$/,s=t.match(r);if(s){const[,n,c]=s,o=n.padStart(2,"0"),d=c.padStart(2,"0");return`${o}/${d}/2026`}return t}export{f};
