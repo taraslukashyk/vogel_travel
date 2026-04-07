@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Send, MessageCircle, Facebook, X, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
 import { useLanguage } from '../hooks/useLanguage';
-import CurrencyRates from './CurrencyRates';
+
 
 // Lazy load modals - they are only shown on user interaction
 const ContactModal = lazy(() => import('./ContactModal'));
@@ -60,7 +60,7 @@ const Header = () => {
 
           {/* Right: Socials & Language */}
           <div className="flex items-center gap-14">
-            <CurrencyRates />
+
             {/* Social Icons */}
             <div className="flex items-center gap-4">
               <a href="https://www.instagram.com/vogel.family.travel/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
@@ -241,7 +241,7 @@ const Header = () => {
                     className={currentLang === 'en' ? 'text-white' : 'text-white/40'}
                   >EN</button>
                 </div>
-                <CurrencyRates />
+
               </div>
 
               {/* Mobile Socials */}
