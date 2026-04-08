@@ -155,6 +155,7 @@ export interface DBPayment {
   reference: string | null;
   failure_reason: string | null;
   payment_info: Record<string, any> | null;
+  receipt_id: string | null;
   monobank_modified_date: string | null;
   created_at: string;
   updated_at: string;

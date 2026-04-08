@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS payments (
   reference TEXT,
   failure_reason TEXT,
   payment_info JSONB,
+  receipt_id TEXT,
   monobank_modified_date TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
