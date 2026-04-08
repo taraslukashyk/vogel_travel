@@ -140,6 +140,26 @@ export interface DBServiceItem {
   text: string;
 }
 
+export interface DBPayment {
+  id: string;
+  invoice_id: string | null;
+  status: 'pending' | 'processing' | 'success' | 'failure' | 'reversed' | 'expired';
+  amount: number;
+  ccy: number;
+  final_amount: number | null;
+  service_id: number | null;
+  service_title: string | null;
+  customer_name: string;
+  customer_email: string | null;
+  customer_phone: string | null;
+  reference: string | null;
+  failure_reason: string | null;
+  payment_info: Record<string, any> | null;
+  monobank_modified_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface DBSeoMeta {
   id: number;
   page_path: string;

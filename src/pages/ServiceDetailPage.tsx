@@ -228,6 +228,7 @@ const ServiceDetailPage = () => {
             serviceTitle={title}
             price={service.price}
             serviceSlug={slug!}
+            serviceId={service.id}
           />
         )}
       </section>

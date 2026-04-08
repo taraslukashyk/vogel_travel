@@ -12,9 +12,10 @@ interface PaymentModalProps {
   serviceTitle: string;
   price: number;
   serviceSlug: string;
+  serviceId?: number;
 }
 
-const PaymentModal = ({ isOpen, onClose, serviceTitle, price, serviceSlug }: PaymentModalProps) => {
+const PaymentModal = ({ isOpen, onClose, serviceTitle, price, serviceSlug, serviceId }: PaymentModalProps) => {
   const { t } = useTranslation();
   const { currentLang } = useLanguage();
   const isUA = currentLang === 'ua';
@@ -59,7 +60,6 @@ Email: ${escapeHTML(form.email)}
       await sendTelegramNotification(telegramMessage);
 
       // 2. Create Monobank Invoice via Edge Function
-      // Note: We'll need to create this function. If it doesn't exist, we'll show a message for now.
       const { data, error: funcError } = await supabase.functions.invoke('create-monobank-invoice', {
         body: {
           amount: price * 100, // in kopecks
@@ -69,8 +69,13 @@ Email: ${escapeHTML(form.email)}
             comment: `Client: ${form.firstName} ${form.lastName}`,
             reference: `service_${serviceSlug}_${Date.now()}`,
           },
-          redirectUrl: window.location.origin + '/' + currentLang + '/services/' + serviceSlug + '?payment=success',
-          webHookUrl: 'https://nuzljtexciclocgcinjh.supabase.co/functions/v1/monobank-webhook',
+          redirectUrl: window.location.origin + '/' + currentLang + '/payment/success',
+          webHookUrl: import.meta.env.VITE_SUPABASE_URL + '/functions/v1/monobank-webhook',
+          customerName: `${form.firstName} ${form.lastName}`,
+          customerEmail: form.email,
+          customerPhone: form.phone,
+          serviceId: serviceId || null,
+          serviceTitle,
         }
       });
 

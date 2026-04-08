@@ -19,6 +19,8 @@ const OfferDetailPage = lazy(() => import('./pages/OfferDetailPage'));
 const PartnershipPage = lazy(() => import('./pages/PartnershipPage'));
 const PartnerDetailPage = lazy(() => import('./pages/PartnerDetailPage'));
 const ContactsPage = lazy(() => import('./pages/ContactsPage'));
+const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
+const PaymentFailurePage = lazy(() => import('./pages/PaymentFailurePage'));
 
 // Lazy load admin components
 const AdminLogin = lazy(() => import('./admin/pages/AdminLogin'));
@@ -195,6 +197,8 @@ function App() {
             <Route path="partners" element={<PartnershipPage />} />
             <Route path="partners/:slug" element={<PartnerDetailPage />} />
             <Route path="contacts" element={<ContactsPage />} />
+            <Route path="payment/success" element={<PaymentSuccessPage />} />
+            <Route path="payment/failure" element={<PaymentFailurePage />} />
           </Route>
 
           <Route path="/admin/login" element={

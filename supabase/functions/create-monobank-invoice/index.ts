@@ -12,8 +12,49 @@ serve(async (req) => {
   }
 
   try {
-    const { amount, ccy, merchantPaymInfo, redirectUrl, webHookUrl } = await req.json()
+    const {
+      amount,
+      ccy,
+      merchantPaymInfo,
+      redirectUrl,
+      webHookUrl,
+      customerName,
+      customerEmail,
+      customerPhone,
+      serviceId,
+      serviceTitle,
+    } = await req.json()
 
+    // Create Supabase client with service role for DB writes
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+    const reference = merchantPaymInfo?.reference || `payment_${Date.now()}`
+
+    // 1. Create payment record in DB
+    const { data: payment, error: dbError } = await supabase
+      .from('payments')
+      .insert({
+        status: 'pending',
+        amount,
+        ccy: ccy || 980,
+        service_id: serviceId || null,
+        service_title: serviceTitle || null,
+        customer_name: customerName || 'Unknown',
+        customer_email: customerEmail || null,
+        customer_phone: customerPhone || null,
+        reference,
+      })
+      .select('id')
+      .single()
+
+    if (dbError) {
+      console.error('DB insert error:', dbError)
+      // Continue even if DB fails — payment flow should not be blocked
+    }
+
+    // 2. Call Monobank API
     const token = Deno.env.get('MONOBANK_TOKEN')
 
     if (!token) {
@@ -32,7 +73,10 @@ serve(async (req) => {
       body: JSON.stringify({
         amount,
         ccy,
-        merchantPaymInfo,
+        merchantPaymInfo: {
+          ...merchantPaymInfo,
+          reference,
+        },
         redirectUrl,
         webHookUrl,
       }),
@@ -42,10 +86,27 @@ serve(async (req) => {
 
     if (!response.ok) {
       console.error('Monobank API error:', data)
+
+      // Update payment status to failure
+      if (payment?.id) {
+        await supabase
+          .from('payments')
+          .update({ status: 'failure', failure_reason: data.errText || 'Monobank API error', updated_at: new Date().toISOString() })
+          .eq('id', payment.id)
+      }
+
       return new Response(
         JSON.stringify({ error: data.errText || 'Monobank API error' }),
         { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
+    }
+
+    // 3. Update payment with invoice_id
+    if (payment?.id && data.invoiceId) {
+      await supabase
+        .from('payments')
+        .update({ invoice_id: data.invoiceId, updated_at: new Date().toISOString() })
+        .eq('id', payment.id)
     }
 
     return new Response(JSON.stringify(data), {
