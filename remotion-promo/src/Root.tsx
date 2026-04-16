@@ -37,6 +37,18 @@ import {
 } from "./compositions/vogel-admin-promo-916/schema";
 import { TIMELINE as ADMIN_916_TIMELINE } from "./compositions/vogel-admin-promo-916/timeline";
 
+import { VogelTiktokPas } from "./compositions/vogel-tiktok-pas-916";
+import { VogelTiktokPasSchema, defaultVogelTiktokPasProps } from "./compositions/vogel-tiktok-pas-916/schema";
+
+import { VogelTiktokAida } from "./compositions/vogel-tiktok-aida-916";
+import { VogelTiktokAidaSchema, defaultVogelTiktokAidaProps } from "./compositions/vogel-tiktok-aida-916/schema";
+
+import { VogelYoutubeFab } from "./compositions/vogel-youtube-fab-169";
+import { VogelYoutubeFabSchema, defaultVogelYoutubeFabProps } from "./compositions/vogel-youtube-fab-169/schema";
+
+import { VogelYoutubeAida } from "./compositions/vogel-youtube-aida-169";
+import { VogelYoutubeAidaSchema, defaultVogelYoutubeAidaProps } from "./compositions/vogel-youtube-aida-169/schema";
+
 import { waitForFonts } from "./theme/fonts";
 
 export const RemotionRoot: React.FC = () => {
@@ -116,6 +128,64 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={VogelAdminPromoSchema}
         defaultProps={defaultVogelAdminPromoProps}
+        calculateMetadata={async ({ props }) => {
+          await waitForFonts();
+          return { props };
+        }}
+      />
+
+      {/* ── Нові Ролики: Маркетингові сценарії ─────────────────── */}
+      <Composition
+        id="vogel-tiktok-pas-916"
+        component={VogelTiktokPas}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        schema={VogelTiktokPasSchema}
+        defaultProps={defaultVogelTiktokPasProps}
+        calculateMetadata={async ({ props }) => {
+          await waitForFonts();
+          return { props };
+        }}
+      />
+      <Composition
+        id="vogel-tiktok-aida-916"
+        component={VogelTiktokAida}
+        durationInFrames={720}
+        fps={60}
+        width={1080}
+        height={1920}
+        schema={VogelTiktokAidaSchema}
+        defaultProps={defaultVogelTiktokAidaProps}
+        calculateMetadata={async ({ props }) => {
+          await waitForFonts();
+          return { props };
+        }}
+      />
+      <Composition
+        id="vogel-youtube-fab-169"
+        component={VogelYoutubeFab}
+        durationInFrames={750}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={VogelYoutubeFabSchema}
+        defaultProps={defaultVogelYoutubeFabProps}
+        calculateMetadata={async ({ props }) => {
+          await waitForFonts();
+          return { props };
+        }}
+      />
+      <Composition
+        id="vogel-youtube-aida-169"
+        component={VogelYoutubeAida}
+        durationInFrames={1350}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={VogelYoutubeAidaSchema}
+        defaultProps={defaultVogelYoutubeAidaProps}
         calculateMetadata={async ({ props }) => {
           await waitForFonts();
           return { props };
