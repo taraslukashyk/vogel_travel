@@ -5,6 +5,8 @@ import { assets } from "../../lib/staticPath";
 type LogoProps = {
   /** Width in px. Height scales proportionally. */
   width?: number;
+  /** Size in px (alias for width). */
+  size?: number;
   /** Optional opacity override. */
   opacity?: number;
   /** Optional filter (e.g. drop-shadow). */
@@ -13,21 +15,21 @@ type LogoProps = {
 };
 
 /**
- * Vogel Travel logo as a raster-safe <Img>. The SVG is an Inkscape export
- * with embedded raster paths, so a per-path draw-on is unstable — we animate
- * scale/opacity at the wrapper level instead.
+ * Vogel Travel logo as a raster-safe <Img>.
  */
 export const Logo: React.FC<LogoProps> = ({
-  width = 420,
+  width,
+  size,
   opacity = 1,
   filter,
   style,
 }) => {
+  const finalWidth = size || width || 420;
   return (
     <Img
       src={assets.image.logo}
       style={{
-        width,
+        width: finalWidth,
         height: "auto",
         opacity,
         filter,

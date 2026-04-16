@@ -30,6 +30,13 @@ import {
 } from "./compositions/vogel-admin-overview/schema";
 import { TIMELINE as ADMIN_TIMELINE } from "./compositions/vogel-admin-overview/timeline";
 
+import { VogelAdminPromo } from "./compositions/vogel-admin-promo-916";
+import {
+  VogelAdminPromoSchema,
+  defaultVogelAdminPromoProps,
+} from "./compositions/vogel-admin-promo-916/schema";
+import { TIMELINE as ADMIN_916_TIMELINE } from "./compositions/vogel-admin-promo-916/timeline";
+
 import { waitForFonts } from "./theme/fonts";
 
 export const RemotionRoot: React.FC = () => {
@@ -93,6 +100,22 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         schema={AdminOverviewSchema}
         defaultProps={defaultAdminOverviewProps}
+        calculateMetadata={async ({ props }) => {
+          await waitForFonts();
+          return { props };
+        }}
+      />
+
+      {/* ── Ролик 5: Admin Panel Promo Vertical (9:16) ─────────────────── */}
+      <Composition
+        id="vogel-admin-promo-916"
+        component={VogelAdminPromo}
+        durationInFrames={ADMIN_916_TIMELINE.total}
+        fps={ADMIN_916_TIMELINE.fps}
+        width={1080}
+        height={1920}
+        schema={VogelAdminPromoSchema}
+        defaultProps={defaultVogelAdminPromoProps}
         calculateMetadata={async ({ props }) => {
           await waitForFonts();
           return { props };
