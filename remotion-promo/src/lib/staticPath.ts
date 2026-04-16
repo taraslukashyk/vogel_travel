@@ -12,6 +12,18 @@ export const assets = {
     logo: staticFile("image/logo.svg"),
     viktoria: staticFile("image/viktoria.jpg"),
     heroPoster: staticFile("image/hero-poster.jpg"),
+    screenshots: {
+      homeFull: staticFile("image/screenshots/home-full.jpg"),
+      offersFull: staticFile("image/screenshots/offers-full.jpg"),
+      offerDetailFull: staticFile("image/screenshots/offer-detail-full.jpg"),
+      formEmpty: staticFile("image/screenshots/form-empty.jpg"),
+      success: staticFile("image/screenshots/success.jpg"),
+      admin: {
+        login: staticFile("image/screenshots/admin/login.png"),
+        offersList: staticFile("image/screenshots/admin/offers-list.png"),
+        offerForm: staticFile("image/screenshots/admin/offer-form.png"),
+      },
+    },
   },
   audio: {
     music: staticFile("audio/music.mp3"),
